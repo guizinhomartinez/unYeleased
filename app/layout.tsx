@@ -7,7 +7,7 @@ const yeezy = localFont({
   src: '../public/yeezy_tstar-bold-webfont.ttf'
 })
 
-const inter = IBM_Plex_Mono({ weight: ['400'] })
+const inter = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "Create Next App",
