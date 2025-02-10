@@ -121,7 +121,7 @@ export default function WheelsFallOfFull() {
 
 type SliderProps = React.ComponentProps<typeof Slider>
 
-export function VolumeSlider({ className, ...props }: SliderProps) {
+function VolumeSlider({ className, ...props }: SliderProps) {
     return (
         <Slider
             defaultValue={[30]}
