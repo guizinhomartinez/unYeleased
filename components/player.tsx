@@ -93,19 +93,19 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         setShowExplanation(!showExplanation);
     };
 
-    // useEffect(() => {
-    //     const handleKeyDown = (e: KeyboardEvent) => {
-    //         if (e.key === "s") {
-    //             handleClick();
-    //         }
-    //     };
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "s") {
+                handleClick();
+            }
+        };
 
-    //     window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
 
-    //     return () => {
-    //         window.removeEventListener("keydown", handleKeyDown);
-    //     };
-    // }, [handleClick]);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleClick]);
 
     const changeTab = (firstTab: boolean) => {
         setShowLyrics(firstTab);
