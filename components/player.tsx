@@ -6,16 +6,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { HandleTransition } from "@/components/handleTransition";
 import { cn } from "@/lib/utils"
-import { Slider } from "@/components/ui/slider"
+import { Slider } from "@/components/ui/slider";
 
 export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
-    const songRef = useRef<HTMLAudioElement | null>(null);
     const [volumeVal, setVolumeVal] = useState(30);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
     const [showExplanation, setShowExplanation] = useState(false);
     const [showLyrics, setShowLyrics] = useState(false);
+    const [explanationClass, setExplanationClass] = useState("song-explanation");
+    const songRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        songRef.current = new Audio(songVal);
+    }, [songVal]);
 
     const content = [
         {
@@ -26,19 +31,16 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     ]
 
     useEffect(() => {
-        if (!songRef.current) {
-            songRef.current = new Audio(songVal);
-        }
-        const song = songRef.current;
+        if (!songRef.current) return;
 
         if (isPlaying) {
-            song.play();
+            songRef.current.play();
         } else {
-            song.pause();
+            songRef.current.pause();
         }
 
         return () => {
-            song.pause();
+            songRef.current?.pause();
         };
     }, [isPlaying]);
 
@@ -76,12 +78,6 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         };
     }, []);
 
-    window.onkeydown = (e) => {
-        if (e.key === "s") {
-            handleClick();
-        }
-    }
-
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
@@ -89,42 +85,52 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     };
 
     const handleClick = () => {
-        const songExplanation = document.querySelector(".song-explanation-real")
-        if (!showExplanation) {
-            songExplanation?.classList.remove("song-explanation");
-            songExplanation?.classList.add("song-explanation-disappear")
-            setShowExplanation(!showExplanation)
+        if (showExplanation) {
+            setExplanationClass("song-explanation-disappear");
         } else {
-            songExplanation?.classList.add("song-explanation");
-            songExplanation?.classList.remove("song-explanation-disappear")
-            setShowExplanation(!showExplanation)
+            setExplanationClass("song-explanation");
         }
-    }
+        setShowExplanation(!showExplanation);
+    };
 
     useEffect(() => {
-        if (document.querySelector('.lore-tab')) {
-            document.querySelector('.tab-1')?.classList.add('active');
-            document.querySelector('.tab-2')?.classList.remove('active');
-        } else if (document.querySelector('.lyrics-tab')) {
-            document.querySelector('.tab-1')?.classList.remove('active');
-            document.querySelector('.tab-2')?.classList.add('active');
-        }
-    }, [showLyrics])
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "s") {
+                handleClick();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleClick]);
 
     const changeTab = (firstTab: boolean) => {
         setShowLyrics(firstTab);
-    }
-    
+    };
+
+    useEffect(() => {
+        if (showLyrics === false) {
+            document.querySelector('.tab-1')?.classList.add('active');
+            document.querySelector('.tab-2')?.classList.remove('active');
+        } else {
+            document.querySelector('.tab-1')?.classList.remove('active');
+            document.querySelector('.tab-2')?.classList.add('active');
+        }
+    }, [changeTab])
+
     const InfoCard = () => {
         return (
-            <div className="flex flex-col h-screen flex-1 md:mt-28 mt-24 md:max-w-[45%] m-2 pb-4 md:mr-12 md:pb-0 song-explanation song-explanation-real">
+            <div className={`flex flex-col h-screen flex-1 md:mt-28 mt-24 md:max-w-[45%] m-2 pb-4 md:mr-12 md:pb-0 ${explanationClass}`}>
                 <div className="border-2 border-black flex flex-col h-fit pb-4">
                     <div className="flex border-b-2 border-b-black relative justify-between w-full flex-grow">
-                        <button className={`yeezy-button uppercase w-full py-3 tab-1 active`} onClick={() => changeTab(true)}>Song explanation</button>
-                        <button className="yeezy-button uppercase w-full py-3 tab-2" onClick={() => changeTab(false)}>Lyrics</button>
+                        <button className={`yeezy-button uppercase w-full py-3 tab-1`} onClick={() => changeTab(false)}>Song explanation</button>
+                        <button className="yeezy-button uppercase w-full py-3 tab-2" onClick={() => changeTab(true)}>Lyrics</button>
                         <div className="cursor-pointer absolute -right-4 -top-4 rounded-full bg-white border-2 border-black p-0.5" onClick={() => handleClick()}><X /></div>
                     </div>
-                    {showLyrics ? <p className="p-2 no-uppercase-letters lore-tab">{backgroundLore}</p> : <p className="p-2 lyrics-tab">banana</p>}
+                    {!showLyrics ? <p className="p-2 no-uppercase-letters lore-tab">{backgroundLore}</p> : <p className="p-2 lyrics-tab">banana</p>}
                     <div className="p-2 pt-12 md:pt-6 pb-6 border-b-2 border-black text-center">All descriptions are not mine, these are from Genius.com. Please, go to the original site below for more information about the song.</div>
                     <a href={linkToGenius} className="pl-2 pt-4 mx-auto">
                         <button className="p-2 text-blue-600 antialiased active:scale-95 uppercase transition-all duration-150">More information</button>
