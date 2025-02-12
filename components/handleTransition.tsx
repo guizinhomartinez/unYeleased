@@ -27,13 +27,13 @@ export const HandleTransition: React.FC<TransitionLinkProps> = ({
       e.preventDefault();
       const body = document.querySelector("body");
   
-      body?.classList.add("page-transition");
+      // body?.classList.add("page-transition");
   
-      await sleep(400);
+      // await sleep(400);
       router.push(href);
-      await sleep(400);
+      // await sleep(400);
   
-      body?.classList.remove("page-transition");
+      // body?.classList.remove("page-transition");
     };
   
     return (

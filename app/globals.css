@@ -4,15 +4,56 @@
 
 body {
   font-family: 'YEEZY TSAR', Helvetica, sans-serif;
-  text-transform: uppercase;
   transition: scale opacity;
   transition-timing-function: ease-in-out;
   transition-duration: 400ms;
 }
 
+body:not(.no-uppercase-letters) {
+  text-transform: uppercase;
+}
+
+.no-uppercase-letters {
+  text-transform: none !important;
+}
+
 .page-transition {
   scale: 125%;
   opacity: 0;
+}
+
+.yeezy-buttons {
+  @apply p-2 border-2 border-black w-fit antialiased active:scale-95 uppercase transition-all duration-150
+}
+
+.song-explanation {
+  /* animation: appear .3s cubic-bezier(0.165, 0.84, 0.44, 1); */
+}
+
+@keyframes appear {
+  from {
+    transform: translate(10em, 0);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+.song-explanation-disappear {
+  animation: appear reverse .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes disappear {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(10em, 0);
+  }
+}
+
+.active {
+  @apply bg-black text-white
 }
 
 @layer base {

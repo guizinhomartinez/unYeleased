@@ -1,0 +1,111 @@
+{
+    "config": [
+        {
+            "year": "2019",
+            "color": "#c78ed1",
+            "credits": "The tracklist and downloaded songs belong to {YeHub}"
+        }
+    ],
+    "tracks": [
+        {
+            "title": "Chakras",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Chakras.m4a"
+        },
+        {
+            "title": "Calm Before the Storm",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "The Storm",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Spread Your Wings",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "New Body",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "80 Degrees",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Alien (Interlude)",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Alien",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "City In The Sky",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "All Dreams Real",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Problem",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Brothers",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Cash To Burn",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "WE FREE (Interlude)",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Bye Bye Baby",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "The Garden",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Last Name",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "Law Of Attraction",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "We Got Love",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        },
+        {
+            "title": "The End Of It",
+            "artist": "Kanye West",
+            "songLocation": "/songs/yandhi/Alien.m4a"
+        }
+    ]
+}
