@@ -9,14 +9,6 @@ body {
   transition-duration: 400ms;
 }
 
-body:not(.no-uppercase-letters) {
-  text-transform: uppercase;
-}
-
-.no-uppercase-letters {
-  text-transform: none !important;
-}
-
 .page-transition {
   scale: 125%;
   opacity: 0;
@@ -51,11 +43,6 @@ body:not(.no-uppercase-letters) {
     transform: translate(10em, 0);
   }
 }
-
-.active {
-  @apply bg-black text-white
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,7 +53,7 @@ body:not(.no-uppercase-letters) {
     --popover-foreground: 0 0% 3.9%;
     --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
+    --secondary: 0 0% 76.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;

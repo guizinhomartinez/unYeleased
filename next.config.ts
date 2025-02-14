@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/testing',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

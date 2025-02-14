@@ -40,23 +40,23 @@ export default function Home() {
       duration: "1:45",
       link: "/album/yandhi",
       row: "2"
-    },
-    {
-      image: "/covers/wheels-fall-off.jpg",
-      text: "Wheels Fall Off",
-      subtext: "Full Version",
-      duration: "4:50",
-      link: "/song/wheels-fall-off-full",
-      row: "2"
-    },
-    {
-      image: "/covers/wheels-fall-off.jpg",
-      text: "Wheels Fall Off",
-      subtext: "Released Version (Clean)",
-      duration: "2:01",
-      link: "/song/wheels-fall-off-released",
-      row: "2"
     }
+    // {
+    //   image: "/covers/wheels-fall-off.jpg",
+    //   text: "Wheels Fall Off",
+    //   subtext: "Full Version",
+    //   duration: "4:50",
+    //   link: "/song/wheels-fall-off-full",
+    //   row: "2"
+    // },
+    // {
+    //   image: "/covers/wheels-fall-off.jpg",
+    //   text: "Wheels Fall Off",
+    //   subtext: "Released Version (Clean)",
+    //   duration: "2:01",
+    //   link: "/song/wheels-fall-off-released",
+    //   row: "2"
+    // }
   ];
 
   const year = [
