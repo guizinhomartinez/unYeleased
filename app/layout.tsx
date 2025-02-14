@@ -9,7 +9,7 @@ const yeezy = localFont({
   src: '../public/yeezy_tstar-bold-webfont.ttf'
 })
 
-const inter = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
+const IBMPlexMono = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

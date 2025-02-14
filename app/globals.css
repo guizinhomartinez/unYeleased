@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'YEEZY TSAR', Helvetica, sans-serif;
+  font-family: 'Geist', Helvetica, sans-serif;
   transition: scale opacity;
   transition-timing-function: ease-in-out;
   transition-duration: 400ms;
@@ -43,6 +43,15 @@ body {
     transform: translate(10em, 0);
   }
 }
+
+.list-active {
+  @apply bg-primary/20 rounded-md border-b-transparent;
+}
+
+#album-bg {
+  /* background-image: linear-gradient(0deg, white 0%, black 80%); */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
