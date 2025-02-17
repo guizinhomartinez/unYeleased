@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
-import { IBM_Plex_Mono, Geist } from 'next/font/google'
+import { IBM_Plex_Mono, Geist, Geist_Mono } from 'next/font/google'
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
@@ -11,6 +11,7 @@ const yeezy = localFont({
 
 const IBMPlexMono = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
 const geist = Geist({ subsets: ['latin'] })
+const geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "Ye Unreleased Songs",
@@ -25,11 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geist.className} antialiased`}
+        className={`${geist.className} antialiased overflow-x-hidden`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

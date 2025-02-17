@@ -1,0 +1,130 @@
+import Image from 'next/image'
+import { Separator } from "@/components/ui/separator"
+
+<div className=''>
+    <div className=''>
+        # Custom albums
+
+        This page is specifically on how to create custom albums, if you don't want to do this, then leave.\
+        \
+        The creation of a custom album is easy but hard to understand, so pay attention to everything.\
+        Also, if you want the album to appear, you will need to first test it and then create a pull request on my GitHub (click on the GitHub icon at the navbar to acess it).\
+        I plan to add a better way to make albums, but since that is a lot of code I have to do (which I don't know how to do it) this is the current process.
+<Separator orientation="horizontal" className="h-[2px] rounded-full bg-muted/80" />
+        ## How to add an album
+    
+        First, let's understand how albums are created.\
+        As said previously, they are read from a JSON file, so let's take a look at a snipet of one and break it down.
+
+        ```json showLineNumbers
+        {
+            "config": [
+                {
+                    "albumName": "Yandhi",
+                    "albumCreator": "Kanye West",
+                    "year": "2019",
+                    "credits": "Credits to {Yehub} and ifyoufeelmypain for songs and tracklist."
+                }
+            ],
+            "tracks": [
+                {
+                    "title": "Chakras",
+                    "artist": "Kanye West",
+                    "songLocation": "/song-files/songs//yandhi/Chakras.m4a"
+                },
+                {
+                    "title": "Calm Before the Storm (Interlude)",
+                    "artist": "Kanye West",
+                    "songLocation": "/song-files/songs//yandhi/Calm Before The Storm 2.m4a"
+                },
+                {
+                    "title": "The Storm",
+                    "artist": "Kanye West",
+                    "songLocation": "/song-files/songs//yandhi/The Storm.m4a"
+                },
+                ... rest of the code
+            ]
+        }
+        ```
+        This is pretty confusing for something who never messed with JSONs before, so let's break this down.
+        This code:
+        \
+        \
+        **General configs:**
+        <li className='mt-2'>`albumName` Sets the name of the album;</li>
+        <li className='mt-2'>`albumCreator` Sets the name of the creator of the album;</li>
+        <li className='mt-2'>`year` Sets the year that the album was supposed to release/was cancelled;</li>
+        <li className='mt-2'>`credits` Is where you got the original song's files or the tracklist from;</li>
+        \
+        **Track-specific configs:**
+        <li className='mt-2'>`title` Sets the name of the current track you're configuring</li>
+        <li className='mt-2'>`artist` Sets the name of the current track you're configuring</li>
+        <li className='mt-2'>`songLocation` Sets where the song is located. Please. Be sure to copy the way this is positioned here when adding this information.</li>
+        \
+        Now that we have that figured out, we can go to the next step.
+<Separator orientation="horizontal" className="h-[2px] rounded-full bg-muted/80" />
+        ## How to add the songs of the album
+
+        At this point unfortunately you can't do this step without forking the project, so be sure to do that.\
+        \
+        Now, if you have the project, you will put all the song files in the `public/song-files` directory.
+        First, create a folder with the name of the album, in lower case, and inside, put the files. The type of file doesn't matter, any type of file that
+        plays sounds and doesn't have a video will do.
+        \
+        Now that we have that figured out, we can go to the next step.
+<Separator orientation="horizontal" className="h-[2px] rounded-full bg-muted/80" />
+        ## How to add the album to the homepage
+
+        Go to `fetchAlbums.json`, which is inside the `public/song-files` directory. There, you should see something like this:
+
+        ```json showLineNumbers
+        {
+            "songs": [
+                {
+                    "year": "2025",
+                    "row": 1,
+                    "entries": [
+                        {
+                            "image": "/song-files/covers/bully-big.jpg",
+                            "text": "Bully",
+                            "subtext": "Beauty and the Beast",
+                            "duration": "1:45",
+                            "link": "/song/beauty-and-the-beast"
+                        },
+                        {
+                            "image": "/song-files/covers/wheels-fall-off-big.jpg",
+                            "text": "Wheels Fall Off",
+                            "subtext": "Full Version",
+                            "duration": "4:50",
+                            "link": "/song/wheels-fall-off-full"
+                        },
+                        {
+                            "image": "/song-files/covers/wheels-fall-off-big.jpg",
+                            "text": "Wheels Fall Off",
+                            "subtext": "Released Version (Clean)",
+                            "duration": "2:01",
+                            "link": "/song/wheels-fall-off-released"
+                        }
+                    ]
+                },
+            ... other albums
+            ]
+        }
+        ```
+        \
+        Let's break this down.
+        <li className='mt-2'>`year` Is the year the album was supposed to come out;</li>
+        <li className='mt-2'>`row` Is which row it should be at (just put the last row's number + 1);</li>
+        <li className='mt-2'>`image` Is the album's cover art;</li>
+        <li className='mt-2'>`text` Is the album's name;</li>
+        <li className='mt-2'>`subtext` Is just a description (put album for consistency purposes);</li>
+        <li className='mt-2'>`duration` Is the album's duration;</li>
+        <li className='mt-2'>`link` Is where the album is located (put `/album/album name here`).</li>
+        \
+        This should cover all parts of adding an album, so there it is, go create one!
+        \
+        <>
+            <div className='text-muted-foreground/80 mt-4 bg-primary-foreground/50 rounded-md p-4'>(If you have any idea on how to make this documentation better, please open an issue on the GitHub Page with your ideas, I don't know how to make docs.)</div>
+        </>
+    </div>
+</div>

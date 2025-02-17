@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { ChevronLeft, Divide, Dot, ExternalLink, Pause, Play, X } from "lucide-react";
+import { BookOpenText, ChevronLeft, Divide, Dot, ExternalLink, Pause, Play, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { HandleTransition } from "@/components/handleTransition";
@@ -154,8 +154,8 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                         </div>
                     </div>
                     {content.map((thing, index) => (
-                        <div className={`flex flex-col w-full h-full md:w-[55vw]`} key={index}>
-                            <Image src={thing.image} alt={thing.subtext} width={300} height={300} className="cursor-pointer mx-auto w-auto h-auto mt-12 rounded-xl shadow-lg" id="image-cover" onClick={() => { setIsPlaying(!isPlaying); }} />
+                        <div className={`flex flex-col w-full h-full md:w-[55vw] translate-y-14`} key={index}>
+                            <Image src={thing.image} alt={thing.subtext} width={300} height={300} className="cursor-pointer mx-auto w-auto h-auto rounded-xl shadow-lg" id="image-cover" onClick={() => { setIsPlaying(!isPlaying); }} />
                             <div className="flex flex-col mt-7">
                                 <div>
                                     <div className="text-center text-xl">{thing.text}</div>
@@ -169,15 +169,16 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                             </div>
                         </div>
                     ))}
-                    <div className={`flex flex-col gap-4 mb-6 mt-12 md:mt-0 h-full`}>
-                        <div className="mx-auto">
+                    <div className={`flex flex-col gap-4 mb-6 mt-12 md:mt-0 h-full translate-y-14`}>
+                        <div className="mx-auto flex flex-col gap-4">
+                            <div className="mx-auto">
+                                <Button className="p-5 rounded-full active:scale-95 dark:bg-secondary dark:text-secondary-foreground" size="icon" onClick={() => { setIsPlaying(!isPlaying); }}>
+                                    {!isPlaying ? <Play /> : <Pause />}
+                                </Button>
+                            </div>
                             <Button className="rounded-full active:scale-95 dark:bg-secondary dark:text-secondary-foreground" onClick={() => handleClick()}>
+                                <BookOpenText />
                                 Song explanation
-                            </Button>
-                        </div>
-                        <div className="flex gap-2 mx-auto">
-                            <Button className="p-5 rounded-full active:scale-95 dark:bg-secondary dark:text-secondary-foreground" size="icon" onClick={() => { setIsPlaying(!isPlaying); }}>
-                                {!isPlaying ? <Play /> : <Pause />}
                             </Button>
                         </div>
                         <div className="flex gap-4 mx-auto">
@@ -229,9 +230,9 @@ const InfoCard = ({
 
     return (
         <div className={`flex flex-col h-screen flex-1 md:mt-14 mt-24 md:max-w-[45%] m-7 pb-4 md:mr-12 md:pb-0`}>
-            <div className="flex flex-col h-fit pb-4 p-8 bg-secondary/10 rounded-xl">
+            <div className="flex flex-col h-fit pb-4 p-4 py-8 md:p-8 bg-secondary/10 rounded-xl">
                 <div className="flex relative justify-between w-full flex-grow">
-                    <div className="cursor-pointer absolute -right-6 -top-6 rounded-full text-muted-foreground/80" onClick={onClose}>
+                    <div className="cursor-pointer absolute -right-2 -top-6 md:-right-6 rounded-full text-muted-foreground/80" onClick={onClose}>
                         <X size='20' />
                     </div>
                 </div>
@@ -268,7 +269,7 @@ const Navbar = ({ text, isPlaying, setIsPlaying }: { text: string, isPlaying: bo
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 100) {
+            if (window.scrollY > 400) {
                 setShowNavbar(true);
             } else {
                 setShowNavbar(false);
@@ -283,7 +284,7 @@ const Navbar = ({ text, isPlaying, setIsPlaying }: { text: string, isPlaying: bo
     }, []);
 
     return (
-        <div className={`flex justify-between items-center fixed border-2 border-secondary w-[86vw] md:w-[95vw] h-12 px-2 bg-primary-foreground/50 backdrop-blur-md z-[500] shadow-lg transition-all duration-500 my-3 left-[50%] -translate-x-[50%] rounded-full ${!showNavbar ? '-translate-y-12 opacity-0' : ''}`}>
+        <div className={`flex justify-between items-center fixed border border-secondary w-[86vw] md:w-[95vw] h-12 px-1 bg-primary-foreground/50 backdrop-blur-md z-[500] shadow-lg transition-all duration-500 my-1.5 left-1/2 -translate-x-1/2 rounded-full ${!showNavbar ? '-translate-y-12 opacity-0' : ''}`}>
             <Button variant="outline" className="bg-transparent rounded-full border-none text-lg" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{text}</Button>
             <Button variant="outline" className="bg-transparent px-3.5 py-5 rounded-full border-none text-primary" onClick={() => { setIsPlaying(!isPlaying); }}>
                 {!isPlaying ? <Play fill="#fff" /> : <Pause fill="#fff" />}

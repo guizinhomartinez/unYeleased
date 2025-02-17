@@ -9,7 +9,7 @@ export default function Home() {
 
   const content = [
     {
-      image: "/covers/bully.jpg",
+      image: "/song-files/covers/bully.jpg",
       text: "Bully",
       subtext: "Beauty and the Beast",
       duration: "1:45",
@@ -17,7 +17,7 @@ export default function Home() {
       row: "1"
     },
     {
-      image: "/covers/wheels-fall-off.jpg",
+      image: "/song-files/covers/wheels-fall-off.jpg",
       text: "Wheels Fall Off",
       subtext: "Full Version",
       duration: "4:50",
@@ -25,7 +25,7 @@ export default function Home() {
       row: "1"
     },
     {
-      image: "/covers/wheels-fall-off.jpg",
+      image: "/song-files/covers/wheels-fall-off.jpg",
       text: "Wheels Fall Off",
       subtext: "Released Version (Clean)",
       duration: "2:01",
@@ -34,7 +34,7 @@ export default function Home() {
     },
 
     {
-      image: "/covers/yandhi.jpg",
+      image: "/song-files/covers/yandhi.jpg",
       text: "Yandhi",
       subtext: "Album",
       duration: "1:45",
@@ -42,7 +42,7 @@ export default function Home() {
       row: "2"
     }
     // {
-    //   image: "/covers/wheels-fall-off.jpg",
+    //   image: "/song-files/covers/wheels-fall-off.jpg",
     //   text: "Wheels Fall Off",
     //   subtext: "Full Version",
     //   duration: "4:50",
@@ -50,7 +50,7 @@ export default function Home() {
     //   row: "2"
     // },
     // {
-    //   image: "/covers/wheels-fall-off.jpg",
+    //   image: "/song-files/covers/wheels-fall-off.jpg",
     //   text: "Wheels Fall Off",
     //   subtext: "Released Version (Clean)",
     //   duration: "2:01",

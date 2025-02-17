@@ -1,0 +1,57 @@
+{
+    "songs": [
+        {
+            "year": "2025",
+            "row": 1,
+            "entries": [
+                {
+                    "image": "/song-files/covers/bully-big.jpg",
+                    "text": "Bully",
+                    "subtext": "Beauty and the Beast",
+                    "duration": "1:45",
+                    "link": "/song/beauty-and-the-beast"
+                },
+                {
+                    "image": "/song-files/covers/wheels-fall-off-big.jpg",
+                    "text": "Wheels Fall Off",
+                    "subtext": "Full Version",
+                    "duration": "4:50",
+                    "link": "/song/wheels-fall-off-full"
+                },
+                {
+                    "image": "/song-files/covers/wheels-fall-off-big.jpg",
+                    "text": "Wheels Fall Off",
+                    "subtext": "Released Version (Clean)",
+                    "duration": "2:01",
+                    "link": "/song/wheels-fall-off-released"
+                }
+            ]
+        },
+        {
+            "year": "2019",
+            "row": 2,
+            "entries": [
+                {
+                    "image": "/song-files/covers/yandhi.jpg",
+                    "text": "Yandhi",
+                    "subtext": "Album",
+                    "duration": "40:45",
+                    "link": "/album/yandhi"
+                }
+            ]
+        },
+        {
+            "year": "2009",
+            "row": 3,
+            "entries": [
+                {
+                    "image": "/song-files/covers/good-ass-job.jpg",
+                    "text": "Good Ass Job",
+                    "subtext": "Album",
+                    "duration": "40:45",
+                    "link": "/album/good-ass-job"
+                }
+            ]
+        }
+    ]
+}

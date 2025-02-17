@@ -7,6 +7,6 @@ export default function WheelsFallOffReleased() {
                             and the wheels are getting unstable.
                             This is the only version available on streaming services, removing the Diddy mentions and initial sample.`;
     return (
-        <Player image={"/covers/wheels-fall-off.jpg"} text={"Wheels Fall Off"} subtext={"Released Version (Clean) [WFO-O2]"} songVal={"/songs/wheels-fall-off-released.m4a"} backgroundLore={bgLoreText} linkToGenius="https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics" lyrics="wip" />
+        <Player image={"/song-files/covers/wheels-fall-off.jpg"} text={"Wheels Fall Off"} subtext={"Released Version (Clean) [WFO-O2]"} songVal={"/song-files/songs//wheels-fall-off-released.m4a"} backgroundLore={bgLoreText} linkToGenius="https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics" lyrics="wip" />
     )
 }

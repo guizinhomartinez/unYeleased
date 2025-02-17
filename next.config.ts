@@ -1,10 +1,19 @@
 import type { NextConfig } from "next";
+import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
   /* config options here */
   devIndicators: {
     appIsrStatus: false,
   },
+  pageExtensions: [
+    'js',
+    'jsx',
+    'md',
+    'mdx',
+    'ts',
+    'tsx'
+  ],
   async redirects() {
     return [
       {
@@ -13,7 +22,26 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
     ]
-  },
+  }
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+  extension: /\.mdx?$/,
+  options: {
+    //@ts-ignore
+    rehypePlugins: [
+      [
+            //@ts-ignore
+        'rehype-pretty-code',
+        {
+          keepBackground: false,
+          theme: "github-dark"
+        }
+      ]
+    ],
+  }
+})
+
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig)

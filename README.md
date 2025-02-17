@@ -7,16 +7,39 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 ## Goals
 
 ### Missing albums
-- [ ] Yandhi
-- [ ] Yeezus 2
+- [x] Yandhi (kinda fixed because some songs are missing)
 - [ ] Turbografx 16
 - [ ] Swish
-...can't think of the rest
+- [ ] Good Ass Job
+- [ ] Cruel Winter
+- [ ] Thank God For Drugs
+- [ ] Yeezus II
+- [ ] So Help Me God
+- [ ] Wolves
+- [ ] Swish
+- [ ] WAVES
+- [ ] Job Well Done (AKA Good Ass Job 2018)
+- [ ] LOVE EVERYONE
+- [ ] Jesus Is King II
+- [ ] God's Country
+- [ ] DONDA: WITH CHILD
+- [ ] DONDA II
+- [ ] War
+- [ ] Watch The Throne
+- [ ] VULTURES 3
 
 ### UI
-- [ ] Music player
-- [ ] Good home page with all the necessary stuff
+- [x] Music player
+- [ ] Full mobile music player experience
+- [x] Good home page with all the necessary stuff
 - [ ] Proper backstory of each album
-- [ ] Continuous playback and shuffle support
+- [x] Continuous playback and shuffle support (kinda eefy but works)
 - [x] Search bar
-...can't think of any more stuff
+- [ ] Sort albums by latest or oldest
+- [ ] Backend for explanation of albums
+- [ ] Full interface for creating custom albums
+- [ ] Better documentation
+- [ ] Transitions and animations for everything
+- [ ] Better white theme
+
+Ok I think that is good for now

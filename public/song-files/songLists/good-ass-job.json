@@ -1,0 +1,22 @@
+{
+    "config": [
+        {
+            "albumName": "Good Ass Job",
+            "albumCreator": "Kanye West",
+            "year": "2009",
+            "credits": "Credits to Kanye Unknown for Never See Me Again"
+        }
+    ],
+    "tracks": [
+        {
+            "title": "Never See Me Again",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Never See Me Again.m4a"
+        },
+        {
+            "title": "Never See Me Again",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Never See Me Again.m4a"
+        }
+    ]
+}
