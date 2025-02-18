@@ -19,7 +19,7 @@ nextjs-portal {
 }
 
 .yeezy-buttons {
-  @apply p-2 border-2 border-black w-fit antialiased active:scale-95 uppercase transition-all duration-150
+  @apply p-2 border-2 border-black w-fit antialiased  uppercase transition-all duration-150
 }
 
 .song-explanation {
@@ -48,16 +48,12 @@ nextjs-portal {
   }
 }
 
-.list-active {
-  @apply bg-primary/20 rounded-md border-b-transparent;
-}
-
 #album-bg {
   /* background-image: linear-gradient(0deg, white 0%, black 80%); */
 }
 
 .active-button {
-  @apply bg-secondary
+  @apply bg-accent
 }
 
 @layer base {

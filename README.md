@@ -7,7 +7,7 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 ## Goals
 
 ### Missing albums
-- [x] Yandhi (kinda fixed because some songs are missing)
+- [x] Yandhi (kinda done because some songs are missing)
 - [ ] Turbografx 16
 - [ ] Swish
 - [ ] Good Ass Job
@@ -30,7 +30,7 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 
 ### UI
 - [x] Music player
-- [ ] Full mobile music player experience
+- [x] Full mobile music player experience
 - [x] Good home page with all the necessary stuff
 - [ ] Proper backstory of each album
 - [x] Continuous playback and shuffle support (kinda eefy but works)
@@ -40,6 +40,6 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 - [ ] Full interface for creating custom albums
 - [ ] Better documentation
 - [ ] Transitions and animations for everything
-- [ ] Better white theme
+- [x] Better white theme
 
 Ok I think that is good for now

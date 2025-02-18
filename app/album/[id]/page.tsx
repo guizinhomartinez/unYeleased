@@ -34,16 +34,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songTime, setSongtime] = useState(0);
   const [songVal, setSongVal] = useState("");
   const [queue, setQueue] = useState<string[]>([]);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState(id);
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState("");
   const [imageSize, setImageSize] = useState(250);
   const [appearBar, setAppearBar] = useState(true);
-  const [volumeVal, setVolumeVal] = useState<number>(100); // Default to 100
+  const [volumeVal, setVolumeVal] = useState<number>(100);
   const [searchQuery, setSearchQuery] = useState("");
   const [songCreator, setSongCreator] = useState("");
-  const [durationArray, setDurationArray] = useState([""]);
+  const [clickedAmmount, setClickedAmmount] = useState(0);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume");
@@ -123,9 +123,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   useEffect(() => {
     const reiszeImage = () => {
       if (window.innerWidth < 768) {
-        setImageSize(250);
+        setImageSize(280);
       } else {
-        setImageSize(250);
+        setImageSize(260);
       }
     }
 
@@ -144,45 +144,50 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     localStorage.setItem("volume", volumeVal.toString()); // Then update localStorage
   }, [volumeVal]);
 
-  const handleClickEvent = (element: any) => {
+  const handleClickEvent = (element: any, index: number) => {
     setSongVal(element.songLocation);
     setIsPlaying(true);
     setAppearBar(true);
     setSongCreator(element.artist);
-  }
+    setCurrentSongIndex(index);
+    setClickedAmmount(1);
+  };
 
   const playAlbum = () => {
-    let clickedAmmount = 0;
     if (songs.length > 0) {
-      clickedAmmount++;
-      setCurrentSongIndex(0);
-      setSongVal(songs[0].songLocation);
-      setIsPlaying(true);
-    }
-
-    if (clickedAmmount > 0) {
-      if (currentSongIndex < songs.length - 1) {
-        setCurrentSongIndex(currentSongIndex);
-        setIsPlaying(!isPlaying);
-        setSongCreator(songs[currentSongIndex].artist);
+      if (clickedAmmount < 1) {
+        setSongVal(songs[0].songLocation);
+        setIsPlaying(true);
+        setCurrentSongIndex(0);
       }
+
+      setIsPlaying(!isPlaying);
+      setClickedAmmount(1);
     }
+  };
+
+  const handleSkipSong = (back: boolean) => {
+    if (!songRef.current || songs.length === 0) return;
+    const newIndex = back ? currentSongIndex - 1 : currentSongIndex + 1;
+
+    setCurrentSongIndex(newIndex);
+    setSongVal(songs[newIndex].songLocation);
+    setSongCreator(songs[newIndex].artist);
+    setIsPlaying(true);
   };
 
   useEffect(() => {
     const song = songRef.current;
     if (song) {
       const handleSongEnd = () => {
-        if (currentSongIndex < songs.length - 1) {
-          const nextIndex = currentSongIndex + 1;
-          setCurrentSongIndex(nextIndex);
-          setSongVal(songs[nextIndex].songLocation);
-          setIsPlaying(true);
-        } else {
-          setIsPlaying(false);
-        }
-      };
-
+        if (!songRef.current || songs.length === 0) return;
+        const newIndex = currentSongIndex + 1;
+    
+        setCurrentSongIndex(newIndex);
+        setSongVal(songs[newIndex].songLocation);
+        setSongCreator(songs[newIndex].artist);
+        setIsPlaying(true);
+      }
       song.addEventListener("ended", handleSongEnd);
 
       return () => {
@@ -191,14 +196,17 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [currentSongIndex, songs, songVal]);
 
-  const handleSkipSong = (back: boolean) => {
-    if (!songRef.current || songs.length === 0) return;
+  useEffect(() => {
+    const song = songRef.current;
+    if (!song) return;
+    const updateTime = () => setCurrentTimeVal(song.currentTime);
 
-    let newIndex = back ? Math.max(0, currentSongIndex - 1) : Math.min(songs.length - 1, currentSongIndex + 1);
-    setCurrentSongIndex(newIndex);
-    setSongVal(songs[newIndex].songLocation);
-    setIsPlaying(true);
-  };
+    song.addEventListener("timeupdate", updateTime);
+
+    return () => {
+      song.removeEventListener("timeupdate", updateTime);
+    };
+  })
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -208,10 +216,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   function rgbToHex(r: string | any, g: bigint | any, b: any) {
     return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
-  }  
-
-  const albumAverageColor = AlbumCover(`/song-files/covers/${id.toLowerCase()}.jpg`);
-  const albumAverageColorFR = rgbToHex(albumAverageColor[0], albumAverageColor[1], albumAverageColor[2]).toUpperCase();
+  }
 
   return (
     <div>
@@ -221,8 +226,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <Button className="" size='icon' variant='ghost'><ChevronLeft /></Button>
         </HandleTransition>
       </div>
-      <div className={`flex gap-4 items-center p-6 md:p-12 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`} style={{ background: `linear-gradient(to bottom, ${albumAverageColorFR}, transparent)` }}>
-        <div className='flex flex-col md:flex-row items-center gap-4'>
+      <div className={`flex gap-4 items-center p-6 md:p-12 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
+        <div className='flex flex-col md:flex-row items-center gap-5'>
           <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} className='md:mt-4 rounded-xl outline outline-primary/10' />
           <div className='flex flex-col gap-2'>
             <div className='text-4xl font-bold text-center md:text-left'>{albumName}</div>
@@ -232,13 +237,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className='text-md md:text-xl text-primary/75 text-center md:text-left'>{year}</div>
             </div>
             <div className='flex gap-2 justify-center md:justify-normal mt-2'>
-              <Button className={`rounded-full h-12 transition-all duration-300 justify-normal active:scale-95 ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => { setAppearBar(true); playAlbum(); }}>
+              <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => { setAppearBar(true); playAlbum(); }}>
                 {!isPlaying ? <Play /> : <Pause />}
                 <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
                   {!isPlaying ? String('Play') : String('')}
                 </div>
               </Button>
-              <Button size='icon' variant='outline' className='rounded-full size-12 active:scale-95'>
+              <Button size='icon' variant='outline' className='rounded-full size-12'>
                 <BookOpenText />
               </Button>
             </div>
@@ -255,9 +260,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
           </div>
         </div>
-        <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60'>
+        <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-24'>
           {filteredContent.map((element, index) => (
-            <div key={index} className={`flex gap-2 border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center transition-colors list-${index}`} onClick={() => document.querySelector(`.list-${index}`)?.classList.toggle('list-active')} onDoubleClick={() => handleClickEvent(element)} onTouchEnd={() => handleClickEvent(element)}>
+            <div key={index} className={`flex gap-2 border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center transition-colors list-${index} ${currentSongIndex === index ? 'bg-primary/20 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
               <div className='flex items-center gap-4'>
                 <div className='text-muted-foreground/80 w-fit text-end min-w-[20px]'>{index + 1}</div>
                 <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={50} height={50} className='rounded-lg shadow-sm' />
@@ -280,7 +285,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <div>
         <SongControls
           songRef={songRef}
-          songVal={songVal}
+          songVal={songVal.replace(`/song-files/songs/${id}/`, "")
+            .replace(".m4a", "")}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}
           optionalAppear={appearBar}

@@ -83,13 +83,13 @@ export default function Page() {
 
                 {/* Render each year as its own section */}
                 {sortedYears.map((year) => (
-                    <div key={year} className="bg-primary/5 rounded-xl p-4">
-                        <div className="text-center text-xl font-semibold mb-4 px-2 bg-primary/10 rounded-full w-fit mx-auto">{year}</div>
+                    <div key={year} className="rounded-2xl bg-accent p-4 shadow-sm">
+                        <div className="text-center text-xl font-semibold mb-4 px-2 bg-violet-200 dark:bg-violet-400 rounded-full w-fit mx-auto">{year}</div>
                         <div className="flex flex-col md:flex-row gap-4 justify-center">
                             {filteredEntries[year].map((entry, index) => (
-                                <div key={index} className="flex flex-col items-center w-full sm:w-auto cursor-pointer justify-center bg-secondary px-8 py-2 rounded-lg border-2 border-primary/15">
+                                <div key={index} className="flex flex-col items-center w-full sm:w-auto cursor-pointer justify-center bg-muted px-4 py-2 rounded-3xl border-2 border-primary/15 shadow-lg">
                                     <Link href={entry.link} key={index} className="flex flex-col items-center justify-center">
-                                        <Image src={entry.image} className="rounded-lg mt-2" alt={entry.text} width={250} height={250} />
+                                        <Image src={entry.image} className="rounded-2xl mt-2 shadow-md" alt={entry.text} width={250} height={250} />
                                         <div className="mt-4">{entry.text}</div>
                                         <div className="text-center text-primary/75 w-32 overflow-hidden whitespace-nowrap text-ellipsis">
                                             {entry.subtext}

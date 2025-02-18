@@ -10,7 +10,7 @@ export default function Page() {
                 <div className='w-full'>
                     <Navbar activeItem={1} />
                 </div>
-                <div className='max-w-3xl mx-4 lg:mx-auto'>
+                <div className='max-w-3xl mt-0 lg:mx-auto'>
                     <Welcome components={overrideComponents} />
                 </div>
             </div>

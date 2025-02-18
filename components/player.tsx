@@ -172,11 +172,11 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                     <div className={`flex flex-col gap-4 mb-6 mt-12 md:mt-0 h-full translate-y-14`}>
                         <div className="mx-auto flex flex-col gap-4">
                             <div className="mx-auto">
-                                <Button className="p-5 rounded-full active:scale-95 dark:bg-secondary dark:text-secondary-foreground" size="icon" onClick={() => { setIsPlaying(!isPlaying); }}>
+                                <Button className="p-5 rounded-full  dark:bg-secondary dark:text-secondary-foreground" size="icon" onClick={() => { setIsPlaying(!isPlaying); }}>
                                     {!isPlaying ? <Play /> : <Pause />}
                                 </Button>
                             </div>
-                            <Button className="rounded-full active:scale-95 dark:bg-secondary dark:text-secondary-foreground" onClick={() => handleClick()}>
+                            <Button className="rounded-full  dark:bg-secondary dark:text-secondary-foreground" onClick={() => handleClick()}>
                                 <BookOpenText />
                                 Song explanation
                             </Button>
@@ -253,7 +253,7 @@ const InfoCard = ({
                         All descriptions and lyrics are from Genius.com. Please, check them out by clicking the button below.
                     </div>
                     <a href={linkToGenius} className="" target="_blank">
-                        <Button variant={"secondary"} className="antialiased items-center active:scale-95 transition-all duration-150">
+                        <Button variant={"secondary"} className="antialiased items-center  transition-all duration-150">
                             Original Link
                             <ExternalLink />
                         </Button>
