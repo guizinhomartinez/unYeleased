@@ -55,9 +55,6 @@ export const SongControls = ({
     const [appearBar, setAppearBar] = useState(true);
     const [optAppear, setOptAppear] = useState(optionalAppear);
     const [mediumScreen, setMediumScreen] = useState(false);
-    const snapPoints = [1, 1.19];
-
-    const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
 
     useEffect(() => {
         const isScreenSmall = () => {
@@ -141,7 +138,7 @@ export const SongControls = ({
                 </div>
             ) : (
                 <div>
-                    <Drawer snapPoints={snapPoints} activeSnapPoint={snap} setActiveSnapPoint={setSnap}>
+                    <Drawer>
                         <DrawerTrigger asChild>
                             <div
                                 className={`fixed bottom-2 rounded-2xl w-full max-w-[93.5vw] left-1/2 -translate-x-1/2
