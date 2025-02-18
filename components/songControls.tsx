@@ -68,22 +68,6 @@ export const SongControls = ({
         return () => window.addEventListener("resize", isScreenSmall);
     });
 
-    function hideControls() {
-        setAppearBar(!appearBar);
-        setOptAppear(appearBar);
-    }
-
-    function handleTogglePlayback() {
-        if (!songRef.current || songVal == "") return;
-        if (songRef.current.paused) {
-            songRef.current.play();
-            setIsPlaying(true);
-        } else {
-            songRef.current.pause();
-            setIsPlaying(false);
-        }
-    }
-
     const pressedKeyOne = useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "j") {
@@ -106,6 +90,49 @@ export const SongControls = ({
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [handleSkipSong, hideControls]);
+
+    const [sliderValue, setSliderValue] = useState(0);
+
+    function hideControls() {
+        setAppearBar(!appearBar);
+        setOptAppear(appearBar);
+    }
+
+    function handleTogglePlayback() {
+        if (!songRef.current || songVal == "") return;
+        if (songRef.current.paused) {
+            songRef.current.play();
+            setIsPlaying(true);
+        } else {
+            songRef.current.pause();
+            setIsPlaying(false);
+        }
+    }
+
+    const useEffectConst = () => {
+        const song = songRef.current;
+        if (!song) return;
+
+        const updateTime = () => {
+            if (song.duration) {
+                setSliderValue(Number(((song.currentTime / song.duration) * 100).toFixed(0)));
+            }
+        };
+
+        song.addEventListener("timeupdate", updateTime);
+
+        return () => {
+            song.removeEventListener("timeupdate", updateTime);
+        };
+    }
+
+    useEffect(() => {
+        useEffectConst();
+    }, []);
+
+    useEffect(() => {
+        useEffectConst();
+    }, [handleSkipSong]);
 
     return (
         <>
@@ -142,7 +169,7 @@ export const SongControls = ({
                         <DrawerTrigger asChild>
                             <div
                                 className={`fixed bottom-2 rounded-2xl w-full max-w-[93.5vw] left-1/2 -translate-x-1/2
-                            py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-t-secondary flex items-center transition-all duration-500 shadow-lg
+                            py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary flex items-center transition-all duration-500 shadow-lg
                                 ${appearBar ? "translate-y-0" : "translate-y-24"
                                     }`}
                             >
@@ -160,6 +187,10 @@ export const SongControls = ({
                                     appearBar={appearBar}
                                     setOptAppear={setOptAppear}
                                     id={id}
+                                />
+                                <Progress
+                                    value={sliderValue}
+                                    className="w-[96%] absolute bottom-1 left-2 transition-all duration-1000"
                                 />
                             </div>
                         </DrawerTrigger>
@@ -361,25 +392,9 @@ const SongControlsSmall = ({
     setOptAppear,
     id,
 }: songControlsInterface) => {
-    function hideControls() {
-        setAppearBar(!appearBar);
-        setOptAppear(appearBar);
-    }
-
-    function handleTogglePlayback() {
-        if (!songRef.current || songVal == "") return;
-        if (songRef.current.paused) {
-            songRef.current.play();
-            setIsPlaying(true);
-        } else {
-            songRef.current.pause();
-            setIsPlaying(false);
-        }
-    }
-
     return (
         <>
-            <div className="flex items-center gap-2 flex-1 select-none">
+            <div className="flex items-center gap-2 flex-1 select-none mb-2">
                 <Image
                     src={image}
                     alt={image}
@@ -388,7 +403,7 @@ const SongControlsSmall = ({
                     className="rounded-lg"
                 />
                 <div>
-                    <div className="font-bold">
+                    <div className="font-bold overflow-hidden whitespace-nowrap text-ellipsis w-[47vw]">
                         {songVal !== "" ? songVal : "No Track Found"}
                     </div>
                     <div className="text-sm text-muted-foreground">{songCreator}</div>
@@ -396,11 +411,11 @@ const SongControlsSmall = ({
             </div>
 
             <div
-                className="flex justify-center gap-1"
+                className="flex justify-center gap-1 mb-2"
                 onClick={(e) => e.stopPropagation()}
             >
                 <Button
-                    className={`p-5 rounded-full  ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                    className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                     size="icon"
                     onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                 >
@@ -408,7 +423,7 @@ const SongControlsSmall = ({
                 </Button>
                 <Button
                     size="icon"
-                    className={`p-5 rounded-full  ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                    className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                     variant="ghost"
                     onClick={() => handleSkipSong(false)}
                 >
@@ -469,17 +484,6 @@ const MiniPlayer = ({
         useEffectConst();
     }, [handleSkipSong]);
 
-    function rgbToHex(r: string | any, g: bigint | any, b: any) {
-        return "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
-    }
-
-    const albumAverageColor = AlbumCover(albumCover);
-    const albumAverageColorFR = rgbToHex(
-        albumAverageColor[0],
-        albumAverageColor[1],
-        albumAverageColor[2]
-    ).toUpperCase();
-
     return (
         <div
             className={`overflow-y-auto overflow-x-hidden p-8 flex flex-col gap-2 transition-all bg-primary-foreground`}
@@ -488,24 +492,24 @@ const MiniPlayer = ({
                 <ChevronDown />
             </Button> */}
             <div className="flex flex-col gap-4 mt-0">
-                <div className="items-center flex flex-col relative">
+                <div className="flex flex-col relative">
                     {/* <div className="w-[340px] h-[340px] bg-black/50 absolute inset-0 left-0.5 rounded-xl"></div> */}
                     <Image
                         src={albumCover}
                         alt="Album Cover"
-                        width={340}
+                        width={345}
                         height={340}
                         className="rounded-xl shadow-lg"
                     />
                 </div>
                 <div className="flex flex-col">
-                    <div className="text-xl">{songVal || "Unknown"}</div>
-                    <div className="text-lg text-muted-foreground">
+                    <div className="text-xl font-bold">{songVal || "Unknown"}</div>
+                    <div className="text-lg text-muted-foreground -translate-y-1">
                         {songCreator || "Unknown"}
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-center gap-4 w-full mt-10">
+            <div className="flex flex-col justify-center gap-8 w-full mt-10">
                 <div className="w-full">
                     <Progress
                         value={sliderValue}
@@ -556,7 +560,7 @@ const MiniPlayer = ({
                     <div>WIP</div>
                 </div>
             </div> */}
-            {/* <div className="w-full h-48"></div> */}
+            <div className="w-full h-20" />
         </div>
     );
 };

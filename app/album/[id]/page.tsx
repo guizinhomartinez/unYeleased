@@ -163,6 +163,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
       setIsPlaying(!isPlaying);
       setClickedAmmount(1);
+      setSongCreator(songs[0].artist);
     }
   };
 
