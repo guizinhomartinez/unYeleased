@@ -46,20 +46,19 @@ import { Separator } from "@/components/ui/separator"
             ]
         }
         ```
-        This is pretty confusing for something who never messed with JSONs before, so let's break this down.
-        This code:
+        This is pretty confusing for someone who never messed with JSONs before, so let's break this down.
         \
         \
         **General configs:**
-        <li className='mt-2 ml-6'>`albumName` Sets the name of the album;</li>
-        <li className='mt-2 ml-6'>`albumCreator` Sets the name of the creator of the album;</li>
-        <li className='mt-2 ml-6'>`year` Sets the year that the album was supposed to release/was cancelled;</li>
-        <li className='mt-2 ml-6'>`credits` Is where you got the original song's files or the tracklist from;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`albumName`Sets the name of the album;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`albumCreator` Sets the name of the creator of the album;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`year` Sets the year that the album was supposed to release/was cancelled;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`credits` Is where you got the original song's files or the tracklist from;</li>
         \
         **Track-specific configs:**
-        <li className='mt-2 ml-6'>`title` Sets the name of the current track you're configuring</li>
-        <li className='mt-2 ml-6'>`artist` Sets the name of the current track you're configuring</li>
-        <li className='mt-2 ml-6'>`songLocation` Sets where the song is located. Please. Be sure to copy the way this is positioned here when adding this information.</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`title` Sets the name of the current track you're configuring</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`artist` Sets the name of the current track you're configuring</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`songLocation` Sets where the song is located. Please. Be sure to copy the way this is positioned here when adding this information.</li>
         \
         Now that we have that figured out, we can go to the next step.
 <Separator orientation="horizontal" className="h-[2px] rounded-full bg-muted/80" />
@@ -77,7 +76,7 @@ import { Separator } from "@/components/ui/separator"
 
         Go to `fetchAlbums.json`, which is inside the `public/song-files` directory. There, you should see something like this:
 
-        ```json
+        ```json showLineNumbers
         {
             "songs": [
                 {
@@ -113,13 +112,13 @@ import { Separator } from "@/components/ui/separator"
         ```
         \
         Let's break this down.
-        <li className='mt-2 ml-6'>`year` Is the year the album was supposed to come out;</li>
-        <li className='mt-2 ml-6'>`row` Is which row it should be at (just put the last row's number + 1);</li>
-        <li className='mt-2 ml-6'>`image` Is the album's cover art;</li>
-        <li className='mt-2 ml-6'>`text` Is the album's name;</li>
-        <li className='mt-2 ml-6'>`subtext` Is just a description (put album for consistency purposes);</li>
-        <li className='mt-2 ml-6'>`duration` Is the album's duration;</li>
-        <li className='mt-2 ml-6'>`link` Is where the album is located (put `/album/album name here`).</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`year` Is the year the album was supposed to come out;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`row` Is which row it should be at (just put the last row's number + 1);</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`image` Is the album's cover art;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`text` Is the album's name;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`subtext` Is just a description (put album for consistency purposes);</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`duration` Is the album's duration;</li>
+        <li className='mt-2' style={{marginLeft: '2.5em'}}>`link` Is where the album is located (put `/album/album name here`).</li>
         \
         This should cover all parts of adding an album, so there it is, go create one!
         \

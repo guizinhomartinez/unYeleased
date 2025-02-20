@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
-import { IBM_Plex_Mono, Geist, Geist_Mono } from 'next/font/google'
+import { IBM_Plex_Mono, Geist, Geist_Mono, Inter } from 'next/font/google'
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
@@ -10,8 +10,21 @@ const yeezy = localFont({
 })
 
 const IBMPlexMono = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
-const geist = Geist({ subsets: ['latin'] })
-const geistMono = Geist_Mono({ subsets: ['latin'] })
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  weight: ['400', '900'],
+  subsets: ['latin'],
+  variable: "--font-inter-sans"
+})
 
 export const metadata: Metadata = {
   title: "UnYeleased",
@@ -26,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geist.className} antialiased overflow-x-hidden`}
+        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
         <ThemeProvider
           attribute="class"

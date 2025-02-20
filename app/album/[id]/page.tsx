@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import AlbumCover from '@/components/getAverageColor';
 import { SongControls } from '@/components/songControls';
 
+import '@public/CSS/song-controls.css';
+
 interface Song {
   title: string;
   artist: string;
@@ -35,7 +37,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songVal, setSongVal] = useState("");
   const [queue, setQueue] = useState<string[]>([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
-  const [albumName, setAlbumName] = useState(id);
+  const [albumName, setAlbumName] = useState(id.replace('-', ' '));
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState("");
   const [imageSize, setImageSize] = useState(250);
@@ -183,7 +185,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       const handleSongEnd = () => {
         if (!songRef.current || songs.length === 0) return;
         const newIndex = currentSongIndex + 1;
-    
+
         setCurrentSongIndex(newIndex);
         setSongVal(songs[newIndex].songLocation);
         setSongCreator(songs[newIndex].artist);
@@ -231,7 +233,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <div className='flex flex-col md:flex-row items-center gap-5'>
           <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} className='md:mt-4 rounded-xl outline outline-primary/10' />
           <div className='flex flex-col gap-2'>
-            <div className='text-4xl font-bold text-center md:text-left'>{albumName}</div>
+            <div className='text-4xl font-semibold text-center md:text-left'>{albumName}</div>
             <div className='inline-flex items-center justify-center md:justify-normal'>
               <div className='text-md md:text-xl text-primary/75 whitespace-pre text-center md:text-left'>{albumCreator}</div>
               <Dot className='text-primary/75' />
@@ -261,7 +263,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
           </div>
         </div>
-        <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-24'>
+        <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-20'>
           {filteredContent.map((element, index) => (
             <div key={index} className={`flex gap-2 border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center transition-colors list-${index} ${currentSongIndex === index ? 'bg-primary/20 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
               <div className='flex items-center gap-4'>
@@ -270,8 +272,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               </div>
               <div className='relative w-full items-center ml-6 md:ml-2 select-none'>
                 <div className='flex justify-between w-full'>
-                  <div className='flex items-center'>
-                    <div className='text-sm md:text-md font-bold'>{element.title}</div>
+                  <div className="flex items-center w-full">
+                    <div className="text-sm md:text-md font-semibold whitespace-nowrap overflow-hidden text-ellipsis tracking-wide">
+                      {element.title}
+                    </div>
                     <Dot className='-mx-1 hidden md:block text-primary/60' />
                     <div className='text-sm md:text-md hidden md:block text-primary/50'>({element.songLocation.toString().split('/song-files/songs/')})</div>
                   </div>

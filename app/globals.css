@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Geist', Helvetica, sans-serif;
+  font-family: var(--font-inter-sans), var(--font-geist-sans), Helvetica, sans-serif;
   transition: scale opacity;
   transition-timing-function: ease-in-out;
   transition-duration: 400ms;

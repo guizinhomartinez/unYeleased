@@ -1,6 +1,6 @@
 function CustomH1({ children }: { children: React.ReactNode }) {
     return (
-        <h1 className='text-5xl py-4 font-bold mt-10'>{children}</h1>
+        <h1 className='text-4xl py-4 font-semibold mt-10'>{children}</h1>
     )
 }
 
@@ -18,7 +18,7 @@ function CustomH3({ children }: { children: React.ReactNode }) {
 
 function CustomP({ children }: { children: React.ReactNode }) {
     return (
-        <p className='text-xl py-4'>{children}</p>
+        <p className='text-md py-4 line leading-8'>{children}</p>
     )
 }
 

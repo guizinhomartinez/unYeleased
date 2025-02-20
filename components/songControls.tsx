@@ -9,6 +9,8 @@ import AlbumCover from "@/components/getAverageColor";
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "./ui/drawer";
 import { Progress } from "./ui/progress";
 
+import '@public/CSS/song-controls.css';
+
 interface songControlsInterface {
     songRef: any;
     songVal: string;
@@ -138,8 +140,8 @@ export const SongControls = ({
         <>
             {!mediumScreen ? (
                 <div
-                    className={`fixed bottom-2 rounded-2xl w-full max-w-[93.5vw]
-                    left-1/2 -translate-x-1/2 py-6 px-5 bg-primary-foreground/80 backdrop-blur-lg border-2 border-t-secondary
+                    className={`fixed bottom-2 rounded-2xl w-full max-w-[93vw]
+                    left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
                         flex items-center transition-all duration-500 shadow-lg ${appearBar ? "translate-y-0" : "translate-y-24"
                         }`}
                     // onClick={hideControls}
@@ -168,8 +170,8 @@ export const SongControls = ({
                     <Drawer>
                         <DrawerTrigger asChild>
                             <div
-                                className={`fixed bottom-2 rounded-2xl w-full max-w-[93.5vw] left-1/2 -translate-x-1/2
-                            py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary flex items-center transition-all duration-500 shadow-lg
+                                className={`fixed bottom-2 rounded-2xl w-full max-w-[88vw] left-1/2 -translate-x-1/2
+                                    bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary flex items-center transition-all duration-500 shadow-lg overflow-hidden
                                 ${appearBar ? "translate-y-0" : "translate-y-24"
                                     }`}
                             >
@@ -187,10 +189,6 @@ export const SongControls = ({
                                     appearBar={appearBar}
                                     setOptAppear={setOptAppear}
                                     id={id}
-                                />
-                                <Progress
-                                    value={sliderValue}
-                                    className="w-[96%] absolute bottom-1 left-2 transition-all duration-1000"
                                 />
                             </div>
                         </DrawerTrigger>
@@ -307,26 +305,24 @@ const DefaultSongControls = ({
         };
     }, [handleSkipSong, hideControls]);
 
-    console.log(songTime);
-
     return (
         <>
             <div className="flex w-full justify-between items-center">
-                <div className="flex items-center gap-2 select-none w-full">
+                <div className="flex items-center gap-3 select-none w-full">
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
-                        <div className="font-bold">
+                        <div className="font-semibold tracking-wide">
                             {songVal !== "" ? songVal : "No Track Found"}
                         </div>
                         <div className="text-sm text-muted-foreground">{songCreator}</div>
                     </div>
                 </div>
 
-                <div className="flex flex-col justify-center gap-3">
+                <div className="flex flex-col justify-center gap-1 w-full">
                     <div className="flex justify-center gap-2 ml-2">
                         <Button
                             size="icon"
-                            className={`p-6 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                             variant="ghost"
                             onClick={() => handleSkipSong(true)}
                             onKeyDown={() => pressedKeyOne}
@@ -334,7 +330,7 @@ const DefaultSongControls = ({
                             <SkipBack />
                         </Button>
                         <Button
-                            className={`p-6 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                             onKeyDown={() => pressedKeyOne}
@@ -343,7 +339,7 @@ const DefaultSongControls = ({
                         </Button>
                         <Button
                             size="icon"
-                            className={`p-6 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                             variant="ghost"
                             onClick={() => handleSkipSong(false)}
                             onKeyDown={() => pressedKeyOne}
@@ -352,10 +348,10 @@ const DefaultSongControls = ({
                         </Button>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="text-sm text-muted-foreground/80 w-8 text-right">{formatTime(currentTimeVal)}</div>
+                        <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
                         <Progress
                             value={sliderValue}
-                            className="w-72 transition-all"
+                            className="transition-all h-1.5"
                         />
                         <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '00:00' : formatTime(songTime)}</div>
                     </div>
@@ -392,43 +388,78 @@ const SongControlsSmall = ({
     setOptAppear,
     id,
 }: songControlsInterface) => {
+    const [sliderValue, setSliderValue] = useState(0);
+
+    const useEffectConst = () => {
+        const song = songRef.current;
+        if (!song) return;
+
+        const updateTime = () => {
+            if (song.duration) {
+                setSliderValue(Number(((song.currentTime / song.duration) * 100).toFixed(0)));
+            }
+        };
+
+        song.addEventListener("timeupdate", updateTime);
+
+        return () => {
+            song.removeEventListener("timeupdate", updateTime);
+        };
+    }
+
+    useEffect(() => {
+        useEffectConst();
+    }, []);
+
+    useEffect(() => {
+        useEffectConst();
+    }, [handleSkipSong]);
+
     return (
         <>
-            <div className="flex items-center gap-2 flex-1 select-none mb-2">
-                <Image
-                    src={image}
-                    alt={image}
-                    width={60}
-                    height={60}
-                    className="rounded-lg"
-                />
-                <div>
-                    <div className="font-bold overflow-hidden whitespace-nowrap text-ellipsis w-[47vw]">
-                        {songVal !== "" ? songVal : "No Track Found"}
+            <div className="flex flex-col">
+                <div className="flex items-center py-3 px-3">
+                    <div className="flex items-center gap-2 flex-1 select-none">
+                        <Image
+                            src={image}
+                            alt={image}
+                            width={60}
+                            height={60}
+                            className="rounded-lg"
+                        />
+                        <div>
+                            <div className="font-semibold overflow-hidden whitespace-nowrap text-ellipsis w-[40vw]">
+                                {songVal !== "" ? songVal : "No Track Found"}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{songCreator}</div>
+                        </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">{songCreator}</div>
-                </div>
-            </div>
 
-            <div
-                className="flex justify-center gap-1 mb-2"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <Button
-                    className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
-                    size="icon"
-                    onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                >
-                    {!isPlaying ? <Play size='36' /> : <Pause size='36' />}
-                </Button>
-                <Button
-                    size="icon"
-                    className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
-                    variant="ghost"
-                    onClick={() => handleSkipSong(false)}
-                >
-                    <SkipForward />
-                </Button>
+                    <div
+                        className="flex justify-center gap-1"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Button
+                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            size="icon"
+                            onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                        >
+                            {!isPlaying ? <Play size='36' /> : <Pause size='36' />}
+                        </Button>
+                        <Button
+                            size="icon"
+                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            variant="ghost"
+                            onClick={() => handleSkipSong(false)}
+                        >
+                            <SkipForward />
+                        </Button>
+                    </div>
+                </div>
+                <Progress
+                    value={sliderValue}
+                    className="transition-all duration-1000 h-1 rounded-none w-full"
+                />
             </div>
         </>
     );
@@ -486,7 +517,7 @@ const MiniPlayer = ({
 
     return (
         <div
-            className={`overflow-y-auto overflow-x-hidden p-8 flex flex-col gap-2 transition-all bg-primary-foreground`}
+            className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground`}
         >
             {/* <Button variant='outline' size='icon' onClick={() => setAppear(false)} className="bg-transparent border-none cursor-pointer absolute top-3 left-3 rounded-full">
                 <ChevronDown />
@@ -502,9 +533,9 @@ const MiniPlayer = ({
                         className="rounded-xl shadow-lg"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <div className="text-xl font-bold">{songVal || "Unknown"}</div>
-                    <div className="text-lg text-muted-foreground -translate-y-1">
+                <div className="flex flex-col overflow-hidden">
+                    <div className="text-2xl font-semibold w-full overflow-hidden whitespace-pre scrolling-text relative">{songVal || "Unknown"}</div>
+                    <div className="text-md text-muted-foreground -translate-y-1">
                         {songCreator || "Unknown"}
                     </div>
                 </div>
@@ -555,7 +586,7 @@ const MiniPlayer = ({
                 className="w-full h-full rounded-xl px-4 py-3 mt-8"
                 style={{ background: albumAverageColorFR }}
             >
-                <div className="text-lg font-bold">Lyrics</div>
+                <div className="text-lg font-semibold">Lyrics</div>
                 <div className="text-primary/80">
                     <div>WIP</div>
                 </div>

@@ -7,7 +7,7 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 ## Goals
 
 ### Missing albums
-- [x] Yandhi (kinda done because some songs are missing)
+- [x] Yandhi
 - [ ] Turbografx 16
 - [ ] Swish
 - [ ] Good Ass Job
@@ -33,7 +33,7 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 - [x] Full mobile music player experience
 - [x] Good home page with all the necessary stuff
 - [ ] Proper backstory of each album
-- [x] Continuous playback and shuffle support (kinda eefy but works)
+- [x] Continuous playback ~~and shuffle support~~ (kinda eefy but works)
 - [x] Search bar
 - [ ] Sort albums by latest or oldest
 - [ ] Backend for explanation of albums

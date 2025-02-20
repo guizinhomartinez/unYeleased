@@ -1,0 +1,33 @@
+@keyframes example1 {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.scrolling-text {
+  /* transform: translateX(100%); */
+
+  /* animation: example1 10s linear infinite reverse; */
+}
+
+
+.scrolling-text::after, .scrolling-text::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 1.5em;
+    height: 2em;
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground)) 100%);
+    z-index: 10;
+}
+
+.scrolling-text::before {
+    left: -1.5em;
+}
+
+.scrolling-text::after {
+    right: 0;
+}
