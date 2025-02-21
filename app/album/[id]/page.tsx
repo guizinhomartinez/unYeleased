@@ -231,7 +231,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       </div>
       <div className={`flex gap-4 items-center p-6 md:p-12 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
         <div className='flex flex-col md:flex-row items-center gap-5'>
-          <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} className='md:mt-4 rounded-xl outline outline-primary/10' />
+          <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} priority={true} className='md:mt-4 rounded-xl outline outline-primary/10' />
           <div className='flex flex-col gap-2'>
             <div className='text-4xl font-semibold text-center md:text-left'>{albumName}</div>
             <div className='inline-flex items-center justify-center md:justify-normal'>
@@ -273,7 +273,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
               <div className='relative w-full items-center ml-6 md:ml-2 select-none'>
                 <div className='flex justify-between w-full'>
                   <div className="flex items-center w-full">
-                    <div className="text-sm md:text-md font-semibold whitespace-nowrap overflow-hidden text-ellipsis tracking-wide">
+                    <div className="text-sm md:text-md font-semibold tracking-wide">
                       {element.title}
                     </div>
                     <Dot className='-mx-1 hidden md:block text-primary/60' />

@@ -10,6 +10,7 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, D
 import { Progress } from "./ui/progress";
 
 import '@public/CSS/song-controls.css';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface songControlsInterface {
     songRef: any;
@@ -57,18 +58,8 @@ export const SongControls = ({
     const [appearBar, setAppearBar] = useState(true);
     const [optAppear, setOptAppear] = useState(optionalAppear);
     const [mediumScreen, setMediumScreen] = useState(false);
-
-    useEffect(() => {
-        const isScreenSmall = () => {
-            if (window.innerWidth < 768) setMediumScreen(true);
-            else setMediumScreen(false);
-        };
-        isScreenSmall();
-
-        window.addEventListener("resize", isScreenSmall);
-
-        return () => window.addEventListener("resize", isScreenSmall);
-    });
+    const [currentTimeVal, setCurrentTimeVal] = useState(0);
+    const [songTime, setSongtime] = useState(0);
 
     const pressedKeyOne = useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,9 +108,12 @@ export const SongControls = ({
 
         const updateTime = () => {
             if (song.duration) {
-                setSliderValue(Number(((song.currentTime / song.duration) * 100).toFixed(0)));
+                setSliderValue((song.currentTime / song.duration) * 100);
             }
+            setCurrentTimeVal(song.currentTime);
         };
+
+        setSongtime(song.duration);
 
         song.addEventListener("timeupdate", updateTime);
 
@@ -136,6 +130,67 @@ export const SongControls = ({
         useEffectConst();
     }, [handleSkipSong]);
 
+    useEffect(() => {
+        const isScreenSmall = () => {
+            if (window.innerWidth < 768) setMediumScreen(true);
+            else setMediumScreen(false);
+        };
+        isScreenSmall();
+
+        window.addEventListener("resize", isScreenSmall);
+
+        return () => window.addEventListener("resize", isScreenSmall);
+    });
+
+    // this basically just adds support for stuff like media buttons and mobile media players in notification tray
+
+    // had never heard of this before but i guess better late than never
+    useEffect(() => {
+        const song = songRef.current;
+        if (!song) return;
+
+        navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
+        navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
+        navigator.mediaSession.setActionHandler('previoustrack', () => handleSkipSong(true));
+        navigator.mediaSession.setActionHandler('nexttrack', () => handleSkipSong(false));
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: songVal,
+                artist: songCreator,
+                album: "Yandhi",
+                artwork: [
+                    {
+                        src: image,
+                        sizes: "96x96",
+                        type: "image/png",
+                    },
+                ],
+            });
+        }
+
+        try {
+            const setPositionState = () => {
+                if ('setPositionState' in navigator.mediaSession) {
+                    navigator.mediaSession.setPositionState({
+                        duration: songTime || 0, position: currentTimeVal || 0,
+                    });
+                }
+            }
+
+            setPositionState();
+
+            song.addEventListener("ended", setPositionState());
+
+            return () => {
+                song.removeEventListener("ended", setPositionState());
+            }
+        } catch (e) {
+            console.log(e);
+        }
+
+    }, [handleSkipSong, isPlaying, currentTimeVal, songTime]);
+
     return (
         <>
             {!mediumScreen ? (
@@ -144,7 +199,7 @@ export const SongControls = ({
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
                         flex items-center transition-all duration-500 shadow-lg ${appearBar ? "translate-y-0" : "translate-y-24"
                         }`}
-                    // onClick={hideControls}
+                    onClick={hideControls}
                     onKeyDown={(e) => pressedKeyOne}
                 >
                     <DefaultSongControls
@@ -318,7 +373,7 @@ const DefaultSongControls = ({
                     </div>
                 </div>
 
-                <div className="flex flex-col justify-center gap-1 w-full">
+                <div className="flex flex-col justify-center gap-1 w-full" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-center gap-2 ml-2">
                         <Button
                             size="icon"
@@ -417,9 +472,9 @@ const SongControlsSmall = ({
 
     return (
         <>
-            <div className="flex flex-col">
-                <div className="flex items-center py-3 px-3">
-                    <div className="flex items-center gap-2 flex-1 select-none">
+            <div className="flex flex-col w-full">
+                <div className="flex items-center py-3 px-3 justify-between">
+                    <div className="flex items-center gap-2 flex-1 select-none max-w-[70%] shadowed-text relative">
                         <Image
                             src={image}
                             alt={image}
@@ -427,18 +482,17 @@ const SongControlsSmall = ({
                             height={60}
                             className="rounded-lg"
                         />
-                        <div>
-                            <div className="font-semibold overflow-hidden whitespace-nowrap text-ellipsis w-[40vw]">
+                        <div className="overflow-hidden">
+                            <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis w-fit shadowed-text-div">
                                 {songVal !== "" ? songVal : "No Track Found"}
                             </div>
-                            <div className="text-sm text-muted-foreground">{songCreator}</div>
+                            <div className="text-sm text-muted-foreground">
+                                {songCreator}
+                            </div>
                         </div>
                     </div>
 
-                    <div
-                        className="flex justify-center gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                    <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                         <Button
                             className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
                             size="icon"
@@ -516,9 +570,7 @@ const MiniPlayer = ({
     }, [handleSkipSong]);
 
     return (
-        <div
-            className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground`}
-        >
+        <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
             {/* <Button variant='outline' size='icon' onClick={() => setAppear(false)} className="bg-transparent border-none cursor-pointer absolute top-3 left-3 rounded-full">
                 <ChevronDown />
             </Button> */}
@@ -534,7 +586,16 @@ const MiniPlayer = ({
                     />
                 </div>
                 <div className="flex flex-col overflow-hidden">
-                    <div className="text-2xl font-semibold w-full overflow-hidden whitespace-pre scrolling-text relative">{songVal || "Unknown"}</div>
+                    <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                            <TooltipTrigger asChild>
+                                <div className="text-2xl font-semibold w-full overflow-hidden whitespace-pre scrolling-text relative select-none">{songVal || "Unknown"}</div>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-secondary px-2 py-1 rounded-full" align="start">
+                                <div className="z-50">{songVal}</div>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     <div className="text-md text-muted-foreground -translate-y-1">
                         {songCreator || "Unknown"}
                     </div>

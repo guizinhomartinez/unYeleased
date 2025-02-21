@@ -52,11 +52,7 @@ export default function Page() {
         return acc;
     }, {} as Record<string, any[]>);
 
-    const sortedYears = Object.keys(filteredEntries).sort((a, b) => {
-        const rowA = parseInt(a.replace("row ", ""));
-        const rowB = parseInt(b.replace("row ", ""));
-        return rowA / rowB; // Sort numerically by row
-    });
+    const sortedYears = Object.keys(filteredEntries).sort();
 
     return (
         <>

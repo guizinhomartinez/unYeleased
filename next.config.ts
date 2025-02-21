@@ -35,7 +35,7 @@ const withMDX = createMDX({
             //@ts-ignore
         'rehype-pretty-code',
         {
-          theme: "dark-plus"
+          theme: "github-dark"
         }
       ]
     ],
