@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
+  transpilePackages: ['next-mdx-remote'],
   pageExtensions: [
     'js',
     'jsx',
@@ -14,15 +15,6 @@ const nextConfig: NextConfig = {
     'ts',
     'tsx'
   ],
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/testing',
-        permanent: true,
-      },
-    ]
-  }
 };
 
 const withMDX = createMDX({

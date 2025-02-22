@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import AlbumCover from "@/components/getAverageColor";
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "./ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Progress } from "./ui/progress";
 
 import '@public/CSS/song-controls.css';
@@ -652,7 +652,7 @@ const MiniPlayer = ({
                     <div>WIP</div>
                 </div>
             </div> */}
-            <div className="w-full h-20" />
+            {/* <div className="w-full h-20" /> */}
         </div>
     );
 };

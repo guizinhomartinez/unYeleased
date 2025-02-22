@@ -1,0 +1,22 @@
+{
+    "config": [
+        {
+            "albumName": "Yeezus 2",
+            "albumCreator": "Kanye West",
+            "year": "2013",
+            "credits": "Credits to Z for songs and tracklist."
+        }
+    ],
+    "tracks": [
+        {
+            "title": "After You",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/yeezus-2/After You.m4a"
+        },
+        {
+            "title": "After You",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/yeezus-2/After You.m4a"
+        }
+    ]
+}

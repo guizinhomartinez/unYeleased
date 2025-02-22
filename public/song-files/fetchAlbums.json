@@ -28,7 +28,7 @@
             ]
         },
         {
-            "year": "2019",
+            "year": "2018",
             "row": 2,
             "entries": [
                 {
@@ -37,6 +37,19 @@
                     "subtext": "Album",
                     "duration": "40:45",
                     "link": "/album/yandhi"
+                }
+            ]
+        },
+        {
+            "year": "2013",
+            "row": 4,
+            "entries": [
+                {
+                    "image": "/song-files/covers/yeezus-2.jpg",
+                    "text": "Yeezus 2",
+                    "subtext": "Album",
+                    "duration": "40:45",
+                    "link": "/album/yeezus-2"
                 }
             ]
         },
