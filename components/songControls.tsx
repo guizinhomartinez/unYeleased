@@ -189,7 +189,7 @@ export const SongControls = ({
             console.log(e);
         }
 
-    }, [handleSkipSong, isPlaying, currentTimeVal, songTime]);
+    }, []);
 
     return (
         <>
@@ -247,7 +247,7 @@ export const SongControls = ({
                                 />
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent className="">
+                        <DrawerContent className="h-[98vh]">
                             <MiniPlayer
                                 albumCover={image}
                                 songRef={songRef}
@@ -577,28 +577,11 @@ const MiniPlayer = ({
             <div className="flex flex-col gap-4 mt-0">
                 <div className="flex flex-col relative">
                     {/* <div className="w-[340px] h-[340px] bg-black/50 absolute inset-0 left-0.5 rounded-xl"></div> */}
-                    <Image
-                        src={albumCover}
-                        alt="Album Cover"
-                        width={345}
-                        height={340}
-                        className="rounded-xl shadow-lg"
-                    />
+                    <Image src={albumCover} alt="Album Cover" width={345} height={340} className="rounded-xl shadow-lg" />
                 </div>
                 <div className="flex flex-col overflow-hidden">
-                    <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                            <TooltipTrigger asChild>
-                                <div className="text-2xl font-semibold w-full overflow-hidden whitespace-pre scrolling-text relative select-none">{songVal || "Unknown"}</div>
-                            </TooltipTrigger>
-                            <TooltipContent className="bg-secondary px-2 py-1 rounded-full" align="start">
-                                <div className="z-50">{songVal}</div>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    <div className="text-md text-muted-foreground -translate-y-1">
-                        {songCreator || "Unknown"}
-                    </div>
+                    <div className="text-2xl font-semibold w-full scrolling-text relative select-none leading-none">{songVal || "Unknown"}</div>
+                    <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                 </div>
             </div>
             <div className="flex flex-col justify-center gap-8 w-full mt-10">

@@ -22,7 +22,7 @@
   top: 50%;
   transform: translateY(-50%);
   right: -10px;
-  background: linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground)) 65%);
+  /* background: linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground) / 40) 65%); */
   width: 2.5em;
-  height: 6em;
+  height: 2em;
 }

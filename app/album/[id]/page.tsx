@@ -7,12 +7,13 @@ import { BookOpenText, ChevronLeft, Dot, Pause, Play, Search } from "lucide-reac
 import { HandleTransition } from '@/components/handleTransition';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import AlbumCover from '@/components/getAverageColor';
 import { SongControls } from '@/components/songControls';
 import { AnimatePresence, motion } from 'motion/react'
-
 import '@public/CSS/song-controls.css';
-import { AlbumExplanation } from '@/components/albumExplanation';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import dynamic from 'next/dynamic';
 
 interface Song {
   title: string;
@@ -23,7 +24,12 @@ interface Song {
 
 async function fetchSongs(id: string) {
   const response = await fetch(`../song-files/songLists//${id.toLowerCase()}.json`);
-  return response.json(); // Return the parsed JSON data
+  return response.json();
+}
+
+async function fetchInfo(id: string) {
+  const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
+  return response.text();
 }
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -47,6 +53,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
+  const [albumExplanation, setAlbumExplanation] = useState("");
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume");
@@ -62,7 +69,14 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setAlbumCreator(data.config[0].albumCreator);
       setCredits(data.config[0].credits);
     }
+
+    async function loadInfo() {
+      const data = await fetchInfo(id);
+      setAlbumExplanation(data);
+    }
+
     loadSongs();
+    loadInfo();
   }, [id]);
 
   const filteredContent = songs.filter((item) =>
@@ -249,9 +263,22 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                       {!isPlaying ? String('Play') : String('')}
                     </div>
                   </Button>
-                  <Button size='icon' variant='outline' className='rounded-full size-12' onClick={() => setShowExplanation(!showExplanation)}>
-                    <BookOpenText />
-                  </Button>
+                  {imageSize === 260 ?
+                    <Button size='icon' variant='outline' className='rounded-full size-12' onClick={() => setShowExplanation(!showExplanation)}>
+                      <BookOpenText />
+                    </Button>
+                    :
+                    <Drawer>
+                      <DrawerTrigger asChild>
+                        <Button size='icon' variant='outline' className='rounded-full size-12' onClick={() => setShowExplanation(!showExplanation)}>
+                          <BookOpenText />
+                        </Button>
+                      </DrawerTrigger>
+                      <DrawerContent>
+                        <AlbumExplanationSmall id={id} />
+                      </DrawerContent>
+                    </Drawer>
+                  }
                 </div>
               </div>
             </div>
@@ -289,7 +316,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
         <AnimatePresence>
-          {showExplanation && <AlbumExplanation albumID={id} />}
+          {showExplanation && <AlbumExplanation text={albumExplanation} />}
         </AnimatePresence>
       </div>
       <div>
@@ -310,4 +337,37 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       </div>
     </div>
   );
+}
+
+const AlbumExplanation = ({ text }: { text: string }) => {
+  return (
+    <motion.div className="flex" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 100, opacity: 0 }}>
+      <Separator orientation="vertical" className="h-screen rounded-full bg-muted mt-1 -translate-x-2.5" />
+      <div className="h-[82vh] w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl border-2 border-secondary sticky top-3">
+        <div className="text-3xl font-bold">Album Explanation</div>
+        <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
+        <ScrollArea>
+          <div className='overflow-hidden h-[90%]'>
+            {text}
+          </div>
+        </ScrollArea>
+      </div>
+    </motion.div>
+  )
+}
+
+const AlbumExplanationSmall = ({ id }: { id:string }) => {
+  const DynamicHeader = dynamic(() => import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`), { loading: () => <p>Loading...</p>,})
+
+  return (
+    <div className="bg-primary-foreground p-3">
+      <div className="text-2xl font-bold mt-6 text-center">Album Explanation</div>
+      <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
+      <React.Suspense>
+        <div className='mx-auto w-fit'>
+          <DynamicHeader />
+        </div>
+      </React.Suspense>
+    </div>
+  )
 }
