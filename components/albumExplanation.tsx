@@ -11,11 +11,9 @@ export const AlbumExplanation = ({ albumID }: { albumID: any }) => {
             <div className="h-[82vh] w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl border-2 border-secondary sticky top-3">
                 <div className="text-3xl font-bold">Album Explanation</div>
                 <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-                <Suspense fallback={<div>Loading a</div>}>
-                    <FetchAlbumInfo id={albumID} />
-                </Suspense>
+                <FetchAlbumInfo id={albumID} />
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 
@@ -38,7 +36,9 @@ const FetchAlbumInfo = ({ id }: { id: any }) => {
 
     return (
         <ScrollArea className="h-[90%] w-full">
-            <MDXRemote source={response} />
+            <Suspense fallback={<div>Loading content</div>}>
+                <MDXRemote source={response} />
+            </Suspense>
         </ScrollArea>
     )
 }
