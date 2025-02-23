@@ -49,7 +49,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumName, setAlbumName] = useState(id.replace('-', ' '));
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState("");
-  const [imageSize, setImageSize] = useState(250);
+  const [imageSize, setImageSize] = useState(260);
   const [appearBar, setAppearBar] = useState(true);
   const [volumeVal, setVolumeVal] = useState<number>(100);
   const [searchQuery, setSearchQuery] = useState("");
@@ -317,13 +317,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
           </div>
         </div>
-        <AnimatePresence>
-          {showExplanation && (
+        {showExplanation && imageSize === 260 && (
+          <AnimatePresence>
             <motion.div className='' initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.8, ease: "backInOut", }}>
               <AlbumExplanation id={id} />
             </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        )}
       </div>
       <div>
         <SongControls
