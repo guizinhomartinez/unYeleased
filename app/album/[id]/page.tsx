@@ -155,13 +155,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   })
 
-  useEffect(() => {
-    const song = songRef.current;
-    if (!song) return;
-    song.volume = volumeVal / 100;
-    localStorage.setItem("volume", volumeVal.toString());
-  }, [volumeVal]);
-
   const handleClickEvent = (element: any, index: number) => {
     setSongVal(element.songLocation);
     setIsPlaying(true);
@@ -227,6 +220,17 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     };
   })
 
+  useEffect(() => {
+    const song = songRef.current;
+    if (!song) return;
+
+    localStorage.setItem("volume", volumeVal.toString());
+
+    const localVolume = localStorage.getItem("volume");
+
+    song.volume = Number(localVolume) / 100;
+  }, [volumeVal, handleSkipSong, isPlaying]);
+
   // const formatTime = (time: number) => {
   //   const minutes = Math.floor(time / 60);
   //   const seconds = Math.floor(time % 60);
@@ -278,7 +282,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent>
+                      <DrawerContent className=''>
                         <AlbumExplanationSmall id={id} />
                       </DrawerContent>
                     </Drawer>
@@ -299,19 +303,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
             <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-20'>
               {filteredContent.map((element, index) => (
-                <div key={index} className={`flex border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center transition-colors gap-6 md:gap-1 list-${index} ${currentSongIndex === index ? 'bg-primary/20 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
-                  <div className='flex items-center gap-4'>
-                    <div className='text-muted-foreground/80 w-fit text-end min-w-[20px]'>{index + 1}</div>
+                <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
+                  <div className='flex items-center gap-3'>
+                    {imageSize === 260 && <div className='cursor-default rounded-full w-6 text-right'>{index + 1}</div>}
                     <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />
                   </div>
-                  <div className={`relative items-center select-none ml-2 md:ml-1`}>
-                    <div className='flex'>
-                      <div className="flex items-center">
-                        <div className="text-sm md:text-md font-semibold tracking-wide">{element.title}</div>
-                        {/* <Dot className='hidden md:block text-primary/60' />
-                        <div className='text-sm md:text-md hidden md:block text-primary/50'>({element.songLocation.toString().replace('/song-files/songs/', '')})</div> */}
-                      </div>
-                    </div>
+                  <div className='select-none'>
+                    <div className="text-sm font-semibold">{element.title}</div>
                     <div className='text-sm text-muted-foreground'>{element.artist}</div>
                   </div>
                 </div>

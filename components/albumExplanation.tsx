@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "./ui/button"
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { ExternalLink } from "lucide-react"
 
 export const AlbumExplanation = ({ id }: { id: string }) => {
     const [DynamicHeader, setDynamicHeader] = useState<React.ComponentType | null>(null);
@@ -39,12 +40,16 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
             <Separator orientation="vertical" className="h-screen rounded-full bg-muted mt-1 -translate-x-2" />
             <div className="w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl border-2 border-secondary sticky top-6 mb-32 ml-3">
                 <div className="relative h-full">
-                    <div className="text-3xl text-center font-semibold">Album Explanation</div>
+                    <div className="text-3xl font-semibold">Album Explanation</div>
                     <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
                     {DynamicHeader ? (
                         <div className="">
-                            <ScrollArea className="h-[65vh]">
+                            <ScrollArea className="h-[65vh] text-md pr-3">
+                                <div className="gradient-thing"></div>
+                                <div className="w-full" style={{ height: '0.9em' }}></div>
                                 <DynamicHeader />
+                                <div className="gradient-thing-reverse"></div>
+                                <div className="w-full" style={{ height: '2em' }}></div>
                             </ScrollArea>
                         </div>
                     ) : (
@@ -56,7 +61,10 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button className="text-xl w-full" variant='secondary'>Source</Button>
+                                        <Button className="w-full items-center">
+                                            Original Source
+                                            <ExternalLink />
+                                        </Button>
                                     </TooltipTrigger>
                                     <TooltipContent className="bg-background border border-input">
                                         <p className="text-primary text-xs">
@@ -74,33 +82,49 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
 }
 
 export const AlbumExplanationSmall = ({ id }: { id: string }) => {
-    const [DynamicHeader, setDynamicHeader] = useState<React.ComponentType | null>(null)
+    const [DynamicHeader, setDynamicHeader] = useState<React.ComponentType | null>(null);
+    const [source, setSource] = useState("");
 
     useEffect(() => {
         const loadMdxComponent = async () => {
             try {
-                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`)
-                setDynamicHeader(() => module.default)
+                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
+                setDynamicHeader(() => module.default);
             } catch (error) {
-                console.error("Failed to load MDX file:", error)
-                setDynamicHeader(() => () => <p>Failed to load album explanation.</p>)
+                console.error("Failed to load MDX file:", error);
+                setDynamicHeader(() => () => <p>Failed to load album explanation.</p>);
             }
         }
 
-        loadMdxComponent()
+        const fetchSource = async () => {
+            const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
+            console.log(data);
+            setSource(data);
+        }
+
+        loadMdxComponent();
+        fetchSource();
     }, [id])
 
     return (
-        <div className="bg-primary-foreground p-3">
+        <div className="p-4 overflow-y-scroll h-[80vh]">
             <div className="text-2xl font-semibold mt-6 text-center">Album Explanation</div>
             <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-            {DynamicHeader ? (
-                <div className="">
+            <div className="mx-0.5">
+                {DynamicHeader ? (
                     <DynamicHeader />
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
+                ) : (
+                    <p>Loading...</p>
+                )}
+            </div>
+            <div className="mt-4">
+                <Link href={source} target="_blank" className="mx-auto w-full">
+                    <Button className="w-full items-center">
+                        Original Source
+                        <ExternalLink />
+                    </Button>
+                </Link>
+            </div>
         </div>
     )
 }

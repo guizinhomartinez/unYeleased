@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { SkipBack, Play, Pause, SkipForward, ChevronDown } from "lucide-react";
+import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -11,6 +11,7 @@ import { Progress } from "./ui/progress";
 
 import '@public/CSS/song-controls.css';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface songControlsInterface {
     songRef: any;
@@ -36,8 +37,8 @@ interface miniPlayerInterface {
     isPlaying: boolean;
     setIsPlaying: any;
     optionalAppear: boolean;
-    volumeVal?: number;
-    setVolumeVal?: any;
+    volumeVal: number;
+    setVolumeVal: any;
     songCreator: string;
     handleSkipSong: (back: boolean) => void;
 }
@@ -199,7 +200,7 @@ export const SongControls = ({
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
                         flex items-center transition-all duration-500 shadow-lg ${appearBar ? "translate-y-0" : "translate-y-24"
                         }`}
-                    onClick={hideControls}
+                    // onClick={hideControls}
                     onKeyDown={(e) => pressedKeyOne}
                 >
                     <DefaultSongControls
@@ -257,6 +258,8 @@ export const SongControls = ({
                                 optionalAppear={appearBar}
                                 songCreator={songCreator}
                                 handleSkipSong={handleSkipSong}
+                                volumeVal={volumeVal}
+                                setVolumeVal={setVolumeVal}
                             />
                             {/* <Button className="w-fit mx-auto m-12 opacity-0">My balls</Button> */}
                         </DrawerContent>
@@ -283,7 +286,7 @@ const DefaultSongControls = ({
     setOptAppear,
     id
 }: songControlsInterface) => {
-    const [sliderValue, setSliderValue] = useState(0);
+    const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
 
@@ -360,13 +363,23 @@ const DefaultSongControls = ({
         };
     }, [handleSkipSong, hideControls]);
 
+    const handleSliderChange = (value: number[]) => {
+        const newValue = value[0];
+        setSliderValue(newValue)
+        if (songRef.current) {
+            const newTime = (newValue / 100) * songRef.current.duration;
+            songRef.current.currentTime = newTime;
+            setCurrentTimeVal(newTime);
+        }
+    }
+
     return (
         <>
             <div className="flex w-full justify-between items-center">
                 <div className="flex items-center gap-3 select-none w-full">
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
-                        <div className="font-semibold tracking-wide">
+                        <div className="font-semibold text-md">
                             {songVal !== "" ? songVal : "No Track Found"}
                         </div>
                         <div className="text-sm text-muted-foreground">{songCreator}</div>
@@ -404,20 +417,27 @@ const DefaultSongControls = ({
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
-                        <Progress
-                            value={sliderValue}
-                            className="transition-all h-1.5"
-                        />
+                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70")} onValueChange={handleSliderChange} />
                         <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '00:00' : formatTime(songTime)}</div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
-                    <div className="w-1/2 flex gap-3">
-                        <VolumeSlider className="" onValueChange={setVolumeVal} />
-                        <Label className="w-12 text-right">
-                            {volumeVal}%
-                        </Label>
+                    <div className="items-center">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button className="rounded-full" variant='secondary' size='icon'>
+                                    <MicVocal size='18' />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 h-full rounded-xl bg-primary-foreground">
+                                <div>WIP</div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                    <div className="w-1/2 flex gap-3 items-center">
+                        <VolumeSlider className="[&>:last-child>span]:bg-transparent [&>:last-child>span]:border-transparent" value={[volumeVal]} onValueChange={setVolumeVal} />
+                        <Label className="w-12 text-right">{volumeVal}%</Label>
                     </div>
                 </div>
             </div>
@@ -491,19 +511,10 @@ const SongControlsSmall = ({
                     </div>
 
                     <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
-                            size="icon"
-                            onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                        >
-                            {!isPlaying ? <Play size='36' /> : <Pause size='36' />}
+                        <Button className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} size="icon" onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}>
+                            {!isPlaying ? <Play className="-translate-x-px" /> : <Pause className="-translate-x-px" />}
                         </Button>
-                        <Button
-                            size="icon"
-                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
-                            variant="ghost"
-                            onClick={() => handleSkipSong(false)}
-                        >
+                        <Button size="icon" className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} variant="ghost" onClick={() => handleSkipSong(false)}>
                             <SkipForward />
                         </Button>
                     </div>
@@ -567,6 +578,16 @@ const MiniPlayer = ({
         useEffectConst();
     }, [handleSkipSong]);
 
+    const handleSliderChange = (value: number[]) => {
+        const newValue = value[0];
+        setSliderValue(newValue)
+        if (songRef.current) {
+            const newTime = (newValue / 100) * songRef.current.duration;
+            songRef.current.currentTime = newTime;
+            setCurrentTimeVal(newTime);
+        }
+    }
+
     return (
         <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
             {/* <Button variant='outline' size='icon' onClick={() => setAppear(false)} className="bg-transparent border-none cursor-pointer absolute top-3 left-3 rounded-full">
@@ -584,10 +605,7 @@ const MiniPlayer = ({
             </div>
             <div className="flex flex-col justify-center gap-8 w-full mt-10">
                 <div className="w-full">
-                    <Progress
-                        value={sliderValue}
-                        className="w-full transition-all"
-                    />
+                    <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70 transition-all duration-500")} onValueChange={handleSliderChange} />
                 </div>
                 <div className="flex gap-1 items-center">
                     <div className="w-full">{formatTime(currentTimeVal)}</div>
@@ -623,6 +641,10 @@ const MiniPlayer = ({
                         {isNaN(songTime) ? '00:00' : formatTime(songTime)}
                     </div>
                 </div>
+            </div>
+            <div className="flex mt-12 md:mt-0 h-full">
+                <VolumeSlider className="[&>:last-child>span]:bg-transparent [&>:last-child>span]:border-none" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
+                <Label className="w-12 text-right">{volumeVal}%</Label>
             </div>
         </div>
     );
