@@ -304,7 +304,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     <div className='text-muted-foreground/80 w-fit text-end min-w-[20px]'>{index + 1}</div>
                     <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />
                   </div>
-                  <div className={`relative items-center select-none ml-1`}>
+                  <div className={`relative items-center select-none ml-2 md:ml-1`}>
                     <div className='flex'>
                       <div className="flex items-center">
                         <div className="text-sm md:text-md font-semibold tracking-wide">{element.title}</div>

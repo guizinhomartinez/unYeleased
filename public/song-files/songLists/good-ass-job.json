@@ -4,14 +4,64 @@
             "albumName": "Good Ass Job",
             "albumCreator": "Kanye West",
             "year": "2009",
-            "credits": "Credits to Kanye Unknown for Never See Me Again"
+            "credits": "Credits to Kanye Unknown for See Me Again, and [yeunrlsd] for the rest of the album"
         }
     ],
     "tracks": [
         {
-            "title": "Never See Me Again",
+            "title": "Dark Fantasy",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Never See Me Again.m4a"
+            "songLocation": "/song-files/songs/good-ass-job/Dark Fantasy.m4a"
+        },
+        {
+            "title": "Ghetto University",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Ghetto University.m4a"
+        },
+        {
+            "title": "Power",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Power.m4a"
+        },
+        {
+            "title": "Hell Of A Life (feat. Bon Iver)",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Hell Of A Life (feat. Bon Iver).m4a"
+        },
+        {
+            "title": "Runaway",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Runaway.m4a"
+        },
+        {
+            "title": "Lonely",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Lonely.m4a"
+        },
+        {
+            "title": "That's My Bitch",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/That's My Bitch.m4a"
+        },
+        {
+            "title": "Hate It (feat. Kid Cudi)",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Hate It (feat. Kid Cudi).m4a"
+        },
+        {
+            "title": "Throw Money Everywhere",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Throw Money Everywhere.m4a"
+        },
+        {
+            "title": "Down Town",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/Down Town.m4a"
+        },
+        {
+            "title": "See Me Again",
+            "artist": "Kanye West",
+            "songLocation": "/song-files/songs/good-ass-job/See Me Again.m4a"
         }
     ]
 }

@@ -10,7 +10,7 @@ If you have any suggestions on missing songs/albums, please, create an issue tic
 - [x] Yandhi
 - [ ] Turbografx 16
 - [ ] Swish
-- [ ] Good Ass Job
+- [x] Good Ass Job
 - [ ] Cruel Winter
 - [ ] Thank God For Drugs
 - [ ] Yeezus II
