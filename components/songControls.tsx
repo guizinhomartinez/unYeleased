@@ -189,7 +189,7 @@ export const SongControls = ({
             console.log(e);
         }
 
-    }, []);
+    }, [isPlaying, songTime, currentTimeVal, handleSkipSong]);
 
     return (
         <>
@@ -412,15 +412,13 @@ const DefaultSongControls = ({
                     </div>
                 </div>
 
-                <div
-                    className="flex items-center gap-3 justify-end w-full select-none"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <VolumeSlider className="w-20 md:w-32" />
-                    <Label>
-                        {typeof window !== "undefined" ? localStorage.getItem("volume") : 100}
-                        %
-                    </Label>
+                <div className="flex items-center gap-3 justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
+                    <div className="w-1/2 flex gap-3">
+                        <VolumeSlider className="" onValueChange={setVolumeVal} />
+                        <Label className="w-12 text-right">
+                            {volumeVal}%
+                        </Label>
+                    </div>
                 </div>
             </div>
         </>
@@ -626,16 +624,6 @@ const MiniPlayer = ({
                     </div>
                 </div>
             </div>
-            {/* <div
-                className="w-full h-full rounded-xl px-4 py-3 mt-8"
-                style={{ background: albumAverageColorFR }}
-            >
-                <div className="text-lg font-semibold">Lyrics</div>
-                <div className="text-primary/80">
-                    <div>WIP</div>
-                </div>
-            </div> */}
-            {/* <div className="w-full h-20" /> */}
         </div>
     );
 };
@@ -648,7 +636,7 @@ function VolumeSlider({ className, ...props }: SliderProps) {
             defaultValue={[100]}
             max={100}
             step={1}
-            className={cn("w-32", className)}
+            className={cn("w-full", className)}
             {...props}
         />
     );

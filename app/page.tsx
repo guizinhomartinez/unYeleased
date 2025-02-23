@@ -52,7 +52,7 @@ export default function Page() {
         return acc;
     }, {} as Record<string, any[]>);
 
-    const sortedYears = Object.keys(filteredEntries).sort();
+    const sortedYears = Object.keys(filteredEntries).toReversed();
 
     return (
         <>

@@ -37,6 +37,13 @@
                     "subtext": "Album",
                     "duration": "40:45",
                     "link": "/album/yandhi"
+                },
+                {
+                    "image": "/song-files/covers/yandhi.jpg",
+                    "text": "Job Well Done",
+                    "subtext": "Album",
+                    "duration": "40:45",
+                    "link": "/album/yandhi"
                 }
             ]
         },

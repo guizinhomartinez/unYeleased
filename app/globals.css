@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-inter-sans), var(--font-geist-sans), Helvetica, sans-serif;
+  font-family: var(--font-inter-sans), var(--font-geist-sans), sans-serif;
   transition: scale opacity;
   transition-timing-function: ease-in-out;
   transition-duration: 400ms;
+}
+
+.font-geist {
+  font-family: var(--font-geist-sans), sans-serif;
 }
 
 .page-transition {
@@ -19,7 +23,7 @@ nextjs-portal {
 }
 
 .yeezy-buttons {
-  @apply p-2 border-2 border-black w-fit antialiased  uppercase transition-all duration-150
+  @apply p-2 border-2 border-black w-fit antialiased  uppercase transition-all duration-150;
 }
 
 .song-explanation {
@@ -36,7 +40,7 @@ nextjs-portal {
 }
 
 .song-explanation-disappear {
-  animation: appear reverse .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation: appear reverse 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 @keyframes disappear {
@@ -53,7 +57,7 @@ nextjs-portal {
 }
 
 .active-button {
-  @apply bg-accent
+  @apply bg-accent;
 }
 
 @layer base {
@@ -120,8 +124,6 @@ nextjs-portal {
     @apply bg-background text-foreground;
   }
 }
-
-
 
 @layer base {
   * {

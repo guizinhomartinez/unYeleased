@@ -14,6 +14,8 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import dynamic from 'next/dynamic';
+import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
+import { Toggle } from '@/components/ui/toggle';
 
 interface Song {
   title: string;
@@ -154,10 +156,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   })
 
   useEffect(() => {
-    if (songRef.current) {
-      songRef.current.volume = volumeVal / 100; // Ensure it directly updates from state
-    }
-    localStorage.setItem("volume", volumeVal.toString()); // Then update localStorage
+    const song = songRef.current;
+    if (!song) return;
+    song.volume = volumeVal / 100;
+    localStorage.setItem("volume", volumeVal.toString());
   }, [volumeVal]);
 
   const handleClickEvent = (element: any, index: number) => {
@@ -264,14 +266,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     </div>
                   </Button>
                   {imageSize === 260 ?
-                    <Button size='icon' variant='outline' className='rounded-full size-12' onClick={() => setShowExplanation(!showExplanation)}>
-                      <BookOpenText />
-                    </Button>
+                    <Toggle variant='outline' aria-label='Toggle explanation' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
+                      <BookOpenText size='24' />
+                      Album Explanation
+                    </Toggle>
                     :
                     <Drawer>
                       <DrawerTrigger asChild>
-                        <Button size='icon' variant='outline' className='rounded-full size-12' onClick={() => setShowExplanation(!showExplanation)}>
+                        <Button variant='outline' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
                           <BookOpenText />
+                          Album Explanation
                         </Button>
                       </DrawerTrigger>
                       <DrawerContent>
@@ -295,20 +299,20 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
             <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-20'>
               {filteredContent.map((element, index) => (
-                <div key={index} className={`flex border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 w-[100%] items-center transition-colors gap-6 md:gap-1 list-${index} ${currentSongIndex === index ? 'bg-primary/20 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
+                <div key={index} className={`flex border-b-2 px-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center transition-colors gap-6 md:gap-1 list-${index} ${currentSongIndex === index ? 'bg-primary/20 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-center gap-4'>
                     <div className='text-muted-foreground/80 w-fit text-end min-w-[20px]'>{index + 1}</div>
                     <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />
                   </div>
-                  <div className={`relative w-full items-center select-none ml-4`}>
+                  <div className={`relative items-center select-none ml-1`}>
                     <div className='flex'>
                       <div className="flex items-center">
                         <div className="text-sm md:text-md font-semibold tracking-wide">{element.title}</div>
-                        <Dot className='hidden md:block text-primary/60' />
-                        <div className='text-sm md:text-md hidden md:block text-primary/50'>({element.songLocation.toString().replace('/song-files/songs/', '')})</div>
+                        {/* <Dot className='hidden md:block text-primary/60' />
+                        <div className='text-sm md:text-md hidden md:block text-primary/50'>({element.songLocation.toString().replace('/song-files/songs/', '')})</div> */}
                       </div>
                     </div>
-                    <div className='text-sm'>{element.artist}</div>
+                    <div className='text-sm text-muted-foreground'>{element.artist}</div>
                   </div>
                 </div>
               ))}
@@ -316,7 +320,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
         <AnimatePresence>
-          {showExplanation && <AlbumExplanation text={albumExplanation} />}
+          {showExplanation && (
+            <motion.div className='' initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.8, ease: "backInOut", }}>
+              <AlbumExplanation id={id} />
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
       <div>
@@ -337,37 +345,4 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       </div>
     </div>
   );
-}
-
-const AlbumExplanation = ({ text }: { text: string }) => {
-  return (
-    <motion.div className="flex" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 100, opacity: 0 }}>
-      <Separator orientation="vertical" className="h-screen rounded-full bg-muted mt-1 -translate-x-2.5" />
-      <div className="h-[82vh] w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl border-2 border-secondary sticky top-3">
-        <div className="text-3xl font-bold">Album Explanation</div>
-        <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-        <ScrollArea>
-          <div className='overflow-hidden h-[90%]'>
-            {text}
-          </div>
-        </ScrollArea>
-      </div>
-    </motion.div>
-  )
-}
-
-const AlbumExplanationSmall = ({ id }: { id:string }) => {
-  const DynamicHeader = dynamic(() => import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`), { loading: () => <p>Loading...</p>,})
-
-  return (
-    <div className="bg-primary-foreground p-3">
-      <div className="text-2xl font-bold mt-6 text-center">Album Explanation</div>
-      <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-      <React.Suspense>
-        <div className='mx-auto w-fit'>
-          <DynamicHeader />
-        </div>
-      </React.Suspense>
-    </div>
-  )
 }
