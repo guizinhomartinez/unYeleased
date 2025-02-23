@@ -248,7 +248,7 @@ export const SongControls = ({
                                 />
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent className="h-[98vh]">
+                        <DrawerContent>
                             <MiniPlayer
                                 albumCover={image}
                                 songRef={songRef}
