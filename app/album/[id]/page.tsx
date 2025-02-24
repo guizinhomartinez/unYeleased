@@ -55,7 +55,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumExplanation, setAlbumExplanation] = useState("");
 
   useEffect(() => {
-    const storedVolume = localStorage.getItem("volume");
+    const storedVolume = localStorage.getItem("volume") || 100;
     setVolumeVal(Number(storedVolume));
   }, []);
 
