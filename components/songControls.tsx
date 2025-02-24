@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon } from "lucide-react";
+import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon, Volume2, Volume1, Volume, VolumeX, VolumeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -10,8 +10,8 @@ import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Progress } from "./ui/progress";
 
 import '@public/CSS/song-controls.css';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface songControlsInterface {
     songRef: any;
@@ -174,23 +174,23 @@ export const SongControls = ({
             const setPositionState = () => {
                 if ('setPositionState' in navigator.mediaSession) {
                     navigator.mediaSession.setPositionState({
-                        duration: songTime || 0, position: currentTimeVal || 0,
+                        duration: songTime || 0,
+                        position: currentTimeVal || 0,
                     });
                 }
-            }
+            };
 
             setPositionState();
 
-            song.addEventListener("ended", setPositionState());
+            song.addEventListener("ended", setPositionState);
 
             return () => {
-                song.removeEventListener("ended", setPositionState());
-            }
+                song.removeEventListener("ended", setPositionState);
+            };
         } catch (e) {
             console.log(e);
         }
-
-    }, [isPlaying, songTime, currentTimeVal, handleSkipSong]);
+    }, [songTime, currentTimeVal, handleSkipSong, songRef.current]);
 
     return (
         <>
@@ -248,7 +248,7 @@ export const SongControls = ({
                                 />
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent>
+                        <DrawerContent className="max-h-[100%] h-[100%] rounded-t-none">
                             <MiniPlayer
                                 albumCover={image}
                                 songRef={songRef}
@@ -380,9 +380,9 @@ const DefaultSongControls = ({
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
                         <div className="font-semibold text-md">
-                            {songVal !== "" ? songVal : "No Track Found"}
+                            {songVal || "No Track Found"}
                         </div>
-                        <div className="text-sm text-muted-foreground">{songCreator}</div>
+                        <div className="text-sm text-muted-foreground">{songCreator || "Unknown"}</div>
                     </div>
                 </div>
 
@@ -418,7 +418,7 @@ const DefaultSongControls = ({
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
                         <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70")} onValueChange={handleSliderChange} />
-                        <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '00:00' : formatTime(songTime)}</div>
+                        <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
                     </div>
                 </div>
 
@@ -588,14 +588,27 @@ const MiniPlayer = ({
         }
     }
 
+    const VolumeIcon = ({ ...props }) => {
+        if (songRef.current.muted) {
+            return <VolumeOff {...props} />;
+        }
+
+        if (volumeVal > 60) {
+            return <Volume2 {...props} />;
+        } else if (volumeVal < 60 && volumeVal > 30) {
+            return <Volume1 {...props} />;
+        } else if (volumeVal === 0) {
+            return <VolumeX {...props} />;
+        } else {
+            return <Volume {...props} />;
+        }
+    }
+
     return (
+        <ScrollArea className="-[calc(100vh-4rem)] w-full">
         <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
-            {/* <Button variant='outline' size='icon' onClick={() => setAppear(false)} className="bg-transparent border-none cursor-pointer absolute top-3 left-3 rounded-full">
-                <ChevronDown />
-            </Button> */}
             <div className="flex flex-col gap-4 mt-0">
-                <div className="flex flex-col relative">
-                    {/* <div className="w-[340px] h-[340px] bg-black/50 absolute inset-0 left-0.5 rounded-xl"></div> */}
+                <div className="flex flex-col relative items-center">
                     <Image src={albumCover} alt="Album Cover" width={345} height={340} className="rounded-xl shadow-lg" />
                 </div>
                 <div className="flex flex-col overflow-hidden">
@@ -605,23 +618,21 @@ const MiniPlayer = ({
             </div>
             <div className="flex flex-col justify-center gap-8 w-full mt-10">
                 <div className="w-full">
-                    <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70 transition-all duration-500")} onValueChange={handleSliderChange} />
+                    <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={handleSliderChange} />
                 </div>
                 <div className="flex gap-1 items-center">
                     <div className="w-full">{formatTime(currentTimeVal)}</div>
                     <div className="flex gap-2 items-center w-full scale-110">
                         <Button
                             size="icon"
-                            className={`p-6 rounded-full  ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"
-                                }`}
+                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
                             variant="ghost"
                             onClick={() => handleSkipSong(true)}
                         >
                             <SkipBack size='32' />
                         </Button>
                         <Button
-                            className={`p-6 rounded-full  ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"
-                                }`}
+                            className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                         >
@@ -629,8 +640,7 @@ const MiniPlayer = ({
                         </Button>
                         <Button
                             size="icon"
-                            className={`p-6 rounded-full  ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"
-                                }`}
+                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
                             variant="ghost"
                             onClick={() => handleSkipSong(false)}
                         >
@@ -642,11 +652,15 @@ const MiniPlayer = ({
                     </div>
                 </div>
             </div>
-            <div className="flex mt-12 md:mt-0 h-full">
-                <VolumeSlider className="[&>:last-child>span]:bg-transparent [&>:last-child>span]:border-none" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
+            <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
+                <div onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)}>
+                    <VolumeIcon size='18' />
+                </div>
+                <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
                 <Label className="w-12 text-right">{volumeVal}%</Label>
             </div>
         </div>
+        </ScrollArea>
     );
 };
 

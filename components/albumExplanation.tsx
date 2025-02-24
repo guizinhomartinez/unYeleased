@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "./ui/button"
@@ -36,9 +35,9 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     }, [id])
 
     return (
-        <div className="flex">
-            <Separator orientation="vertical" className="h-screen rounded-full bg-muted mt-1 -translate-x-2" />
-            <div className="w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl border-2 border-secondary sticky top-6 mb-32 ml-3">
+        <div className="flex h-screen">
+            <Separator orientation="vertical" className="h-screen rounded-full bg-gradient-to-b from-muted/80 to-transparent to-95% mt-1 -translate-x-2" />
+            <div className="w-[30vw] bg-primary-foreground p-3 mt-3 mr-12 rounded-xl top-12 mb-32 ml-3 border-2 border-secondary">
                 <div className="relative h-full">
                     <div className="text-3xl font-semibold">Album Explanation</div>
                     <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />

@@ -57,7 +57,7 @@ export default function Page() {
     return (
         <>
             <div className="m-8 mb-0">
-                <Navbar activeItem={0} />
+                <Navbar />
             </div>
 
             <div className="m-8 mt-4 overflow-x-hidden flex gap-4 flex-col">

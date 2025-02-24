@@ -8,7 +8,7 @@ export default function Page() {
         <>
             <div className='m-8 mt-0 pt-8 items-center flex flex-col justify-center'>
                 <div className='w-full'>
-                    <Navbar activeItem={2} />
+                    <Navbar />
                 </div>
                 <div className='max-w-3xl lg:mx-auto'>
                     <Welcome components={overrideComponents} />

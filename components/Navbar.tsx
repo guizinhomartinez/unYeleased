@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Home, Info, Moon, PlusSquare, Sun } from "lucide-react"
+import { Github, Home, Info, Moon, PlusCircle, PlusSquare, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -12,10 +12,31 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import { Separator } from "./ui/separator"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
-export default function Navbar({ activeItem, className }: { activeItem: number, className?:string }) {
+const navigationStuff = [
+    {
+        name: "Home",
+        component: <Home />,
+        link: "/"
+    },
+    {
+        name: "About",
+        component: <Info />,
+        link: "/about"
+    },
+    {
+        name: "Create Albums",
+        component: <PlusCircle />,
+        link: "/about/create-album"
+    }
+]
+
+export default function Navbar({ className }: { className?: string }) {
     const [mediumScreen, setMediumScreen] = useState(false);
+    const pathName = usePathname();
 
     useEffect(() => {
         const isScreenSmall = () => {
@@ -35,27 +56,16 @@ export default function Navbar({ activeItem, className }: { activeItem: number, 
 
     return (
         <>
-            <div className={`flex place-content-between w-full py-1 pb-3 bg-background transition-all ${className}`}>
+            <div className={cn('flex place-content-between w-full py-1 pb-3 bg-background transition-all', className)}>
                 <div className="items-center flex gap-2">
-                    <Link href='/'>
-                        <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={`items-center rounded-full transition-all ${activeItem === 0 && 'active-button'}`}>
-                            <Home />
-                            {!mediumScreen ? String('Home') : String('')}
-                        </Button>
-                    </Link>
-                    {/* <Separator orientation="vertical" className="h-[60%] mx-1"/> */}
-                    <Link href='/about'>
-                        <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={`items-center rounded-full transition-all ${activeItem === 1 && 'active-button'}`}>
-                            <Info />
-                            {!mediumScreen ? String('About') : String('')}
-                        </Button>
-                    </Link>
-                    <Link href='/about/create-album'>
-                        <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={`items-center rounded-full transition-all ${activeItem === 2 && 'active-button'}`}>
-                            <PlusSquare />
-                            {!mediumScreen ? String('Custom albums') : String('')}
-                        </Button>
-                    </Link>
+                    {navigationStuff.map((item) => (
+                        <Link href={item.link}>
+                            <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link && 'active-button')}>
+                                {item.component}
+                                {!mediumScreen ? String(item.name) : String('')}
+                            </Button>
+                        </Link>
+                    ))}
                 </div>
                 <div className="flex gap-2">
                     <DropDown />

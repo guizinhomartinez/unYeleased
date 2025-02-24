@@ -10,12 +10,9 @@ import { Input } from '@/components/ui/input';
 import { SongControls } from '@/components/songControls';
 import { AnimatePresence, motion } from 'motion/react'
 import '@public/CSS/song-controls.css';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import dynamic from 'next/dynamic';
 import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
-import { Toggle } from '@/components/ui/toggle';
+import { Separator } from '@/components/ui/separator';
 
 interface Song {
   title: string;
@@ -228,7 +225,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     const localVolume = localStorage.getItem("volume");
 
-    song.volume = Number(localVolume) / 100;
+    if (localVolume === null) {
+      song.volume = volumeVal / 100;
+    } else {
+      song.volume = Number(localVolume) / 100;
+    }
   }, [volumeVal, handleSkipSong, isPlaying]);
 
   // const formatTime = (time: number) => {
@@ -270,10 +271,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     </div>
                   </Button>
                   {imageSize === 260 ?
-                    <Toggle variant='outline' aria-label='Toggle explanation' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
+                    <Button variant='outline' aria-label='Toggle explanation' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
                       <BookOpenText size='24' />
                       Album Explanation
-                    </Toggle>
+                    </Button>
                     :
                     <Drawer>
                       <DrawerTrigger asChild>
@@ -282,8 +283,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent className=''>
-                        <AlbumExplanationSmall id={id} />
+                      <DrawerContent>
+                          <AlbumExplanationSmall id={id} />
                       </DrawerContent>
                     </Drawer>
                   }
@@ -292,7 +293,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
           </div>
 
-          <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-6 md:mx-12 border-2 border-secondary/50 text-sm text-primary/50'>{credits !== "" ? credits : "No credits provided"}</div>
+          <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-6 md:mx-12 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
 
           <div className='m-6 md:m-12 md:mt-4 flex flex-col gap-4'>
             <div className='flex items-center relative'>
