@@ -58,8 +58,8 @@ export default function Navbar({ className }: { className?: string }) {
         <>
             <div className={cn('flex place-content-between w-full py-1 pb-3 bg-background transition-all', className)}>
                 <div className="items-center flex gap-2">
-                    {navigationStuff.map((item) => (
-                        <Link href={item.link}>
+                    {navigationStuff.map((item, index) => (
+                        <Link href={item.link} key={index}>
                             <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link && 'active-button')}>
                                 {item.component}
                                 {!mediumScreen ? String(item.name) : String('')}

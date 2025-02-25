@@ -11,57 +11,62 @@
         {
             "title": "Dark Fantasy",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Dark Fantasy.m4a"
+            "songLocation": "Dark Fantasy"
         },
         {
             "title": "Ghetto University",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Ghetto University.m4a"
+            "songLocation": "Ghetto University"
         },
         {
             "title": "Power",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Power.m4a"
+            "songLocation": "Power"
         },
         {
             "title": "Hell Of A Life (feat. Bon Iver)",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Hell Of A Life (feat. Bon Iver).m4a"
+            "songLocation": "Hell Of A Life (feat. Bon Iver)"
         },
         {
-            "title": "Runaway",
+            "title": "Runaway (feat. Pusha T)",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Runaway.m4a"
+            "songLocation": "Runaway (feat. Pusha T)"
+        },
+        {
+            "title": "Only For The Night",
+            "artist": "Kanye West",
+            "songLocation": "Only For The Night"
         },
         {
             "title": "Lonely",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Lonely.m4a"
+            "songLocation": "Lonely"
         },
         {
             "title": "That's My Bitch",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/That's My Bitch.m4a"
+            "songLocation": "That's My Bitch"
         },
         {
             "title": "Hate It (feat. Kid Cudi)",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Hate It (feat. Kid Cudi).m4a"
+            "songLocation": "Hate It (feat. Kid Cudi)"
         },
         {
             "title": "Throw Money Everywhere",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Throw Money Everywhere.m4a"
+            "songLocation": "Throw Money Everywhere"
         },
         {
             "title": "Down Town",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/Down Town.m4a"
+            "songLocation": "Down Town"
         },
         {
             "title": "See Me Again",
             "artist": "Kanye West",
-            "songLocation": "/song-files/songs/good-ass-job/See Me Again.m4a"
+            "songLocation": "See Me Again"
         }
     ]
 }

@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import '@public/CSS/song-controls.css';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
-import { Separator } from '@/components/ui/separator';
+import { useQueryState } from "nuqs";
 
 interface Song {
   title: string;
@@ -39,8 +39,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const songRef = useRef<HTMLAudioElement | null>(null);
   const [currentTimeVal, setCurrentTimeVal] = useState(0);
-  const [songTime, setSongtime] = useState(0);
-  const [songVal, setSongVal] = useState("");
   const [queue, setQueue] = useState<string[]>([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState(id.replace('-', ' '));
@@ -53,6 +51,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [albumExplanation, setAlbumExplanation] = useState("");
+  const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" })
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -84,8 +83,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   );
 
   useEffect(() => {
-    songRef.current = new Audio(songVal);
-  }, [songVal]);
+    songRef.current = new Audio(playingSong);
+  }, [playingSong]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -100,9 +99,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         song.pause();
       };
     }
-  }, [isPlaying, songVal]);
+  }, [isPlaying, playingSong]);
 
-  useEffect(() => {
+  React.useMemo(() => {
     const song = songRef.current;
     if (!song) return;
 
@@ -116,24 +115,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       song.removeEventListener("timeupdate", updateTime);
     };
   }, []);
-
-  useEffect(() => {
-    const element = "";
-    setSongTime(element);
-  }, []);
-
-  const setSongTime = (element: any) => {
-    const song = element.songLocation;
-    if (!song) return;
-
-    song.onloadedmetadata = () => {
-      setSongtime(song.duration);
-    };
-
-    return () => {
-      song.onloadedmetadata = null;
-    };
-  }
 
   useEffect(() => {
     const reiszeImage = () => {
@@ -152,8 +133,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   })
 
-  const handleClickEvent = (element: any, index: number) => {
-    setSongVal(element.songLocation);
+  const handleClickEvent = (element: Song, index: number) => {
+    setPlayingSong(`/song-files/songs/${id}/${element.songLocation}.m4a`);
     setIsPlaying(true);
     setAppearBar(true);
     setSongCreator(element.artist);
@@ -161,10 +142,23 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     setClickedAmmount(1);
   };
 
+  useEffect(() => {
+    if (playingSong && playingSong !== "" && songs.length > 0) {
+      const songIndex = songs.findIndex((song) => song.songLocation === playingSong)
+
+      if (songIndex !== -1) {
+        setAppearBar(true);
+        setSongCreator(songs[songIndex].artist);
+        setCurrentSongIndex(songIndex);
+        setClickedAmmount(1);
+      }
+    }
+  }, [songs, playingSong]);
+
   const playAlbum = () => {
     if (songs.length > 0) {
       if (clickedAmmount < 1) {
-        setSongVal(songs[0].songLocation);
+        setPlayingSong(`/song-files/songs/${id}/${songs[0].songLocation}.m4a`);
         setIsPlaying(true);
         setCurrentSongIndex(0);
       }
@@ -180,7 +174,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     const newIndex = back ? currentSongIndex - 1 : currentSongIndex + 1;
 
     setCurrentSongIndex(newIndex);
-    setSongVal(songs[newIndex].songLocation);
+    setPlayingSong(`/song-files/songs/${id}/${songs[newIndex].songLocation}.m4a`);
     setSongCreator(songs[newIndex].artist);
     setIsPlaying(true);
   };
@@ -189,11 +183,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     const song = songRef.current;
     if (song) {
       const handleSongEnd = () => {
-        if (!songRef.current || songs.length === 0) return;
         const newIndex = currentSongIndex + 1;
 
         setCurrentSongIndex(newIndex);
-        setSongVal(songs[newIndex].songLocation);
+        setPlayingSong(`/song-files/songs/${id}/${songs[newIndex].songLocation}.m4a`);
         setSongCreator(songs[newIndex].artist);
         setIsPlaying(true);
       }
@@ -203,7 +196,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         song.removeEventListener("ended", handleSongEnd);
       };
     }
-  }, [currentSongIndex, songs, songVal]);
+  }, [currentSongIndex, songs, playingSong]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -231,18 +224,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       song.volume = Number(localVolume) / 100;
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
-
-  // const formatTime = (time: number) => {
-  //   const minutes = Math.floor(time / 60);
-  //   const seconds = Math.floor(time % 60);
-  //   return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-  // };
-
-  // function rgbToHex(r: string | any, g: bigint | any, b: any) {
-  //   return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
-  // }
-
-  // console.log(id);
 
   return (
     <div>
@@ -284,7 +265,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                         </Button>
                       </DrawerTrigger>
                       <DrawerContent>
-                          <AlbumExplanationSmall id={id} />
+                        <AlbumExplanationSmall id={id} />
                       </DrawerContent>
                     </Drawer>
                   }
@@ -329,8 +310,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <div>
         <SongControls
           songRef={songRef}
-          songVal={songVal.replace(`/song-files/songs/${id}/`, "")
-            .replace(".m4a", "")}
+          songVal={playingSong.replace(`/song-files/songs/${id}/`, "").replace(".m4a", "")}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}
           optionalAppear={appearBar}

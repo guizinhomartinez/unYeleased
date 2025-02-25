@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon, Volume2, Volume1, Volume, VolumeX, VolumeOff } from "lucide-react";
+import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon, Volume2, Volume1, Volume, VolumeX, VolumeOff, Share } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -12,6 +12,11 @@ import { Progress } from "./ui/progress";
 import '@public/CSS/song-controls.css';
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Input } from "./ui/input";
+import ShareSong from "./shareSong";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 interface songControlsInterface {
     songRef: any;
@@ -149,48 +154,50 @@ export const SongControls = ({
     useEffect(() => {
         const song = songRef.current;
         if (!song) return;
-
-        navigator.mediaSession.setActionHandler('play', () => setIsPlaying(true));
-        navigator.mediaSession.setActionHandler('pause', () => setIsPlaying(false));
-        navigator.mediaSession.setActionHandler('previoustrack', () => handleSkipSong(true));
-        navigator.mediaSession.setActionHandler('nexttrack', () => handleSkipSong(false));
-
+    
         if ("mediaSession" in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: songVal,
-                artist: songCreator,
-                album: "Yandhi",
-                artwork: [
-                    {
-                        src: image,
-                        sizes: "96x96",
-                        type: "image/png",
-                    },
-                ],
-            });
+            try {
+                navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
+                navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
+                navigator.mediaSession.setActionHandler("previoustrack", () => handleSkipSong(true));
+                navigator.mediaSession.setActionHandler("nexttrack", () => handleSkipSong(false));
+    
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: songVal,
+                    artist: songCreator,
+                    album: "Yandhi",
+                    artwork: [
+                        {
+                            src: image,
+                            sizes: "96x96",
+                            type: "image/png",
+                        },
+                    ],
+                });
+    
+                const setPositionState = () => {
+                    if ("setPositionState" in navigator.mediaSession) {
+                        navigator.mediaSession.setPositionState({
+                            duration: songTime || 0,
+                            position: currentTimeVal || 0,
+                        });
+                    }
+                };
+    
+                setPositionState();
+    
+                song.addEventListener("timeupdate", setPositionState);
+                song.addEventListener("ended", setPositionState);
+    
+                return () => {
+                    song.removeEventListener("timeupdate", setPositionState);
+                    song.removeEventListener("ended", setPositionState);
+                };
+            } catch (e) {
+                console.log("Error setting media session handlers:", e);
+            }
         }
-
-        try {
-            const setPositionState = () => {
-                if ('setPositionState' in navigator.mediaSession) {
-                    navigator.mediaSession.setPositionState({
-                        duration: songTime || 0,
-                        position: currentTimeVal || 0,
-                    });
-                }
-            };
-
-            setPositionState();
-
-            song.addEventListener("ended", setPositionState);
-
-            return () => {
-                song.removeEventListener("ended", setPositionState);
-            };
-        } catch (e) {
-            console.log(e);
-        }
-    }, [songTime, currentTimeVal, handleSkipSong, songRef.current]);
+    }, [songTime, currentTimeVal, handleSkipSong, songVal, songCreator, image, songRef]);    
 
     return (
         <>
@@ -205,9 +212,7 @@ export const SongControls = ({
                 >
                     <DefaultSongControls
                         songRef={songRef}
-                        songVal={songVal
-                            .replace(`/song-files/songs/${id}/`, "")
-                            .replace(".m4a", "")}
+                        songVal={songVal}
                         isPlaying={isPlaying}
                         setIsPlaying={setIsPlaying}
                         optionalAppear={optionalAppear}
@@ -417,26 +422,46 @@ const DefaultSongControls = ({
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
-                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70")} onValueChange={handleSliderChange} />
+                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary")} onValueChange={handleSliderChange} />
                         <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
-                    <div className="items-center">
+                    <div className="items-center flex gap-2">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="rounded-full" variant='secondary' size='icon'>
+                                    <Share size='18' />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle>Share song</DialogTitle>
+                                </DialogHeader>
+                                <ShareSong />
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button>
+                                            Close
+                                        </Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button className="rounded-full" variant='secondary' size='icon'>
                                     <MicVocal size='18' />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-48 h-full rounded-xl bg-primary-foreground">
+                            <PopoverContent className="w-48 h-full rounded-xl bg-background">
                                 <div>WIP</div>
                             </PopoverContent>
                         </Popover>
                     </div>
                     <div className="w-1/2 flex gap-3 items-center">
-                        <VolumeSlider className="[&>:last-child>span]:bg-transparent [&>:last-child>span]:border-transparent" value={[volumeVal]} onValueChange={setVolumeVal} />
+                        <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} />
                         <Label className="w-12 text-right">{volumeVal}%</Label>
                     </div>
                 </div>
@@ -606,60 +631,84 @@ const MiniPlayer = ({
 
     return (
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
-        <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
-            <div className="flex flex-col gap-4 mt-0">
-                <div className="flex flex-col relative items-center">
-                    <Image src={albumCover} alt="Album Cover" width={345} height={340} className="rounded-xl shadow-lg" />
-                </div>
-                <div className="flex flex-col overflow-hidden">
-                    <div className="text-2xl font-semibold w-full scrolling-text relative select-none leading-none">{songVal || "Unknown"}</div>
-                    <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
-                </div>
-            </div>
-            <div className="flex flex-col justify-center gap-8 w-full mt-10">
-                <div className="w-full">
-                    <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={handleSliderChange} />
-                </div>
-                <div className="flex gap-1 items-center">
-                    <div className="w-full">{formatTime(currentTimeVal)}</div>
-                    <div className="flex gap-2 items-center w-full scale-110">
-                        <Button
-                            size="icon"
-                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                            variant="ghost"
-                            onClick={() => handleSkipSong(true)}
-                        >
-                            <SkipBack size='32' />
-                        </Button>
-                        <Button
-                            className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                            size="icon"
-                            onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                        >
-                            {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
-                        </Button>
-                        <Button
-                            size="icon"
-                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                            variant="ghost"
-                            onClick={() => handleSkipSong(false)}
-                        >
-                            <SkipForward size='32' />
-                        </Button>
+            <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
+                <div className="flex flex-col gap-4 mt-0">
+                    <div className="flex flex-col relative items-center">
+                        <Image src={albumCover} alt="Album Cover" width={345} height={340} className="rounded-xl shadow-lg" />
                     </div>
-                    <div className="w-full text-right">
-                        {isNaN(songTime) ? '00:00' : formatTime(songTime)}
+                    <div className="flex gap-2">
+                        <div className="flex flex-col overflow-hidden flex-1">
+                            <div className="text-2xl font-semibold w-full scrolling-text relative select-none leading-none">{songVal || "Unknown"}</div>
+                            <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
+                        </div>
+                        <div className="items-center flex gap-2">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="rounded-full" variant='secondary' size='icon'>
+                                        <Share size='18' />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-[90%] rounded-xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Share song</DialogTitle>
+                                    </DialogHeader>
+                                    <ShareSong />
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button>
+                                                Close
+                                            </Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
-                <div onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)}>
-                    <VolumeIcon size='18' />
+                <div className="flex flex-col justify-center gap-8 w-full mt-10">
+                    <div className="w-full">
+                        <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={handleSliderChange} />
+                    </div>
+                    <div className="flex gap-1 items-center">
+                        <div className="w-full">{formatTime(currentTimeVal)}</div>
+                        <div className="flex gap-2 items-center w-full scale-110">
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                variant="ghost"
+                                onClick={() => handleSkipSong(true)}
+                            >
+                                <SkipBack size='32' />
+                            </Button>
+                            <Button
+                                className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                size="icon"
+                                onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                            >
+                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                            </Button>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                variant="ghost"
+                                onClick={() => handleSkipSong(false)}
+                            >
+                                <SkipForward size='32' />
+                            </Button>
+                        </div>
+                        <div className="w-full text-right">
+                            {isNaN(songTime) ? '00:00' : formatTime(songTime)}
+                        </div>
+                    </div>
                 </div>
-                <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
-                <Label className="w-12 text-right">{volumeVal}%</Label>
+                <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
+                    <div onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)}>
+                        <VolumeIcon size='18' />
+                    </div>
+                    <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
+                    <Label className="w-12 text-right">{volumeVal}%</Label>
+                </div>
             </div>
-        </div>
         </ScrollArea>
     );
 };

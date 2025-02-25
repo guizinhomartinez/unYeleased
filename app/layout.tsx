@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Geist, Geist_Mono, Inter } from 'next/font/google'
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 const yeezy = localFont({
   src: '../public/yeezy_tstar-bold-webfont.ttf'
@@ -61,7 +62,9 @@ export default function RootLayout({
             zIndex={1600}
             showAtBottom={false}
           />
+          <NuqsAdapter>
           {children}
+          </NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
