@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDownUp, Disc } from "lucide-react"
+import { ArrowDown, ArrowDownUp, Disc, Info } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,8 @@ import { Particles } from "@/components/magicui/particles";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
-import { RainbowButton } from "@/components/magicui/rainbow-button";
 import { useQueryState } from "nuqs";
+import { motion } from "motion/react";
 
 async function fetchSongs() {
     const response = await fetch(`/song-files/fetchAlbums.json`);
@@ -110,9 +110,17 @@ export default function Page() {
                     <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>Compilation of all of Kanye's unreleased projects</BlurFade>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
-                        <RainbowButton className="rounded-full" onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })}>See all albums</RainbowButton>
+                        <Button onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-xl group">
+                            <div className="flex gap-2 items-center justify-center">
+                                <ArrowDown className="transition-transform group-hover:translate-y-0.5" /> See more
+                            </div>
+                        </Button>
                         <Link href="/about">
-                            <Button className="rounded-full items-center justify-center flex border-2" variant='outline'>About project</Button>
+                            <Button className="py-6 rounded-xl" variant='outline'>
+                                <div className="flex gap-2 items-center justify-center">
+                                    <Info /> About project
+                                </div>
+                            </Button>
                         </Link>
                     </BlurFade>
                 </div>
@@ -123,7 +131,7 @@ export default function Page() {
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button className="rounded-full">
+                                <Button>
                                     <ArrowDownUp />
                                     Sort by...
                                 </Button>
@@ -143,7 +151,7 @@ export default function Page() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <div className="flex w-full max-w-sm items-center sticky">
-                            <Input placeholder="Search..." className="rounded-full transition-all h-10" type="search" onChange={(e) => setSearchQuery(e.target.value)} />
+                            <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" onChange={(e) => setSearchQuery(e.target.value)} />
                             {/* <Button className="rounded-r-full w-12 border-r-none" size='icon' variant='outline'><Search className="-translate-x-0.5 opacity-60" /></Button> */}
                         </div>
                     </div>
