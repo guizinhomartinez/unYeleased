@@ -52,7 +52,6 @@ export default function Page() {
     const [none, setNone] = React.useState<Checked>(false);
     const [mediumScreen, setMediumScreen] = useState(false);
     const [entries, setEntries] = useState<Song[]>([]);
-    const [searchQuery, setSearchQuery] = useQueryState("search", { defaultValue: "" });
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -151,7 +150,7 @@ export default function Page() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <div className="flex w-full max-w-sm items-center sticky">
-                            <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" onChange={(e) => setSearchQuery(e.target.value)} />
+                            <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" />
                             {/* <Button className="rounded-r-full w-12 border-r-none" size='icon' variant='outline'><Search className="-translate-x-0.5 opacity-60" /></Button> */}
                         </div>
                     </div>
