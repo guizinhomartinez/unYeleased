@@ -1,0 +1,40 @@
+{
+    "config": [
+        {
+            "albumName": "Job Well Done (Good Ass Job 2018)",
+            "albumCreator": "Kanye West, Chance the Rapper",
+            "year": "2018",
+            "credits": "Credits to Sakiro West for songs and tracklist."
+        }
+    ],
+    "tracks": [
+        {
+            "title": "Clouted Up",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "How to Go Crazy",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "Black Men Don't Cheat",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "Pets",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "Never Let Me Down",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "Chance Ben 3",
+            "artist": "Kanye West, Chance the Rapper"
+        },
+        {
+            "title": "MJ (Boogz Edit)",
+            "artist": "Kanye West, Chance the Rapper"
+        }
+    ]
+}

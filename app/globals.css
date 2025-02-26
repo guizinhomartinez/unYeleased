@@ -11,6 +11,14 @@ body {
 
 .font-geist {
   font-family: var(--font-geist-sans), sans-serif;
+  font-weight: 800;
+}
+
+.toc {
+  position: fixed;
+  right: 2em;
+  text-align: right;
+  text-wrap: unset;
 }
 
 .page-transition {
@@ -87,6 +95,11 @@ nextjs-portal {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -113,6 +126,11 @@ nextjs-portal {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
 }
 

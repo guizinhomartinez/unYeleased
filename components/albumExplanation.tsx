@@ -61,7 +61,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button className="w-full items-center">
-                                            Original Source
+                                            Original Source(s)
                                             <ExternalLink />
                                         </Button>
                                     </TooltipTrigger>
@@ -119,7 +119,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             <div className="mt-4">
                 <Link href={source} target="_blank" className="mx-auto w-full">
                     <Button className="w-full items-center">
-                        Original Source
+                        Original Source(s)
                         <ExternalLink />
                     </Button>
                 </Link>

@@ -56,11 +56,11 @@ export default function Page() {
 
     return (
         <>
-            <div className="m-8 mb-0">
+            <div className="m-4 md:md-8 mb-0">
                 <Navbar />
             </div>
 
-            <div className="m-8 mt-4 overflow-x-hidden flex gap-4 flex-col">
+            <div className="m-4 md:md-8 mt-4 overflow-x-hidden flex gap-4 flex-col">
                 <div className="flex flex-col gap-2 items-end">
                     <Alert className="rounded-xl bg-amber-300/50 dark:bg-amber-300/25">
                         <CircleAlert className="size-7" />

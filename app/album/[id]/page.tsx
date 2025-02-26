@@ -51,7 +51,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [albumExplanation, setAlbumExplanation] = useState("");
-  const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" })
+  const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -83,8 +83,19 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   );
 
   useEffect(() => {
-    songRef.current = new Audio(playingSong);
-  }, [playingSong]);
+    const audioPrefix = `/song-files/songs/${id}/`;
+    const audioFileType = '.m4a';
+
+    console.log(audioPrefix + playingSong + audioFileType);
+
+    if (playingSong) {
+      try {
+        songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [playingSong, id]); // Only depend on playingSong and id
 
   useEffect(() => {
     const song = songRef.current;
@@ -134,7 +145,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   })
 
   const handleClickEvent = (element: Song, index: number) => {
-    setPlayingSong(`/song-files/songs/${id}/${element.songLocation}.m4a`);
+    setPlayingSong(element.title);
     setIsPlaying(true);
     setAppearBar(true);
     setSongCreator(element.artist);
@@ -144,7 +155,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     if (playingSong && playingSong !== "" && songs.length > 0) {
-      const songIndex = songs.findIndex((song) => song.songLocation === playingSong)
+      const songIndex = songs.findIndex((song) => song.title === playingSong)
 
       if (songIndex !== -1) {
         setAppearBar(true);
@@ -158,7 +169,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const playAlbum = () => {
     if (songs.length > 0) {
       if (clickedAmmount < 1) {
-        setPlayingSong(`/song-files/songs/${id}/${songs[0].songLocation}.m4a`);
+        setPlayingSong(songs[0].title);
         setIsPlaying(true);
         setCurrentSongIndex(0);
       }
@@ -174,7 +185,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     const newIndex = back ? currentSongIndex - 1 : currentSongIndex + 1;
 
     setCurrentSongIndex(newIndex);
-    setPlayingSong(`/song-files/songs/${id}/${songs[newIndex].songLocation}.m4a`);
+    setPlayingSong(songs[newIndex].title);
     setSongCreator(songs[newIndex].artist);
     setIsPlaying(true);
   };
@@ -186,7 +197,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         const newIndex = currentSongIndex + 1;
 
         setCurrentSongIndex(newIndex);
-        setPlayingSong(`/song-files/songs/${id}/${songs[newIndex].songLocation}.m4a`);
+        setPlayingSong(songs[newIndex].title);
         setSongCreator(songs[newIndex].artist);
         setIsPlaying(true);
       }
@@ -264,7 +275,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent>
+                      <DrawerContent className='h-[80%] items-center rounded-t-3xl'>
                         <AlbumExplanationSmall id={id} />
                       </DrawerContent>
                     </Drawer>
@@ -299,18 +310,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
           </div>
         </div>
-        {showExplanation && imageSize === 260 && (
-          <AnimatePresence>
+        <AnimatePresence>
+          {showExplanation && imageSize === 260 && (
             <motion.div className='' initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.8, ease: "backInOut", }}>
               <AlbumExplanation id={id} />
             </motion.div>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
       </div>
       <div>
         <SongControls
           songRef={songRef}
-          songVal={playingSong.replace(`/song-files/songs/${id}/`, "").replace(".m4a", "")}
+          songVal={playingSong}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}
           optionalAppear={appearBar}

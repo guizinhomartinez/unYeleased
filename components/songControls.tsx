@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Input } from "./ui/input";
 import ShareSong from "./shareSong";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import Lyrics from "./lyrics";
 
 interface songControlsInterface {
     songRef: any;
@@ -170,29 +171,15 @@ export const SongControls = ({
                         {
                             src: image,
                             sizes: "96x96",
-                            type: "image/png",
+                            type: "image/jpg",
                         },
                     ],
                 });
-    
-                const setPositionState = () => {
-                    if ("setPositionState" in navigator.mediaSession) {
-                        navigator.mediaSession.setPositionState({
-                            duration: songTime || 0,
-                            position: currentTimeVal || 0,
-                        });
-                    }
-                };
-    
-                setPositionState();
-    
-                song.addEventListener("timeupdate", setPositionState);
-                song.addEventListener("ended", setPositionState);
-    
-                return () => {
-                    song.removeEventListener("timeupdate", setPositionState);
-                    song.removeEventListener("ended", setPositionState);
-                };
+
+                navigator.mediaSession.setPositionState({
+                    duration: songRef.current.duration || 0,
+                    position: songRef.current.currentTime || 0,
+                })
             } catch (e) {
                 console.log("Error setting media session handlers:", e);
             }
@@ -456,7 +443,7 @@ const DefaultSongControls = ({
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-48 h-full rounded-xl bg-background">
-                                <div>WIP</div>
+                                <Lyrics />
                             </PopoverContent>
                         </Popover>
                     </div>
@@ -636,7 +623,7 @@ const MiniPlayer = ({
                     <div className="flex flex-col relative items-center">
                         <Image src={albumCover} alt="Album Cover" width={345} height={340} className="rounded-xl shadow-lg" />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mt-4">
                         <div className="flex flex-col overflow-hidden flex-1">
                             <div className="text-2xl font-semibold w-full scrolling-text relative select-none leading-none">{songVal || "Unknown"}</div>
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
@@ -645,7 +632,7 @@ const MiniPlayer = ({
                             <Dialog>
                                 <DialogTrigger asChild>
                                     <Button className="rounded-full" variant='secondary' size='icon'>
-                                        <Share size='18' />
+                                        <Share />
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className="max-w-[90%] rounded-xl">
@@ -702,9 +689,9 @@ const MiniPlayer = ({
                     </div>
                 </div>
                 <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
-                    <div onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)}>
+                    <Button onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)} variant='outline' size='icon'>
                         <VolumeIcon size='18' />
-                    </div>
+                    </Button>
                     <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
                     <Label className="w-12 text-right">{volumeVal}%</Label>
                 </div>

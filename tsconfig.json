@@ -23,6 +23,6 @@
       "@public/*": ["./public/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "markdown/about.mdx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "markdown/about.mdx", "app/about/create-album/page.tsx", "app/about/page.tsx"],
   "exclude": ["node_modules"]
 }
