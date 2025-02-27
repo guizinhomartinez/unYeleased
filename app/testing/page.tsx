@@ -97,11 +97,11 @@ export default function Page() {
 
     return (
         <>
-            <div className="m-5 md:md-8 mb-0">
+            <div className="m-4 md:md-8 mb-0">
                 <Navbar />
             </div>
 
-            <div className="m-4 md:md-8 px-1 overflow-x-hidden flex gap-4 flex-col">
+            <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
                 <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
@@ -130,7 +130,7 @@ export default function Page() {
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button>
+                                <Button className="rounded-xl">
                                     <ArrowDownUp />
                                     Sort by...
                                 </Button>

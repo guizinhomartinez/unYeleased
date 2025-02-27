@@ -1,22 +1,18 @@
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { SkipBack, Play, Pause, SkipForward, ChevronDown, MicVocal, Volume1Icon, Volume2, Volume1, Volume, VolumeX, VolumeOff, Share } from "lucide-react";
+import { SkipBack, Play, Pause, SkipForward, MicVocal, Volume2, Volume1, Volume, VolumeX, VolumeOff, Share } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import AlbumCover from "@/components/getAverageColor";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { Progress } from "./ui/progress";
 
 import '@public/CSS/song-controls.css';
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { Input } from "./ui/input";
 import ShareSong from "./shareSong";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Lyrics from "./lyrics";
 
 interface songControlsInterface {
@@ -190,7 +186,7 @@ export const SongControls = ({
         <>
             {!mediumScreen ? (
                 <div
-                    className={`fixed bottom-2 rounded-2xl w-full max-w-[93vw]
+                    className={`fixed bottom-2 rounded-2xl w-full max-w-[95.5vw]
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
                         flex items-center transition-all duration-500 shadow-lg ${appearBar ? "translate-y-0" : "translate-y-24"
                         }`}
@@ -218,7 +214,7 @@ export const SongControls = ({
                     <Drawer>
                         <DrawerTrigger asChild>
                             <div
-                                className={`fixed bottom-2 rounded-2xl w-full max-w-[88vw] left-1/2 -translate-x-1/2
+                                className={`fixed bottom-2 rounded-2xl w-full max-w-[92vw] left-1/2 -translate-x-1/2
                                     bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary flex items-center transition-all duration-500 shadow-lg overflow-hidden
                                 ${appearBar ? "translate-y-0" : "translate-y-24"
                                     }`}
@@ -684,12 +680,12 @@ const MiniPlayer = ({
                             </Button>
                         </div>
                         <div className="w-full text-right">
-                            {isNaN(songTime) ? '00:00' : formatTime(songTime)}
+                            {isNaN(songTime) ? '0:00' : formatTime(songTime)}
                         </div>
                     </div>
                 </div>
                 <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
-                    <Button onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)} variant='outline' size='icon'>
+                    <Button onClick={() => songRef.current && (songRef.current.muted = !songRef.current.muted)} variant='outline' className="rounded-xl">
                         <VolumeIcon size='18' />
                     </Button>
                     <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />

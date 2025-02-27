@@ -3,21 +3,21 @@
         {
             "image": "/song-files/covers/yandhi.jpg",
             "text": "Yandhi",
-            "subtext": "Album",
+            "subtext": null,
             "link": "/album/yandhi",
             "tags": ["2018", "Album"]
         },
         {
             "image": "/song-files/covers/job-well-done.jpg",
             "text": "Job Well Done",
-            "subtext": "Album",
+            "subtext": null,
             "link": "/album/job-well-done",
             "tags": ["2018", "Album"]
         },
         {
             "image": "/song-files/covers/bully-big.jpg",
-            "text": "Bully",
-            "subtext": "Beauty and the Beast",
+            "text": "Beauty and The Beast",
+            "subtext": "Version from Yeezy.com",
             "tags": ["2025", "Single"],
             "link": "/song/beauty-and-the-beast"
         },
@@ -31,21 +31,21 @@
         {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
-            "subtext": "Released Version (Clean)",
+            "subtext": "Released Clean Version",
             "tags": ["2025", "Single"],
             "link": "/song/wheels-fall-off-released"
         },
         {
             "image": "/song-files/covers/good-ass-job.jpg",
             "text": "Good Ass Job",
-            "subtext": "Album",
+            "subtext": null,
             "tags": ["2009", "Album"],
             "link": "/album/good-ass-job"
         },
         {
             "image": "/song-files/covers/yeezus-2.jpg",
             "text": "Yeezus 2",
-            "subtext": "Album",
+            "subtext": null,
             "tags": ["2014", "Album"],
             "link": "/album/yeezus-2"
         }

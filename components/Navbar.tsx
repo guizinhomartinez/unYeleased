@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Home, Info, Moon, PlusCircle, PlusSquare, Sun } from "lucide-react"
+import { Github, HardHat, Home, Info, Moon, PlusCircle, PlusSquare, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -31,6 +31,11 @@ const navigationStuff = [
         name: "Create Albums",
         component: <PlusCircle />,
         link: "/about/create-album"
+    },
+    {
+        name: "Testing Home Page",
+        component: <HardHat />,
+        link: "/testing"
     }
 ]
 

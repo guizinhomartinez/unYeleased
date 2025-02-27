@@ -238,14 +238,14 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div>
-      <div className='flex flex-col md:flex-row gap-2 justify-between'>
+      <div className='flex flex-col md:flex-row gap-4 transition-all duration-300'>
         <div className='flex-1'>
-          <div className='absolute left-2 top-2'>
+          <div className='absolute left-4 md:left-5 top-2'>
             <HandleTransition href="/">
               <Button className="" size='icon' variant='ghost'><ChevronLeft /></Button>
             </HandleTransition>
           </div>
-          <div className={`flex gap-4 items-center p-6 md:p-12 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
+          <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
             <div className='flex flex-col md:flex-row items-center gap-5'>
               <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} priority={true} className='md:mt-4 rounded-xl outline outline-primary/10' />
               <div className='flex flex-col gap-2'>
@@ -285,16 +285,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
           </div>
 
-          <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-6 md:mx-12 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
+          <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
 
-          <div className='m-6 md:m-12 md:mt-4 flex flex-col gap-4'>
+          <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
             <div className='flex items-center relative'>
               <Input type='search' className='pl-[3em] bg-primary-foreground border-2 border-secondary' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for your favorite song"></Input>
               <div className='absolute left-3 pr-2 py-2 border-r-2 border-r-secondary cursor-pointer'>
                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
               </div>
             </div>
-            <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-20 md:mb-20'>
+            <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-24'>
               {filteredContent.map((element, index) => (
                 <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-center gap-3'>
@@ -312,7 +312,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         </div>
         <AnimatePresence>
           {showExplanation && imageSize === 260 && (
-            <motion.div className='' initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.8, ease: "backInOut", }}>
+            <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.8, ease: "backInOut", }} layoutId="albumExplanation">
               <AlbumExplanation id={id} />
             </motion.div>
           )}

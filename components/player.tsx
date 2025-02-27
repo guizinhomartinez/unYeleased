@@ -11,6 +11,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { DropdownMenuShortcut } from "./ui/dropdown-menu";
+import { ScrollArea } from "./ui/scroll-area";
 
 export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics", lyrics = "banana" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string, lyrics: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -21,7 +22,13 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     const songRef = useRef<HTMLAudioElement | null>(null);
     const [showKeybind, setShowKeybind] = useState(true);
     const [showLyrics, setShowLyrics] = useState(false);
-    const [volumeVal, setVolumeVal] = useState<number>(100); // Default to 100
+    const [volumeVal, setVolumeVal] = useState(100);
+    const [sliderValue, setSliderValue] = useState(0);
+
+    useEffect(() => {
+        const storedVolume = localStorage.getItem("volume") || 100;
+        setVolumeVal(Number(storedVolume));
+    }, []);
 
     useEffect(() => {
         songRef.current = new Audio(songVal);
@@ -50,24 +57,42 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     }, [isPlaying]);
 
     useEffect(() => {
-        if (songRef.current) {
-            songRef.current.volume = volumeVal / 100; // Convert 0-100 to 0.0-1.0
+        const song = songRef.current;
+        if (!song) return;
+
+        localStorage.setItem("volume", volumeVal.toString());
+
+        const localVolume = localStorage.getItem("volume");
+
+        if (localVolume === null) {
+            song.volume = volumeVal / 100;
+        } else {
+            song.volume = Number(localVolume) / 100;
         }
     }, [volumeVal]);
 
-    useEffect(() => {
+    const useEffectConst = () => {
         const song = songRef.current;
         if (!song) return;
 
         const updateTime = () => {
+            if (song.duration) {
+                setSliderValue((song.currentTime / song.duration) * 100);
+            }
             setCurrentTimeVal(song.currentTime);
         };
+
+        setSongtime(song.duration);
 
         song.addEventListener("timeupdate", updateTime);
 
         return () => {
             song.removeEventListener("timeupdate", updateTime);
         };
+    }
+
+    useEffect(() => {
+        useEffectConst();
     }, []);
 
     useEffect(() => {
@@ -123,16 +148,17 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         }
     }, [window.innerWidth])
 
-    useEffect(() => {
-        if (showLyrics === false) {
-            document.querySelector('.tab-1')?.classList.add('active');
-            document.querySelector('.tab-2')?.classList.remove('active');
-        } else {
-            document.querySelector('.tab-1')?.classList.remove('active');
-            document.querySelector('.tab-2')?.classList.add('active');
-        }
-    }, [showLyrics, showExplanation])
     const [parent] = useAutoAnimate();
+
+    const handleSliderChange = (value: number[]) => {
+        const newValue = value[0];
+        setSliderValue(newValue)
+        if (songRef.current) {
+            const newTime = (newValue / 100) * songRef.current.duration;
+            songRef.current.currentTime = newTime;
+            setCurrentTimeVal(newTime);
+        }
+    }
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-screen" ref={parent}>
@@ -146,9 +172,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                         <Dot className={`mr-1 ${!showKeybind && 'hidden'}`} />
                         <div className={`flex gap-2 items-center ${!showKeybind && 'hidden'}`}>
                             <div className="w-7 h-7 rounded-md border border-primary/15 bg-secondary text-sm shadow-md flex justify-center items-center">
-                                <div>
-                                    S
-                                </div>
+                                <div>S</div>
                             </div>
                             For Song Info
                         </div>
@@ -161,10 +185,10 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                                     <div className="text-center text-xl">{thing.text}</div>
                                     <div className="text-center opacity-80 text-md">{thing.subtext}</div>
                                 </div>
-                                <div className="flex mx-auto">
-                                    <div className="text-md opacity-60 text-center">{formatTime(currentTimeVal)}</div>
-                                    <Dot className="opacity-60" />
-                                    <div className="text-md opacity-60 text-center">{formatTime(songTime)}</div>
+                                <div className="flex mx-auto gap-2 mt-4">
+                                    <div className="text-md opacity-60 w-12 text-right">{formatTime(currentTimeVal)}</div>
+                                    <Slider value={[sliderValue]} max={100} step={1} className={cn("w-48 [&>:last-child>span]:bg-primary")} onValueChange={handleSliderChange} />
+                                    <div className="text-md opacity-60 text-center w-12">{formatTime(songTime)}</div>
                                 </div>
                             </div>
                         </div>
@@ -182,20 +206,13 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                             </Button>
                         </div>
                         <div className="flex gap-4 mx-auto">
-                            <VolumeSlider onValueChange={(e) => {
-                                setVolumeVal(e[0]); // Update the state
-                            }} />
+                            <VolumeSlider className="w-48" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
                             <Label>{volumeVal}%</Label>
                         </div>
                     </div>
                 </div>
             </div>
-            {showExplanation && <InfoCard
-                backgroundLore={backgroundLore}
-                linkToGenius={linkToGenius}
-                lyrics={lyrics}
-                onClose={handleClick}
-            />}
+            {showExplanation && <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />}
         </div>
     );
 }
@@ -212,12 +229,9 @@ const InfoCard = ({
     onClose: () => void;
 }) => {
     const formattedLyrics = lyrics.split('\n').map((line, index) => {
-        // Check if the line is empty or contains only whitespace
         if (line.trim() === '') {
-            // Return a special element to represent the space between paragraphs
-            return <div key={index} className="mb-8"></div>; // You can adjust the margin as needed
+            return <div key={index} className="mb-8"></div>;
         } else {
-            // Return the regular line with the appropriate styling
             return (
                 <div key={index} className="mb-0.5">
                     <div>{line}</div>
@@ -245,10 +259,14 @@ const InfoCard = ({
                         <p className={`${styles}`}>{backgroundLore}</p>
                     </TabsContent>
                     <TabsContent value="lyrics" className="bg-primary-foreground rounded-xl mx-0.5 border-2 border-secondary">
-                        <div className={`${styles} lyrics-tab h-fit`}>{formattedLyrics}</div>
+                        <div className={`${styles} lyrics-tab h-[80vh]`}>
+                        <ScrollArea className="h-[73vh] w-full">
+                                {formattedLyrics}
+                            </ScrollArea>
+                        </div>
                     </TabsContent>
                 </Tabs>
-                <div className="flex flex-col gap-6 justify-center items-center rounded-xl bg-gradient-to-b from-primary-foreground/50 to-transparent from-60% border border-secondary mt-4 mx-0.5 p-4">
+                <div className="flex flex-col gap-6 justify-center items-center rounded-xl bg-primary-foreground/50 border border-secondary mt-4 mx-0.5 p-4">
                     <div className="text-primary/50">
                         All descriptions and lyrics are from Genius.com. Please, check them out by clicking the button below.
                     </div>
@@ -293,7 +311,7 @@ const Navbar = ({ text, isPlaying, setIsPlaying }: { text: string, isPlaying: bo
     );
 };
 
-type SliderProps = React.ComponentProps<typeof Slider>
+type SliderProps = React.ComponentProps<typeof Slider>;
 
 function VolumeSlider({ className, ...props }: SliderProps) {
     return (
@@ -301,8 +319,8 @@ function VolumeSlider({ className, ...props }: SliderProps) {
             defaultValue={[100]}
             max={100}
             step={1}
-            className={cn("w-48", className)}
+            className={cn("w-full", className)}
             {...props}
         />
-    )
+    );
 }
