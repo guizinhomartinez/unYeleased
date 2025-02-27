@@ -70,9 +70,12 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                                 </DialogTitle>
                                 <DialogDescription>All sources used for this explanation</DialogDescription>
                                 {source.map((item, index) => (
-                                    <Button variant='secondary' key={index}>
-                                        {item}
-                                    </Button>
+                                    <Link href={item} key={index} target="_blank" className="w-full">
+                                        <Button variant='secondary' className="w-full">
+                                            {item}
+                                        </Button>
+                                    </Link>
+
                                 ))}
                             </DialogContent>
                         </Dialog>
