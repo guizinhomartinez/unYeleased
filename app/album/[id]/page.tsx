@@ -22,7 +22,7 @@ interface Song {
 }
 
 async function fetchSongs(id: string) {
-  const response = await fetch(`../song-files/songLists/albums/${id.toLowerCase()}.json`);
+  const response = await fetch(`../song-files/songLists/${id.toLowerCase()}.json`);
   return response.json();
 }
 
