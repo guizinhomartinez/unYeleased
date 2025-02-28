@@ -27,7 +27,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
         }
 
         const fetchSource = async () => {
-            const data = await fetch(`../song-files/albumInfo/albums/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
+            const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
             console.log(data);
             const formattedData = data.split('\n');
             setSource(formattedData);
@@ -51,7 +51,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                                 {/* <div className="w-full" style={{ height: '0.9em' }}></div> */}
                                 <DynamicHeader components={overrideComponents} />
                                 <div className="gradient-thing-reverse"></div>
-                                {/* <div className="w-full" style={{ height: '2em' }}></div> */}
+                                <div className="w-full" style={{ height: '.5em' }}></div>
                             </ScrollArea>
                         </div>
                     ) : (
@@ -77,7 +77,6 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                                             {item}
                                         </Button>
                                     </Link>
-
                                 ))}
                             </DialogContent>
                         </Dialog>

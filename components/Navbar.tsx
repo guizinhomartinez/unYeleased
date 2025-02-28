@@ -41,16 +41,16 @@ const navigationStuff = [
         component: <Home />,
         link: "/"
     },
-    {
-        name: "About",
-        component: <Info />,
-        link: "/about"
-    },
-    {
-        name: "Create Albums",
-        component: <PlusCircle />,
-        link: "/about/create-album"
-    },
+    // {
+    //     name: "About",
+    //     component: <Info />,
+    //     link: "/about"
+    // },
+    // {
+    //     name: "Create Albums",
+    //     component: <PlusCircle />,
+    //     link: "/about/create-album"
+    // },
     {
         name: "Testing Home Page",
         component: <HardHat />,
