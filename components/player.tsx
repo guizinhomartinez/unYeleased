@@ -30,10 +30,6 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         setVolumeVal(Number(storedVolume));
     }, []);
 
-    useEffect(() => {
-        songRef.current = new Audio(songVal);
-    }, [songVal]);
-
     const content = [
         {
             image: image,
@@ -69,7 +65,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         } else {
             song.volume = Number(localVolume) / 100;
         }
-    }, [volumeVal]);
+    }, [volumeVal, isPlaying]);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -96,17 +92,8 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     }, []);
 
     useEffect(() => {
-        const song = songRef.current;
-        if (!song) return;
-
-        song.onloadedmetadata = () => {
-            setSongtime(song.duration);
-        };
-
-        return () => {
-            song.onloadedmetadata = null;
-        };
-    }, []);
+        useEffectConst();
+    }, [songVal, isPlaying]);
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
@@ -146,7 +133,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         } else {
             return setShowKeybind(true);
         }
-    }, [window.innerWidth])
+    }, [])
 
     const [parent] = useAutoAnimate();
 
@@ -159,6 +146,16 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
             setCurrentTimeVal(newTime);
         }
     }
+
+    useEffect(() => {
+        if (songVal) {
+            try {
+                songRef.current = new Audio(songVal);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }, [songVal]);
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-screen" ref={parent}>
@@ -182,12 +179,12 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
                             <Image src={thing.image} alt={thing.subtext} width={300} height={300} className="cursor-pointer mx-auto w-auto h-auto rounded-xl shadow-lg" id="image-cover" onClick={() => { setIsPlaying(!isPlaying); }} />
                             <div className="flex flex-col mt-7">
                                 <div>
-                                    <div className="text-center text-xl">{thing.text}</div>
-                                    <div className="text-center opacity-80 text-md">{thing.subtext}</div>
+                                    <div className="text-center text-2xl font-bold">{thing.text}</div>
+                                    <div className="text-center text-primary/50 text-md">{thing.subtext}</div>
                                 </div>
                                 <div className="flex mx-auto gap-2 mt-4">
                                     <div className="text-md opacity-60 w-12 text-right">{formatTime(currentTimeVal)}</div>
-                                    <Slider value={[sliderValue]} max={100} step={1} className={cn("w-48 [&>:last-child>span]:bg-primary")} onValueChange={handleSliderChange} />
+                                    <Slider value={[sliderValue]} max={100} step={1} className="w-48 [&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
                                     <div className="text-md opacity-60 text-center w-12">{formatTime(songTime)}</div>
                                 </div>
                             </div>
@@ -260,7 +257,7 @@ const InfoCard = ({
                     </TabsContent>
                     <TabsContent value="lyrics" className="bg-primary-foreground rounded-xl mx-0.5 border-2 border-secondary">
                         <div className={`${styles} lyrics-tab h-[80vh]`}>
-                        <ScrollArea className="h-[73vh] w-full">
+                            <ScrollArea className="h-[73vh] w-full">
                                 {formattedLyrics}
                             </ScrollArea>
                         </div>

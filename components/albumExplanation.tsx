@@ -6,17 +6,19 @@ import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "./ui/button"
 import Link from "next/link"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, Loader2, LoaderIcon } from "lucide-react"
 import { DialogContent, DialogTitle, DialogTrigger, Dialog, DialogDescription } from "./ui/dialog"
+import { overrideComponents } from "./overrideComponents"
+import { cn } from "@/lib/utils"
 
 export const AlbumExplanation = ({ id }: { id: string }) => {
-    const [DynamicHeader, setDynamicHeader] = useState<React.ComponentType | null>(null);
+    const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
     const [source, setSource] = useState<string[]>([]);
 
     useEffect(() => {
         const loadMdxComponent = async () => {
             try {
-                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
+                const module = await import(`@/public/song-files/albumInfo/albums/${id.toLowerCase()}/albumExplanation.mdx`);
                 setDynamicHeader(() => module.default);
             } catch (error) {
                 console.error("Failed to load MDX file:", error);
@@ -25,7 +27,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
         }
 
         const fetchSource = async () => {
-            const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
+            const data = await fetch(`../song-files/albumInfo/albums/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
             console.log(data);
             const formattedData = data.split('\n');
             setSource(formattedData);
@@ -38,7 +40,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     return (
         <div className="flex h-screen">
             <Separator orientation="vertical" className="h-screen rounded-full bg-gradient-to-b from-muted/80 to-transparent to-95% mt-1 -translate-x-2" />
-            <div className="w-[30vw] bg-primary-foreground p-3 mt-3 mr-8 rounded-xl top-12 mb-32 ml-3 border-2 border-secondary">
+            <div className="w-[32vw] bg-primary-foreground p-3 mt-3 mr-8 rounded-xl top-12 mb-32 ml-3 border-2 border-secondary">
                 <div className="relative h-full">
                     <div className="text-3xl font-semibold">Album Explanation</div>
                     <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
@@ -46,16 +48,16 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                         <div className="">
                             <ScrollArea className="h-[65vh] text-md pr-3">
                                 <div className="gradient-thing"></div>
-                                <div className="w-full" style={{ height: '0.9em' }}></div>
-                                <DynamicHeader />
+                                {/* <div className="w-full" style={{ height: '0.9em' }}></div> */}
+                                <DynamicHeader components={overrideComponents} />
                                 <div className="gradient-thing-reverse"></div>
-                                <div className="w-full" style={{ height: '2em' }}></div>
+                                {/* <div className="w-full" style={{ height: '2em' }}></div> */}
                             </ScrollArea>
                         </div>
                     ) : (
-                        <p>Loading...</p>
+                        <Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />
                     )}
-                    <div className="absolute bottom-0 left-0 w-full flex flex-col justify-center">
+                    <div className="absolute bottom-0 left-0 w-full flex flex-col justify-center bg-primary-foreground">
                         <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
                         <Dialog>
                             <DialogTrigger asChild>
@@ -88,7 +90,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
 }
 
 export const AlbumExplanationSmall = ({ id }: { id: string }) => {
-    const [DynamicHeader, setDynamicHeader] = useState<React.ComponentType | null>(null);
+    const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
     const [source, setSource] = useState("");
 
     useEffect(() => {
@@ -118,9 +120,9 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
             <div className="mx-0.5">
                 {DynamicHeader ? (
-                    <DynamicHeader />
+                    <DynamicHeader components={overrideComponents} />
                 ) : (
-                    <p>Loading...</p>
+                    <Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />
                 )}
             </div>
             <div className="mt-4">

@@ -16,14 +16,15 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [ ] Wolves
 - [ ] Swish
 - [ ] WAVES
-- [ ] Job Well Done (AKA Good Ass Job 2018)
+- [x] Job Well Done (AKA Good Ass Job 2018)
 - [ ] LOVE EVERYONE
 - [ ] Jesus Is King II
 - [ ] God's Country
 - [ ] DONDA: WITH CHILD
 - [ ] DONDA II
 - [ ] War
-- [ ] Watch The Throne
+- [ ] YEBU
+- [ ] Watch The Throne 2
 - [ ] VULTURES 3
 
 ### UI

@@ -12,7 +12,7 @@ import '@public/CSS/song-controls.css';
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
 import ShareSong from "./shareSong";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Lyrics from "./lyrics";
 
 interface songControlsInterface {
@@ -423,13 +423,6 @@ const DefaultSongControls = ({
                                     <DialogTitle>Share song</DialogTitle>
                                 </DialogHeader>
                                 <ShareSong />
-                                <DialogFooter>
-                                    <DialogClose asChild>
-                                        <Button>
-                                            Close
-                                        </Button>
-                                    </DialogClose>
-                                </DialogFooter>
                             </DialogContent>
                         </Dialog>
                         <Popover>
@@ -636,13 +629,6 @@ const MiniPlayer = ({
                                         <DialogTitle>Share song</DialogTitle>
                                     </DialogHeader>
                                     <ShareSong />
-                                    <DialogFooter>
-                                        <DialogClose asChild>
-                                            <Button>
-                                                Close
-                                            </Button>
-                                        </DialogClose>
-                                    </DialogFooter>
                                 </DialogContent>
                             </Dialog>
                         </div>

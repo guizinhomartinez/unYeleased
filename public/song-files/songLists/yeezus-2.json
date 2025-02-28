@@ -9,7 +9,15 @@
     ],
     "tracks": [
         {
+            "title": "The World",
+            "artist": "Kanye West"
+        },
+        {
             "title": "After You (feat. John Legend, Pusha T & Sia)",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Outro",
             "artist": "Kanye West"
         }
     ]

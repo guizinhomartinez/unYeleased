@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown, ArrowDownUp, Disc, Info } from "lucide-react"
+import { ArrowDown, ArrowDownUp, Disc, Info, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -23,13 +23,7 @@ import { Particles } from "@/components/magicui/particles";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
-import { useQueryState } from "nuqs";
-import { motion } from "motion/react";
-
-async function fetchSongs() {
-    const response = await fetch(`/song-files/fetchAlbums.json`);
-    return response.json();
-}
+import { AnimatePresence, motion, useScroll } from "motion/react";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
@@ -52,6 +46,7 @@ export default function Page() {
     const [none, setNone] = React.useState<Checked>(false);
     const [mediumScreen, setMediumScreen] = useState(false);
     const [entries, setEntries] = useState<Song[]>([]);
+    const [searchQuery, setSearchQuery] = useState("")
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -95,11 +90,49 @@ export default function Page() {
         }
     });
 
+    const { scrollYProgress } = useScroll();
+
+
+    const handleKeyDown = useEffect(() => {
+        const search = document.getElementById("search");
+        const handleKey = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+                e.preventDefault();
+                search?.focus();
+            }
+            if (e.key === "Escape") {
+                search?.blur();
+            }
+        };
+
+        window.addEventListener("keydown", handleKey);
+
+        return () => {
+            window.removeEventListener("keydown", handleKey);
+        };
+    })
+
+
     return (
         <>
             <div className="m-4 md:md-8 mb-0">
                 <Navbar />
             </div>
+
+            {/* <motion.div
+                id="scroll-indicator"
+                style={{
+                    scaleX: scrollYProgress,
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 10,
+                    originX: 0,
+                    backgroundColor: "#ff0088",
+                    zIndex: 50
+                }}
+            /> */}
 
             <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
                 <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
@@ -117,7 +150,8 @@ export default function Page() {
                         <Link href="/about">
                             <Button className="py-6 rounded-xl" variant='outline'>
                                 <div className="flex gap-2 items-center justify-center">
-                                    <Info /> About project
+                                    <Info />
+                                    About project
                                 </div>
                             </Button>
                         </Link>
@@ -138,52 +172,60 @@ export default function Page() {
                             <DropdownMenuContent className="w-56" align="start">
                                 <DropdownMenuLabel>Year sorting</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuCheckboxItem checked={none} onCheckedChange={setNone}>
+                                <DropdownMenuCheckboxItem checked={none} onCheckedChange={setNone} onChange={() => setSearchQuery('')}>
                                     None
                                 </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem checked={show2025} onCheckedChange={setShow2025}>
+                                <DropdownMenuCheckboxItem checked={show2025} onCheckedChange={setShow2025} onChange={() => setSearchQuery('2025')}>
                                     2025
                                 </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem checked={show2024} onCheckedChange={setShow2024}>
+                                <DropdownMenuCheckboxItem checked={show2024} onCheckedChange={setShow2024} onChange={() => setSearchQuery('2024')}>
                                     2024
                                 </DropdownMenuCheckboxItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <div className="flex w-full max-w-sm items-center sticky">
-                            <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" />
-                            {/* <Button className="rounded-r-full w-12 border-r-none" size='icon' variant='outline'><Search className="-translate-x-0.5 opacity-60" /></Button> */}
-                        </div>
+                        <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
+                            <div className="flex w-full max-w-sm items-center relative">
+                                <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
+                                <div className="text-muted-foreground/80 pointer-events-none ml-auto flex items-center justify-center">
+                                    <kbd className="text-muted-foreground inline-flex font-[inherit] text-xs font-medium absolute right-3">
+                                        <span className="opacity-70">⌘</span>K
+                                    </kbd>
+                                </div>
+                            </div>
+                        </React.Suspense>
                     </div>
                     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-4">
-                        {entries.map((entry, index) => (
+                        {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
                             <Link href={entry.link}>
-                                <div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer" key={index}>
-                                    <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" />
-                                    <div className="flex flex-col justify-center items-center w-full">
-                                        <div className="font-semibold text-start">{entry.text}</div>
-                                        <div className="whitespace-pre-wrap text-left text-muted-foreground">Kanye West, Chance the Rapper</div>
-                                        <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
-                                            {entry.subtext != null ?
-                                                <div className="flex flex-col px-2 py-1 justify-start">
-                                                    <div className="font-semibold">Description</div>
-                                                    <div className="whitespace-pre-wrap text-sm">{entry.subtext}</div>
-                                                </div>
-                                                :
-                                                <div className="flex flex-col px-2 py-1 justify-start">
-                                                    <div className="font-semibold">Description</div>
-                                                    <div className="whitespace-pre-wrap text-primary/50 text-sm cursor-not-allowed">No description given</div>
-                                                </div>
-                                            }
+                                <AnimatePresence>
+                                    <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer" key={index}>
+                                        <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" />
+                                        <div className="flex flex-col justify-center items-center w-full">
+                                            <div className="font-semibold text-start">{entry.text}</div>
+                                            <div className="whitespace-pre-wrap text-left text-muted-foreground">Kanye West, Chance the Rapper</div>
+                                            <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
+                                                {entry.subtext != null ?
+                                                    <div className="flex flex-col px-2 py-1 justify-start">
+                                                        <div className="font-semibold">Description</div>
+                                                        <div className="whitespace-pre-wrap text-sm">{entry.subtext}</div>
+                                                    </div>
+                                                    :
+                                                    <div className="flex flex-col px-2 py-1 justify-start cursor-not-allowed">
+                                                        <div className="font-semibold">Description</div>
+                                                        <div className="whitespace-pre-wrap text-primary/50 text-sm">No description given</div>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div className="flex gap-1 items-center justify-center">
+                                                <Badge className="mt-2 rounded-full py-2 px-4" onClick={(e) => e.stopPropagation()}>{entry.tags && entry.tags[0]}</Badge>
+                                                <Badge className="mt-2 rounded-full py-2 px-4" variant='outline' onClick={(e) => { e.stopPropagation() }}>
+                                                    <Disc className="mr-1.5" size='20' />
+                                                    {entry.tags && entry.tags[1]}
+                                                </Badge>
+                                            </div>
                                         </div>
-                                        <div className="flex gap-1 items-center justify-center">
-                                            <Badge className="mt-2 rounded-full py-2 px-4">{entry.tags && entry.tags[0]}</Badge>
-                                            <Badge className="mt-2 rounded-full py-2 px-4" variant='outline'>
-                                                <Disc className="mr-1.5" size='20' />
-                                                {entry.tags && entry.tags[1]}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                </div>
+                                    </motion.div>
+                                </AnimatePresence>
                             </Link>
                         ))}
                     </div>

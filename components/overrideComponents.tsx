@@ -18,7 +18,7 @@ function CustomH3({ children }: { children: React.ReactNode }) {
 
 function CustomP({ children }: { children: React.ReactNode }) {
     return (
-        <p className='text-md py-4 line leading-8'>{children}</p>
+        <p className='text-md'>{children}</p>
     )
 }
 
