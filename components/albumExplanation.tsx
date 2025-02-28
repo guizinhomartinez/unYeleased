@@ -18,7 +18,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     useEffect(() => {
         const loadMdxComponent = async () => {
             try {
-                const module = await import(`@/public/song-files/albumInfo/albums/${id.toLowerCase()}/albumExplanation.mdx`);
+                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
                 setDynamicHeader(() => module.default);
             } catch (error) {
                 console.error("Failed to load MDX file:", error);
