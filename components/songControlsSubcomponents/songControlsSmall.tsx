@@ -16,9 +16,6 @@ export const SongControlsSmall = ({
     image,
     songCreator,
     handleSkipSong,
-    appearBar,
-    setAppearBar,
-    setOptAppear,
     id,
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
