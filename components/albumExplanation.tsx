@@ -28,7 +28,6 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
 
         const fetchSource = async () => {
             const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
-            console.log(data);
             const formattedData = data.split('\n');
             setSource(formattedData);
         }
@@ -105,7 +104,6 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
 
         const fetchSource = async () => {
             const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
-            console.log(data);
             setSource(data);
         }
 

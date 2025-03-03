@@ -13,6 +13,7 @@ import '@public/CSS/song-controls.css';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
 import { useQueryState } from "nuqs";
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Song {
   title: string;
@@ -41,7 +42,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [currentTimeVal, setCurrentTimeVal] = useState(0);
   const [queue, setQueue] = useState<string[]>([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
-  const [albumName, setAlbumName] = useState(id.replace('-', ' '));
+  const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState("");
   const [imageSize, setImageSize] = useState(260);
@@ -52,6 +53,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [albumExplanation, setAlbumExplanation] = useState("");
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
+  const [albumDuration, setAlbumDuration] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -77,16 +80,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     loadInfo();
   }, [id]);
 
-  const filteredContent = songs.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.artist.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id}/`;
     const audioFileType = '.m4a';
-
-    console.log(audioPrefix + playingSong + audioFileType);
 
     if (playingSong) {
       try {
@@ -95,7 +91,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         console.log(e);
       }
     }
-  }, [playingSong, id]); // Only depend on playingSong and id
+  }, [playingSong, id]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -180,33 +176,33 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   };
 
-  const handleSkipSong = (back: boolean) => {
-    if (!songRef.current || songs.length === 0) return;
-    const newIndex = back ? currentSongIndex - 1 : currentSongIndex + 1;
+  function endedSongFunction(newIndex: number) {
+    const length = songs.length;
+    if (newIndex === length || newIndex === length - 1) {
+      setCurrentSongIndex(0);
+      setPlayingSong(songs[0].title);
+      setSongCreator(songs[0].artist);
+      setIsPlaying(true);
+    } else {
+      setCurrentSongIndex(newIndex);
+      setPlayingSong(songs[newIndex].title);
+      setSongCreator(songs[newIndex].artist);
+      setIsPlaying(true);
+    }
+  }
 
-    setCurrentSongIndex(newIndex);
-    setPlayingSong(songs[newIndex].title);
-    setSongCreator(songs[newIndex].artist);
-    setIsPlaying(true);
-  };
+  const handleSkipSong = (back: boolean) => endedSongFunction(back ? currentSongIndex - 1 : currentSongIndex + 1);
 
   useEffect(() => {
     const song = songRef.current;
-    if (song) {
-      const handleSongEnd = () => {
-        const newIndex = currentSongIndex + 1;
+    if (!song) return;
 
-        setCurrentSongIndex(newIndex);
-        setPlayingSong(songs[newIndex].title);
-        setSongCreator(songs[newIndex].artist);
-        setIsPlaying(true);
-      }
-      song.addEventListener("ended", handleSongEnd);
+    const handleSongEnd = () => endedSongFunction(currentSongIndex + 1);
+    song.addEventListener("ended", handleSongEnd);
 
-      return () => {
-        song.removeEventListener("ended", handleSongEnd);
-      };
-    }
+    return () => {
+      song.removeEventListener("ended", handleSongEnd);
+    };
   }, [currentSongIndex, songs, playingSong]);
 
   useEffect(() => {
@@ -236,24 +232,92 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
 
+  // const calculateTotalTime = async () => {
+  //   const audioPrefix = `/song-files/songs/${id}/`;
+  //   const audioFileType = '.m4a';
+  //   const titles = songs.map((thing) => `${audioPrefix}${thing.title}${audioFileType}`);
+
+  //   function formatTime(ms: number) {
+  //     const seconds = Math.floor(Math.abs(ms / 1000));
+  //     const h = Math.floor(seconds / 3600);
+  //     const m = Math.floor((seconds % 3600) / 60);
+  //     const s = Math.round(seconds % 60);
+  //     const t = [h, m > 9 ? m : h ? '0' + m : m || '0', s > 9 ? s : '0' + s]
+  //       .filter(Boolean)
+  //       .join(':');
+  //     return ms < 0 && seconds ? `-${t}` : t;
+  //   }
+
+  //   const durations = await Promise.all(
+  //     titles.map(src =>
+  //       new Promise<number>((resolve) => {
+  //         const audio = new Audio();
+  //         audio.addEventListener("loadedmetadata", () => resolve(audio.duration));
+  //         audio.src = src;
+  //       })
+  //     )
+  //   );
+
+  //   const totalDuration = durations.reduce((sum, duration) => sum + duration, 0);
+  //   const formattedDuration = formatTime(totalDuration * 1000);
+
+  //   return formattedDuration;
+  // };
+
+  // useEffect(() => {
+  //   let isMounted = true;
+
+  //   const loadDuration = async () => {
+  //     try {
+  //       const duration = await calculateTotalTime();
+  //       if (isMounted) {
+  //         setAlbumDuration(duration);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error calculating total time:', error);
+  //     } finally {
+  //       if (isMounted) {
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //   };
+
+  //   loadDuration();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [id, songs]);
+
+  const capitalizeFirstLetter = (val: string) => String(val).charAt(0).toUpperCase() + String(val).slice(1);
+
   return (
     <div>
       <div className='flex flex-col md:flex-row gap-4 transition-all duration-300'>
         <div className='flex-1'>
           <div className='absolute left-4 md:left-5 top-2'>
             <HandleTransition href="/">
-              <Button className="" size='icon' variant='ghost'><ChevronLeft /></Button>
+              <Button className="" size='icon' variant='ghost'>
+                <ChevronLeft />
+              </Button>
             </HandleTransition>
           </div>
           <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
             <div className='flex flex-col md:flex-row items-center gap-5'>
               <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={imageSize} height={imageSize} priority={true} className='md:mt-4 rounded-xl outline outline-primary/10' />
               <div className='flex flex-col gap-2'>
-                <div className='text-4xl font-semibold text-center md:text-left'>{albumName}</div>
-                <div className='inline-flex items-center justify-center md:justify-normal'>
-                  <div className='text-md md:text-xl text-primary/75 whitespace-pre text-center md:text-left'>{albumCreator}</div>
-                  <Dot className='text-primary/75' />
-                  <div className='text-md md:text-xl text-primary/75 text-center md:text-left'>{year}</div>
+                <div className='text-4xl font-semibold text-center md:text-left'>{albumName || capitalizeFirstLetter(id.replace("-", " "))}</div>
+                <div className='flex flex-col justify-center'>
+                  <div className='inline-flex items-center justify-center md:justify-normal'>
+                    <div className='text-md md:text-xl text-primary/75 whitespace-pre text-center md:text-left'>{albumCreator || <Skeleton className='w-24 h-5' />}</div>
+                    <Dot className='text-primary/75' />
+                    <div className='text-md md:text-xl text-primary/75 text-center md:text-left'>{year || <Skeleton className='w-16 h-6 translate-y-0.5' />}</div>
+                  </div>
+                  <div className='inline-flex items-center justify-center md:justify-normal'>
+                    <div className='text-md md:text-xl text-primary/75 whitespace-pre text-center md:text-left'>{songs.length || <Skeleton className='w-5 h-5 translate-y-1 inline-flex' />} songs</div>
+                    {/* <Dot className='text-primary/75' />
+                    <div className='text-md md:text-xl text-primary/75 text-center md:text-left'> {isLoading ? <Skeleton className='w-28 h-6 translate-y-0.5' /> : `${albumDuration}`}</div> */}
+                  </div>
                 </div>
                 <div className='flex gap-2 justify-center md:justify-normal mt-2'>
                   <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => { setAppearBar(true); playAlbum(); }}>
@@ -288,22 +352,22 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
 
           <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
-            <div className='flex items-center relative'>
+            {/* <div className='flex items-center relative'>
               <Input type='search' className='pl-[3em] bg-primary-foreground border-2 border-secondary' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for your favorite song"></Input>
               <div className='absolute left-3 pr-2 py-2 border-r-2 border-r-secondary cursor-pointer'>
                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
               </div>
-            </div>
+            </div> */}
             <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-24'>
-              {filteredContent.map((element, index) => (
+              {songs.map((element, index) => (
                 <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-center gap-3'>
                     {imageSize === 260 && <div className='cursor-default rounded-full w-6 text-right'>{index + 1}</div>}
                     <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />
                   </div>
                   <div className='select-none'>
-                    <div className="text-sm font-semibold">{element.title}</div>
-                    <div className='text-sm text-muted-foreground'>{element.artist}</div>
+                    <div className="text-sm font-semibold">{element.title || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
+                    <div className='text-sm text-muted-foreground'>{element.artist || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
                   </div>
                 </div>
               ))}

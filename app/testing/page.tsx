@@ -38,6 +38,7 @@ interface Song {
     text: string;
     tags: string[];
     subtext: string;
+    creators: string;
 }
 
 export default function Page() {
@@ -139,7 +140,7 @@ export default function Page() {
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
-                    <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>Compilation of all of Kanye's unreleased projects</BlurFade>
+                    <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>Compilation of all of Ye's unreleased projects</BlurFade>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
                         <Button onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-xl group">
@@ -164,7 +165,7 @@ export default function Page() {
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button className="rounded-xl">
+                                <Button className="rounded-xl shadow-md">
                                     <ArrowDownUp />
                                     Sort by...
                                 </Button>
@@ -185,7 +186,7 @@ export default function Page() {
                         </DropdownMenu>
                         <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
                             <div className="flex w-full max-w-sm items-center relative">
-                                <Input placeholder="Search..." className="rounded-xl transition-all h-10" type="search" onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
+                                <Input placeholder="Search..." className="rounded-xl transition-all h-10 shadow-md" type="search" onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
                                 <div className="text-muted-foreground/80 pointer-events-none ml-auto flex items-center justify-center">
                                     <kbd className="text-muted-foreground inline-flex font-[inherit] text-xs font-medium absolute right-3">
                                         <span className="opacity-70">⌘</span>K
@@ -194,15 +195,15 @@ export default function Page() {
                             </div>
                         </React.Suspense>
                     </div>
-                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-4">
+                    <div className="grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-4">
                         {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
-                            <Link href={entry.link}>
+                            <Link href={entry.link} key={index}>
                                 <AnimatePresence>
-                                    <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer" key={index}>
+                                    <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer shadow-md" key={index}>
                                         <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" />
                                         <div className="flex flex-col justify-center items-center w-full">
                                             <div className="font-semibold text-start">{entry.text}</div>
-                                            <div className="whitespace-pre-wrap text-left text-muted-foreground">Kanye West, Chance the Rapper</div>
+                                            <div className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</div>
                                             <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
                                                 {entry.subtext != null ?
                                                     <div className="flex flex-col px-2 py-1 justify-start">

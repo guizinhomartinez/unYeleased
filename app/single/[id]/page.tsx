@@ -36,8 +36,6 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
             setSubtext(data.subtext);
             setSongVal(`/song-files/songs/singles/${data.songVal}`);
             setLink(data.link);
-
-            console.log(songVal);
         }
 
         async function loadLyrics() {

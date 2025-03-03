@@ -5,49 +5,56 @@
             "text": "Yandhi",
             "subtext": null,
             "link": "/album/yandhi",
-            "tags": ["2018", "Album"]
+            "tags": ["2018", "Album"],
+            "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/job-well-done.jpg",
             "text": "Job Well Done",
             "subtext": null,
             "link": "/album/job-well-done",
-            "tags": ["2018", "Album"]
+            "tags": ["2018", "Album"],
+            "creators": "Kanye West, Chance the Rapper"
         },
         {
             "image": "/song-files/covers/bully-big.jpg",
             "text": "Beauty and The Beast",
             "subtext": "Version from Yeezy.com",
             "tags": ["2025", "Single"],
-            "link": "/single/beauty-and-the-beast"
+            "link": "/single/beauty-and-the-beast",
+            "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
             "subtext": "Full Version",
             "tags": ["2025", "Single"],
-            "link": "/single/wheels-fall-off-full"
+            "link": "/single/wheels-fall-off-full",
+            "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
             "subtext": "Released Clean Version",
             "tags": ["2025", "Single"],
-            "link": "/single/wheels-fall-off-released"
+            "link": "/single/wheels-fall-off-released",
+            "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/good-ass-job.jpg",
             "text": "Good Ass Job",
             "subtext": null,
             "tags": ["2009", "Album"],
-            "link": "/album/good-ass-job"
+            "link": "/album/good-ass-job",
+            "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/yeezus-2.jpg",
             "text": "Yeezus 2",
             "subtext": null,
             "tags": ["2014", "Album"],
-            "link": "/album/yeezus-2"
+            "link": "/album/yeezus-2",
+            "creators": "Kanye West"
         }
     ]
 }

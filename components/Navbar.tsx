@@ -106,7 +106,7 @@ export default function Navbar({ className }: { className?: string }) {
                         </DialogContent>
                     </Dialog>
                     <DropDown />
-                    <a href="https://github.com/guizinhomartinez/ye-unreleased-songs" target="_blank">
+                    <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank">
                         <Button variant='outline' className="rounded-full">
                             <Github />
                             Source
@@ -144,13 +144,13 @@ const Password = () => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-fit flex flex-col gap-2 justify-center items-center">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-fit flex flex-col gap-5 justify-center items-center">
                 <FormField
                     control={form.control}
                     name="pin"
                     render={({ field }) => (
                         <FormItem className="flex flex-col place-items-center">
-                            <FormLabel>One-Time Password</FormLabel>
+                            <FormLabel className='font-bold text-xl'>Enter the secret code</FormLabel>
                             <FormControl>
                                 <InputOTP maxLength={6} {...field}>
                                     <InputOTPGroup>
@@ -161,9 +161,6 @@ const Password = () => {
                                     </InputOTPGroup>
                                 </InputOTP>
                             </FormControl>
-                            <FormDescription>
-                                Please enter the one-time password sent to your phone.
-                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
