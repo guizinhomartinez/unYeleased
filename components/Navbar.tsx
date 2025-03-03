@@ -52,7 +52,7 @@ const navigationStuff = [
     //     link: "/about/create-album"
     // },
     {
-        name: "Testing Home Page",
+        name: "Testing Homepage",
         component: <HardHat />,
         link: "/testing"
     }
