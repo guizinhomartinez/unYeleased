@@ -66,7 +66,7 @@ export const DefaultSongControls = ({
                     setIsPlaying(!isPlaying);
                     break;
                 case "ArrowLeft":
-                    songRef.current.currentTime -= 10;
+                    songRef.current.currentTime -= 5;
                     break;
                 case "ArrowRight":
                     songRef.current.currentTime += 5;
