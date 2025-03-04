@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { Loader2, Pause, Play, Share, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
+import { Loader2, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -21,6 +21,8 @@ interface miniPlayerInterface {
     setVolumeVal: any;
     songCreator: string;
     handleSkipSong: (back: boolean) => void;
+    repeat: number;
+    setRepeat: any;
 }
 
 export const MiniPlayer = ({
@@ -32,11 +34,14 @@ export const MiniPlayer = ({
     songRef,
     songVal,
     setVolumeVal,
+    repeat,
+    setRepeat,
     volumeVal,
 }: miniPlayerInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
+    const [songTimeType, setSongTimeType] = useState(0);
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
@@ -98,6 +103,14 @@ export const MiniPlayer = ({
         }
     }
 
+    const RepeatIcon = ({...props}) => {
+        if (repeat === 1 || repeat === 0) {
+            return <Repeat />;
+        } else {
+            return <Repeat1 />;
+        }
+    }
+
     return (
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
@@ -133,38 +146,57 @@ export const MiniPlayer = ({
                     </div>
                 </div>
                 <div className="flex flex-col justify-center gap-8 w-full mt-10">
-                    <div className="w-full">
+                    <div className="w-full flex flex-col gap-3">
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={handleSliderChange} />
+                        <div className="flex justify-between items-center">
+                            <div className="w-full text-primary/50 text-sm select-none">{formatTime(currentTimeVal) || '0:00'}</div>
+                            <div className="w-full text-right text-primary/50 text-sm select-none" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{(songTimeType === 1 ? "-" + formatTime(songTime - currentTimeVal) : formatTime(songTime)) || '0:00'}</div>
+                        </div>
                     </div>
                     <div className="flex gap-1 items-center">
-                        <div className="w-full">{formatTime(currentTimeVal)}</div>
-                        <div className="flex gap-2 items-center w-full scale-110">
+                        <div className="flex gap-2 items-center w-full scale-110 justify-between">
                             <Button
                                 size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', 'opacity-50 cursor-not-allowed')}
                                 variant="ghost"
                                 onClick={() => handleSkipSong(true)}
+                                disabled
                             >
-                                <SkipBack size='32' />
+                                <Shuffle />
                             </Button>
+                            <div className="flex gap-4 items-center w-full justify-center">
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    variant="ghost"
+                                    onClick={() => handleSkipSong(true)}
+                                >
+                                    <SkipBack size='32' />
+                                </Button>
+                                <Button
+                                    className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    size="icon"
+                                    onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                                >
+                                    {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                                </Button>
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    variant="ghost"
+                                    onClick={() => handleSkipSong(false)}
+                                >
+                                    <SkipForward size='32' />
+                                </Button>
+                            </div>
                             <Button
-                                className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
                                 size="icon"
-                                onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                            >
-                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
-                            </Button>
-                            <Button
-                                size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
                                 variant="ghost"
-                                onClick={() => handleSkipSong(false)}
+                                onClick={() => setRepeat(repeat >= 2 ? 0 : repeat + 1)}
                             >
-                                <SkipForward size='32' />
+                                <RepeatIcon />
                             </Button>
-                        </div>
-                        <div className="w-full text-right">
-                            {isNaN(songTime) ? '0:00' : formatTime(songTime)}
                         </div>
                     </div>
                 </div>
@@ -175,10 +207,10 @@ export const MiniPlayer = ({
                         song && (song.muted = !song.muted)
                     }
                     }
-                        variant='outline' className="rounded-xl">
+                        variant='outline' className="rounded-full bg-transparent px-4" size='icon'>
                         <VolumeIcon size='18' />
                     </Button> :
-                        <Button variant='outline' className="rounded-xl" disabled>
+                        <Button variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled>
                             <VolumeIcon size='18' />
                         </Button>}
                     <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />

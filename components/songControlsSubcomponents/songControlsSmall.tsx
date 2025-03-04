@@ -69,7 +69,7 @@ export const SongControlsSmall = ({
 
                     <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                         <Button className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} size="icon" onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}>
-                            {!isPlaying ? <Play className="-translate-x-px" /> : <Pause className="-translate-x-px" />}
+                            {!isPlaying ? <Play /> : <Pause />}
                         </Button>
                         <Button size="icon" className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} variant="ghost" onClick={() => handleSkipSong(false)}>
                             <SkipForward />

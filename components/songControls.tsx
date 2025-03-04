@@ -15,6 +15,8 @@ export interface songControlsInterface {
     image: string;
     songCreator: string;
     handleSkipSong: (back: boolean) => void;
+    repeat: number;
+    setRepeat: any;
     id: string;
 }
 
@@ -29,6 +31,8 @@ export const SongControls = ({
     image,
     songCreator,
     handleSkipSong,
+    repeat,
+    setRepeat,
     id
 }: songControlsInterface) => {
     const [mediumScreen, setMediumScreen] = useState(false);
@@ -101,6 +105,8 @@ export const SongControls = ({
                         image={image}
                         songCreator={songCreator}
                         handleSkipSong={handleSkipSong}
+                        repeat={repeat}
+                        setRepeat={setRepeat}
                         id={id}
                     />
                 </div>
@@ -124,6 +130,8 @@ export const SongControls = ({
                                     image={image}
                                     songCreator={songCreator}
                                     handleSkipSong={handleSkipSong}
+                                    repeat={repeat}
+                                    setRepeat={setRepeat}
                                     id={id}
                                 />
                             </div>
@@ -137,6 +145,8 @@ export const SongControls = ({
                                 setIsPlaying={setIsPlaying}
                                 songCreator={songCreator}
                                 handleSkipSong={handleSkipSong}
+                                repeat={repeat}
+                                setRepeat={setRepeat}
                                 volumeVal={volumeVal}
                                 setVolumeVal={setVolumeVal}
                             />

@@ -6,7 +6,6 @@ import { useEffect, useState, useRef, use } from 'react';
 import { BookOpenText, ChevronLeft, Dot, Pause, Play, Search } from "lucide-react";
 import { HandleTransition } from '@/components/handleTransition';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { SongControls } from '@/components/songControls';
 import { AnimatePresence, motion } from 'motion/react'
 import '@public/CSS/song-controls.css';
@@ -40,7 +39,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const songRef = useRef<HTMLAudioElement | null>(null);
   const [currentTimeVal, setCurrentTimeVal] = useState(0);
-  const [queue, setQueue] = useState<string[]>([]);
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
@@ -48,13 +46,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [imageSize, setImageSize] = useState(260);
   const [appearBar, setAppearBar] = useState(true);
   const [volumeVal, setVolumeVal] = useState<number>(100);
-  const [searchQuery, setSearchQuery] = useState("");
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [albumExplanation, setAlbumExplanation] = useState("");
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
-  const [albumDuration, setAlbumDuration] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [repeatAlbum, setRepeatAlbum] = useState(0);
+
+  // useEffect(() => {
+  //   const storedRepeat = Number(localStorage.getItem("repeat")) || 0;
+  //   setRepeatAlbum(storedRepeat);
+  // })
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -81,17 +82,21 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [id]);
 
   useEffect(() => {
-    const audioPrefix = `/song-files/songs/${id}/`;
-    const audioFileType = '.m4a';
+    const audioPrefix = `/song-files/songs/${id}/`
+    const audioFileType = ".m4a"
 
     if (playingSong) {
       try {
-        songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
+        const newAudio = new Audio(audioPrefix + playingSong + audioFileType)
+        if (repeatAlbum === 2) {
+          newAudio.loop = true
+        }
+        songRef.current = newAudio
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     }
-  }, [playingSong, id]);
+  }, [playingSong, id, repeatAlbum])
 
   useEffect(() => {
     const song = songRef.current;
@@ -177,19 +182,44 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   };
 
   function endedSongFunction(newIndex: number) {
-    const length = songs.length;
-    if (newIndex === length || newIndex === length - 1) {
-      setCurrentSongIndex(0);
-      setPlayingSong(songs[0].title);
-      setSongCreator(songs[0].artist);
-      setIsPlaying(true);
+    if (newIndex === songs.length || newIndex === songs.length - 1) {
+      // if the album has reached its end and now it will go to the void if the current song ends
+      if (repeatAlbum === 1) {
+        setCurrentSongIndex(0)
+        setPlayingSong(songs[0].title)
+        setSongCreator(songs[0].artist)
+        setIsPlaying(true)
+      } else if (repeatAlbum === 0) {
+        setCurrentSongIndex(currentSongIndex + 1)
+        setPlayingSong(songs[currentSongIndex + 1].title)
+        setSongCreator(songs[currentSongIndex + 1].artist)
+        setIsPlaying(false)
+      } else if (repeatAlbum === 2) {
+        setCurrentTimeVal(0)
+        if (songRef.current) {
+          songRef.current.currentTime = 0
+          songRef.current.play()
+        }
+        setIsPlaying(true)
+      }
     } else {
-      setCurrentSongIndex(newIndex);
-      setPlayingSong(songs[newIndex].title);
-      setSongCreator(songs[newIndex].artist);
-      setIsPlaying(true);
+      // literally any other case
+      if (repeatAlbum === 0 || repeatAlbum === 1) {
+        setCurrentSongIndex(newIndex)
+        setPlayingSong(songs[newIndex].title)
+        setSongCreator(songs[newIndex].artist)
+        setIsPlaying(true)
+      } else if (repeatAlbum === 2) {
+        setCurrentTimeVal(0)
+        if (songRef.current) {
+          songRef.current.currentTime = 0
+          songRef.current.play()
+        }
+        setIsPlaying(true)
+      }
     }
   }
+
 
   const handleSkipSong = (back: boolean) => endedSongFunction(back ? currentSongIndex - 1 : currentSongIndex + 1);
 
@@ -320,7 +350,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                   </div>
                 </div>
                 <div className='flex gap-2 justify-center md:justify-normal mt-2'>
-                  <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => { setAppearBar(true); playAlbum(); }}>
+                  <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => playAlbum()}>
                     {!isPlaying ? <Play /> : <Pause />}
                     <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
                       {!isPlaying ? String('Play') : String('')}
@@ -394,6 +424,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           image={`/song-files/covers/${id.toLowerCase()}.jpg`}
           songCreator={songCreator}
           handleSkipSong={handleSkipSong}
+          repeat={repeatAlbum}
+          setRepeat={setRepeatAlbum}
           id={id}
         />
       </div>
