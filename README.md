@@ -32,9 +32,9 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [x] Full mobile music player experience
 - [x] Good home page with all the necessary stuff
 - [ ] Proper backstory of each album
-- [x] Continuous playback ~~and shuffle support~~ (kinda eefy but works)
+- [x] Continuous playback ~~and shuffle support~~
 - [x] Search bar
-- [ ] Sort albums by latest or oldest
+- [x] Sort albums by latest or oldest
 - [x] Backend for explanation of albums
 - [ ] Full interface for creating custom albums
 - [ ] Transitions and animations for everything

@@ -9,11 +9,7 @@ import { CircleAlert, Search } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
-
-async function fetchSongs() {
-    const response = await fetch(`/song-files/fetchAlbums.json`);
-    return response.json();
-}
+import { fetchHomeSongs } from "@/components/fetching";
 
 export default function Page() {
     const [groupedEntries, setGroupedEntries] = useState<Record<string, any[]>>({});
@@ -21,7 +17,7 @@ export default function Page() {
 
     useEffect(() => {
         async function loadSongs() {
-            const data = await fetchSongs();
+            const data = await fetchHomeSongs();
 
             // Group entries by year
             const grouped: Record<string, any[]> = {};

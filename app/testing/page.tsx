@@ -24,13 +24,9 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatePresence, motion, useScroll } from "motion/react";
+import { fetchHomeInfo } from "@/components/fetching";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
-
-async function fetchInfo() {
-    const response = await fetch(`/song-files/fetchAlbumsExperimental.json`);
-    return response.json();
-}
 
 interface Song {
     link: string;
@@ -71,7 +67,7 @@ export default function Page() {
     useEffect(() => {
         try {
             async function fetchedInfo() {
-                const data = await fetchInfo();
+                const data = await fetchHomeInfo();
                 setEntries(data.entries);
             }
 
@@ -140,7 +136,7 @@ export default function Page() {
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
-                    <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>Compilation of all of Ye's unreleased projects</BlurFade>
+                    <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>A compilation of all of Ye's unreleased projects</BlurFade>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
                         <Button onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-xl group">
@@ -200,7 +196,7 @@ export default function Page() {
                             <Link href={entry.link} key={index}>
                                 <AnimatePresence>
                                     <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer shadow-md" key={index}>
-                                        <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" />
+                                        <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
                                         <div className="flex flex-col justify-center items-center w-full">
                                             <div className="font-semibold text-start">{entry.text}</div>
                                             <div className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</div>

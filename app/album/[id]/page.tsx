@@ -13,22 +13,12 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
 import { useQueryState } from "nuqs";
 import { Skeleton } from '@/components/ui/skeleton';
+import { fetchAlbumInfo, fetchAlbumSongs } from '@/components/fetching';
 
 interface Song {
   title: string;
   artist: string;
   songLocation: string;
-  // Add other properties if necessary
-}
-
-async function fetchSongs(id: string) {
-  const response = await fetch(`../song-files/songLists/${id.toLowerCase()}.json`);
-  return response.json();
-}
-
-async function fetchInfo(id: string) {
-  const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
-  return response.text();
 }
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -59,12 +49,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
-    setVolumeVal(Number(storedVolume));
+    try {
+      setVolumeVal(Number(storedVolume));
+    } catch (e:any) {
+      throw new Error(e.message);
+    }
   }, []);
 
   useEffect(() => {
     async function loadSongs() {
-      const data = await fetchSongs(id);
+      const data = await fetchAlbumSongs(id);
       setSongs(data.tracks);
       setYear(data.config[0].year);
       setAlbumName(data.config[0].albumName);
@@ -73,7 +67,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
 
     async function loadInfo() {
-      const data = await fetchInfo(id);
+      const data = await fetchAlbumInfo(id);
       setAlbumExplanation(data);
     }
 
@@ -215,7 +209,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }
 
-
   const handleSkipSong = (back: boolean) => endedSongFunction(back ? currentSongIndex - 1 : currentSongIndex + 1);
 
   useEffect(() => {
@@ -228,7 +221,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     return () => {
       song.removeEventListener("ended", handleSongEnd);
     };
-  }, [currentSongIndex, songs, playingSong]);
+  }, [currentSongIndex, songs, playingSong, repeatAlbum]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -250,8 +243,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     const localVolume = localStorage.getItem("volume");
 
-    if (localVolume === null) {
-      song.volume = volumeVal / 100;
+    if (localVolume === null || localVolume === "NaN" || isNaN(Number(localVolume))) {
+      song.volume = 0.5;
     } else {
       song.volume = Number(localVolume) / 100;
     }

@@ -29,7 +29,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "UnYeleased",
-  description: "",
+  description: "A compilation of all of Ye's unreleased projects",
 };
 
 export default function RootLayout({

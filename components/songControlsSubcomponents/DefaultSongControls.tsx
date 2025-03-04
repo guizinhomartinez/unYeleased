@@ -56,6 +56,60 @@ export const DefaultSongControls = ({
         };
     }
 
+    const handleKeyDown = useEffect(() => {
+        const shareButton = document.getElementById("share-button");
+        const lyricsButton = document.getElementById("lyrics-button");
+        const handleKey = (e: KeyboardEvent) => {
+            e.preventDefault();
+            switch (e.key) {
+                case " ":
+                    setIsPlaying(!isPlaying);
+                    break;
+                case "ArrowLeft":
+                    songRef.current.currentTime -= 10;
+                    break;
+                case "ArrowRight":
+                    songRef.current.currentTime += 5;
+                    break;
+                case "r":
+                    setRepeat(repeat >= 2 ? 0 : repeat + 1);
+                    break;
+                case "s":
+                    shareButton?.click();
+                case "l":
+                    lyricsButton?.click();
+            }
+
+            if (e.metaKey || e.ctrlKey) {
+                if (e.key === "ArrowRight") {
+                    handleSkipSong(false);
+                } else if (e.key === "ArrowLeft") {
+                    handleSkipSong(true);
+                }
+            }
+
+            if (e.key === "ArrowUp") {
+                setVolumeVal(volumeVal + 10);
+            } else if (e.key === "ArrowDown") {
+                setVolumeVal(volumeVal - 10);
+            }
+
+            if (e.shiftKey) {
+                if (e.key === "ArrowUp") {
+                    setVolumeVal(volumeVal + 5);
+                } else if (e.key === "ArrowDown") {
+                    setVolumeVal(volumeVal - 5);
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKey);
+
+        return () => {
+            window.removeEventListener("keydown", handleKey);
+        };
+    })
+
     useEffect(() => {
         useEffectConst();
     }, []);
@@ -98,9 +152,14 @@ export const DefaultSongControls = ({
         }
     }
 
+    const muteSong = () => {
+        if (!songRef.current) return;
+        songRef.current && (songRef.current.muted = !songRef.current.muted);
+    }
+
     return (
         <>
-            <div className="flex w-full justify-between items-center">
+            <div className="flex w-full justify-between items-center" onKeyDown={(e) => handleKeyDown}>
                 <div className="flex items-center gap-3 select-none w-full">
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
@@ -165,14 +224,9 @@ export const DefaultSongControls = ({
                     <div className="items-center flex gap-2">
                         <Dialog>
                             <DialogTrigger asChild>
-                                {songRef.current ?
-                                    <Button className="rounded-full" variant='secondary' >
-                                        <Share />
-                                    </Button> :
-                                    <Button className="rounded-full cursor-not-allowed" variant='secondary' disabled>
-                                        <Share />
-                                    </Button>
-                                }
+                                <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button">
+                                    <Share />
+                                </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-md">
                                 <DialogHeader>
@@ -183,33 +237,21 @@ export const DefaultSongControls = ({
                         </Dialog>
                         <Popover>
                             <PopoverTrigger asChild>
-                                {songRef.current ?
-                                    <Button className="rounded-full" variant='secondary'>
-                                        <MicVocal />
-                                    </Button> :
-                                    <Button className="rounded-full cursor-not-allowed" variant='secondary' disabled>
-                                        <MicVocal />
-                                    </Button>}
+                                <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="lyrics-button">
+                                    <MicVocal />
+                                </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-48 h-full rounded-xl bg-background">
                                 <Lyrics />
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2 rounded-full" />
+                    <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2" />
                     <div className="w-1/2 flex gap-3 items-center">
-                        {songRef.current ? <Button onClick={() => {
-                            const song = songRef.current;
-                            if (!song) return;
-                            song && (song.muted = !song.muted)
-                        }
-                        }
-                            variant='ghost' className="rounded-full bg-transparent px-4" size='icon'>
+                        <Button onClick={muteSong}
+                            variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
                             <VolumeIcon size='18' />
-                        </Button> :
-                            <Button variant='ghost' className="rounded-full bg-transparent px-4" size='icon' disabled>
-                                <VolumeIcon size='18' />
-                            </Button>}
+                        </Button>
                         <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} />
                         <Label className="w-12 text-right">{volumeVal}%</Label>
                     </div>

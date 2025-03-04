@@ -1,22 +1,8 @@
 "use client"
 
+import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/components/fetching";
 import { Player } from "@/components/player";
 import { use, useEffect, useState } from "react";
-
-async function fetchSongs(id: string) {
-    const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/${id.toLowerCase()}.json`);
-    return response.json();
-}
-
-async function fetchLyrics(id:string) {
-    const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/lyrics.txt`);
-    return response.text();
-}
-
-async function fetchExplanation(id:string) {
-    const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/explanation.txt`);
-    return response.text();
-}
 
 export default function SinglesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -30,7 +16,7 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
 
     useEffect(() => {
         async function loadSongs() {
-            const data = await fetchSongs(id);
+            const data = await fetchSinglesInfo(id);
             setImage(`/song-files/covers/${data.image}`);
             setText(data.text);
             setSubtext(data.subtext);
@@ -39,12 +25,12 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
         }
 
         async function loadLyrics() {
-            const data = await fetchLyrics(id);
+            const data = await fetchSinglesLyrics(id);
             setLyrics(data);
         }
 
         async function loadExplanation() {
-            const data = await fetchExplanation(id);
+            const data = await fetchSinglesExplanation(id);
             setExplanation(data);
         }
 
