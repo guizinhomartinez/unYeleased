@@ -82,21 +82,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [id]);
 
   useEffect(() => {
-    const audioPrefix = `/song-files/songs/${id}/`
-    const audioFileType = ".m4a"
+    const audioPrefix = `/song-files/songs/${id}/`;
+    const audioFileType = '.m4a';
 
     if (playingSong) {
       try {
-        const newAudio = new Audio(audioPrefix + playingSong + audioFileType)
-        if (repeatAlbum === 2) {
-          newAudio.loop = true
-        }
-        songRef.current = newAudio
+        songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
+        songRef.current.loop = (repeatAlbum === 2 && true);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
-  }, [playingSong, id, repeatAlbum])
+  }, [playingSong, id]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -195,7 +192,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setSongCreator(songs[currentSongIndex + 1].artist)
         setIsPlaying(false)
       } else if (repeatAlbum === 2) {
-        setCurrentTimeVal(0)
         if (songRef.current) {
           songRef.current.currentTime = 0
           songRef.current.play()
@@ -210,7 +206,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setSongCreator(songs[newIndex].artist)
         setIsPlaying(true)
       } else if (repeatAlbum === 2) {
-        setCurrentTimeVal(0)
         if (songRef.current) {
           songRef.current.currentTime = 0
           songRef.current.play()

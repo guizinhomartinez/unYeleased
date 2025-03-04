@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, HardHat, Home, Info, KeyRound, Moon, PlusCircle, PlusSquare, Sun } from "lucide-react"
+import { Github, HardHat, Home, Info, KeyRound, LoaderCircleIcon, Moon, PlusCircle, PlusSquare, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -121,6 +121,7 @@ export default function Navbar({ className }: { className?: string }) {
 
 const Password = () => {
     const router = useRouter();
+    const [loadingNextPage, setLoadingNextPage] = useState(false);
 
     const FormSchema = z.object({
         pin: z.string().min(4, {
@@ -140,6 +141,8 @@ const Password = () => {
         if (String(JSON.stringify(data, null, 2)).includes("2424")) {
             router.push("/single/2424");
         }
+
+        setLoadingNextPage(true);
     }
 
     return (
@@ -166,7 +169,10 @@ const Password = () => {
                     )}
                 />
 
-                <Button type="submit" className="flex justify-center items-center">Submit</Button>
+                <Button type="submit" className="flex justify-center items-center" disabled={loadingNextPage}>
+                    {loadingNextPage && <LoaderCircleIcon className="-ms-1 animate-spin" size={16} aria-hidden="true" />}
+                    {!loadingNextPage && "Submit"}
+                </Button>
             </form>
         </Form>
     )

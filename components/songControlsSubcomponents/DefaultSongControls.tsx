@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { songControlsInterface } from "../songControls";
 import Image from 'next/image'
 import { Button } from "../ui/button";
-import { MicVocal, Pause, Play, Share, SkipBack, SkipForward } from "lucide-react";
+import { MicVocal, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,8 @@ export const DefaultSongControls = ({
     volumeVal,
     setVolumeVal,
     image,
+    repeat,
+    setRepeat,
     songCreator,
     handleSkipSong
 }: songControlsInterface) => {
@@ -72,6 +74,30 @@ export const DefaultSongControls = ({
         }
     }
 
+    const VolumeIcon = ({ ...props }) => {
+        if (songRef.current && songRef.current.muted) {
+            return <VolumeOff {...props} />;
+        }
+
+        if (volumeVal > 60) {
+            return <Volume2 {...props} />;
+        } else if (volumeVal < 60 && volumeVal > 30) {
+            return <Volume1 {...props} />;
+        } else if (volumeVal === 0) {
+            return <VolumeX {...props} />;
+        } else {
+            return <Volume {...props} />;
+        }
+    }
+
+    const RepeatIcon = ({ ...props }) => {
+        if (repeat === 1 || repeat === 0) {
+            return <Repeat />;
+        } else {
+            return <Repeat1 />;
+        }
+    }
+
     return (
         <>
             <div className="flex w-full justify-between items-center">
@@ -85,8 +111,17 @@ export const DefaultSongControls = ({
                     </div>
                 </div>
 
-                <div className="flex flex-col justify-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex justify-center gap-2 ml-2">
+                <div className="flex flex-col justify-center gap-3 w-full" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex justify-center gap-3 ml-2 items-center">
+                        <Button
+                            size="icon"
+                            className={cn('p-5 rounded-full bg-transparent focus:bg-transparent', 'opacity-50 cursor-not-allowed')}
+                            variant="ghost"
+                            onClick={() => handleSkipSong(true)}
+                            disabled
+                        >
+                            <Shuffle />
+                        </Button>
                         <Button
                             size="icon"
                             className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
@@ -110,6 +145,14 @@ export const DefaultSongControls = ({
                         >
                             <SkipForward />
                         </Button>
+                        <Button
+                            size="icon"
+                            className={cn('p-5 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
+                            variant="ghost"
+                            onClick={() => setRepeat(repeat >= 2 ? 0 : repeat + 1)}
+                        >
+                            <RepeatIcon />
+                        </Button>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
@@ -118,7 +161,7 @@ export const DefaultSongControls = ({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
                     <div className="items-center flex gap-2">
                         <Dialog>
                             <DialogTrigger asChild>
@@ -153,7 +196,20 @@ export const DefaultSongControls = ({
                             </PopoverContent>
                         </Popover>
                     </div>
+                    <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2 rounded-full" />
                     <div className="w-1/2 flex gap-3 items-center">
+                        {songRef.current ? <Button onClick={() => {
+                            const song = songRef.current;
+                            if (!song) return;
+                            song && (song.muted = !song.muted)
+                        }
+                        }
+                            variant='ghost' className="rounded-full bg-transparent px-4" size='icon'>
+                            <VolumeIcon size='18' />
+                        </Button> :
+                            <Button variant='ghost' className="rounded-full bg-transparent px-4" size='icon' disabled>
+                                <VolumeIcon size='18' />
+                            </Button>}
                         <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} />
                         <Label className="w-12 text-right">{volumeVal}%</Label>
                     </div>
