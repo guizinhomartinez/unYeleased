@@ -12,6 +12,7 @@ import Lyrics from "./lyrics";
 import ShareSong from "../shareSong";
 import VolumeSlider from "./volumeSlider";
 import '@public/CSS/song-controls.css';
+import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 
 export const DefaultSongControls = ({
     songRef,
@@ -29,12 +30,7 @@ export const DefaultSongControls = ({
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
-
-    const formatTime = (time: number) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    };
+    const [songTimeType, setSongTimeType] = useState(0);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -118,45 +114,6 @@ export const DefaultSongControls = ({
         useEffectConst();
     }, [handleSkipSong]);
 
-    const handleSliderChange = (value: number[]) => {
-        const newValue = value[0];
-        setSliderValue(newValue)
-        if (songRef.current) {
-            const newTime = (newValue / 100) * songRef.current.duration;
-            songRef.current.currentTime = newTime;
-            setCurrentTimeVal(newTime);
-        }
-    }
-
-    const VolumeIcon = ({ ...props }) => {
-        if (songRef.current && songRef.current.muted) {
-            return <VolumeOff {...props} />;
-        }
-
-        if (volumeVal > 60) {
-            return <Volume2 {...props} />;
-        } else if (volumeVal < 60 && volumeVal > 30) {
-            return <Volume1 {...props} />;
-        } else if (volumeVal === 0) {
-            return <VolumeX {...props} />;
-        } else {
-            return <Volume {...props} />;
-        }
-    }
-
-    const RepeatIcon = ({ ...props }) => {
-        if (repeat === 1 || repeat === 0) {
-            return <Repeat />;
-        } else {
-            return <Repeat1 />;
-        }
-    }
-
-    const muteSong = () => {
-        if (!songRef.current) return;
-        songRef.current && (songRef.current.muted = !songRef.current.muted);
-    }
-
     return (
         <>
             <div className="flex w-full justify-between items-center" onKeyDown={(e) => handleKeyDown}>
@@ -210,13 +167,13 @@ export const DefaultSongControls = ({
                             variant="ghost"
                             onClick={() => setRepeat(repeat >= 2 ? 0 : repeat + 1)}
                         >
-                            <RepeatIcon />
+                            <RepeatIcon repeat={repeat} />
                         </Button>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
-                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary")} onValueChange={handleSliderChange} />
-                        <div className="text-sm text-muted-foreground/80">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
+                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary")} onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
+                        <div className="text-sm text-muted-foreground/80 sleect" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songTime, songTimeType, currentTimeVal)}</div>
                     </div>
                 </div>
 
@@ -248,9 +205,9 @@ export const DefaultSongControls = ({
                     </div>
                     <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2" />
                     <div className="w-1/2 flex gap-3 items-center">
-                        <Button onClick={muteSong}
+                        <Button onClick={() => muteSong(songRef)}
                             variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
-                            <VolumeIcon size='18' />
+                            <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />
                         </Button>
                         <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} />
                         <Label className="w-12 text-right">{volumeVal}%</Label>

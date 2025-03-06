@@ -42,11 +42,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
   const [repeatAlbum, setRepeatAlbum] = useState(0);
 
-  // useEffect(() => {
-  //   const storedRepeat = Number(localStorage.getItem("repeat")) || 0;
-  //   setRepeatAlbum(storedRepeat);
-  // })
-
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
     try {
@@ -221,7 +216,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     return () => {
       song.removeEventListener("ended", handleSongEnd);
     };
-  }, [currentSongIndex, songs, playingSong, repeatAlbum]);
+  }, [currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
 
   useEffect(() => {
     const song = songRef.current;
@@ -249,63 +244,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       song.volume = Number(localVolume) / 100;
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
-
-  // const calculateTotalTime = async () => {
-  //   const audioPrefix = `/song-files/songs/${id}/`;
-  //   const audioFileType = '.m4a';
-  //   const titles = songs.map((thing) => `${audioPrefix}${thing.title}${audioFileType}`);
-
-  //   function formatTime(ms: number) {
-  //     const seconds = Math.floor(Math.abs(ms / 1000));
-  //     const h = Math.floor(seconds / 3600);
-  //     const m = Math.floor((seconds % 3600) / 60);
-  //     const s = Math.round(seconds % 60);
-  //     const t = [h, m > 9 ? m : h ? '0' + m : m || '0', s > 9 ? s : '0' + s]
-  //       .filter(Boolean)
-  //       .join(':');
-  //     return ms < 0 && seconds ? `-${t}` : t;
-  //   }
-
-  //   const durations = await Promise.all(
-  //     titles.map(src =>
-  //       new Promise<number>((resolve) => {
-  //         const audio = new Audio();
-  //         audio.addEventListener("loadedmetadata", () => resolve(audio.duration));
-  //         audio.src = src;
-  //       })
-  //     )
-  //   );
-
-  //   const totalDuration = durations.reduce((sum, duration) => sum + duration, 0);
-  //   const formattedDuration = formatTime(totalDuration * 1000);
-
-  //   return formattedDuration;
-  // };
-
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   const loadDuration = async () => {
-  //     try {
-  //       const duration = await calculateTotalTime();
-  //       if (isMounted) {
-  //         setAlbumDuration(duration);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error calculating total time:', error);
-  //     } finally {
-  //       if (isMounted) {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   };
-
-  //   loadDuration();
-
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [id, songs]);
 
   const capitalizeFirstLetter = (val: string) => String(val).charAt(0).toUpperCase() + String(val).slice(1);
 
