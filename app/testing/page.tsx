@@ -23,7 +23,7 @@ import { Particles } from "@/components/magicui/particles";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
-import { AnimatePresence, motion, useScroll } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { fetchHomeInfo } from "@/components/fetching";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
@@ -87,9 +87,6 @@ export default function Page() {
         }
     });
 
-    const { scrollYProgress } = useScroll();
-
-
     const handleKeyDown = useEffect(() => {
         const search = document.getElementById("search");
         const handleKey = (e: KeyboardEvent) => {
@@ -116,21 +113,6 @@ export default function Page() {
                 <Navbar />
             </div>
 
-            {/* <motion.div
-                id="scroll-indicator"
-                style={{
-                    scaleX: scrollYProgress,
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 10,
-                    originX: 0,
-                    backgroundColor: "#ff0088",
-                    zIndex: 50
-                }}
-            /> */}
-
             <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
                 <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
@@ -141,7 +123,7 @@ export default function Page() {
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
                         <Button onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-xl group">
                             <div className="flex gap-2 items-center justify-center">
-                                <ArrowDown className="transition-transform group-hover:translate-y-0.5" /> See more
+                                <ArrowDown className="transition-transform animate-bounce" /> See more
                             </div>
                         </Button>
                         <Link href="/about">
