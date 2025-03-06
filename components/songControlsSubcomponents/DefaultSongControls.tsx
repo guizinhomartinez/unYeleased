@@ -172,7 +172,11 @@ export const DefaultSongControls = ({
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
+<<<<<<< HEAD
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
+=======
+                        <Slider value={[sliderValue]} max={100} step={1} className={cn("w-full [&>:last-child>span]:bg-primary")} onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
+>>>>>>> de944e2 (Backend update)
                         <div className="text-sm text-muted-foreground/80 sleect" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songTime, songTimeType, currentTimeVal)}</div>
                     </div>
                 </div>
