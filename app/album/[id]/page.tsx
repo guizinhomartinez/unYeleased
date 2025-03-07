@@ -41,12 +41,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumExplanation, setAlbumExplanation] = useState("");
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
   const [repeatAlbum, setRepeatAlbum] = useState(0);
+  const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
     try {
       setVolumeVal(Number(storedVolume));
-    } catch (e:any) {
+    } catch (e: any) {
       throw new Error(e.message);
     }
   }, []);
@@ -134,7 +135,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const handleClickEvent = (element: Song, index: number) => {
     setPlayingSong(element.title);
     setIsPlaying(true);
-    setAppearBar(true);
     setSongCreator(element.artist);
     setCurrentSongIndex(index);
     setClickedAmmount(1);
@@ -145,7 +145,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       const songIndex = songs.findIndex((song) => song.title === playingSong)
 
       if (songIndex !== -1) {
-        setAppearBar(true);
         setSongCreator(songs[songIndex].artist);
         setCurrentSongIndex(songIndex);
         setClickedAmmount(1);
@@ -168,43 +167,37 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   };
 
   function endedSongFunction(newIndex: number) {
-    if (newIndex === songs.length || newIndex === songs.length - 1) {
-      // if the album has reached its end and now it will go to the void if the current song ends
-      if (repeatAlbum === 1) {
-        setCurrentSongIndex(0)
-        setPlayingSong(songs[0].title)
-        setSongCreator(songs[0].artist)
-        setIsPlaying(true)
-      } else if (repeatAlbum === 0) {
-        setCurrentSongIndex(currentSongIndex + 1)
-        setPlayingSong(songs[currentSongIndex + 1].title)
-        setSongCreator(songs[currentSongIndex + 1].artist)
-        setIsPlaying(false)
-      } else if (repeatAlbum === 2) {
-        if (songRef.current) {
-          songRef.current.currentTime = 0
-          songRef.current.play()
-        }
-        setIsPlaying(true)
-      }
-    } else {
-      // literally any other case
-      if (repeatAlbum === 0 || repeatAlbum === 1) {
-        setCurrentSongIndex(newIndex)
-        setPlayingSong(songs[newIndex].title)
-        setSongCreator(songs[newIndex].artist)
-        setIsPlaying(true)
-      } else if (repeatAlbum === 2) {
-        if (songRef.current) {
-          songRef.current.currentTime = 0
-          songRef.current.play()
-        }
-        setIsPlaying(true)
-      }
+    const setupNextSong = (songIndex: number, play: boolean = true) => {
+      setCurrentSongIndex(songIndex);
+      setPlayingSong(songs[songIndex].title);
+      setSongCreator(songs[songIndex].artist);
+      setIsPlaying(play);
     }
+    const repeatSong = () => {
+      if (songRef.current) {
+        songRef.current.currentTime = 0;
+        songRef.current.play();
+      }
+      setIsPlaying(true);
+    }
+
+    if (repeatAlbum === 2) return repeatSong();
+
+    if (newIndex !== songs.length) return setupNextSong(newIndex);
+
+    const newSongIndex:any[] = [(repeatAlbum === 0 ? currentSongIndex + 1 : 0), (repeatAlbum === 0 ? false : true)];
+
+    setupNextSong(newSongIndex[0], newSongIndex[1]);
   }
 
-  const handleSkipSong = (back: boolean) => endedSongFunction(back ? currentSongIndex - 1 : currentSongIndex + 1);
+  const handleSkipSong = (back: boolean) => setSkipDirection(back);
+
+  useEffect(() => {
+    if (skipDirection !== null) {
+      endedSongFunction(skipDirection ? currentSongIndex - 1 : currentSongIndex + 1);
+      setSkipDirection(null);
+    }
+  }, [skipDirection, currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
 
   useEffect(() => {
     const song = songRef.current;
