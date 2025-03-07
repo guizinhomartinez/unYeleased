@@ -11,7 +11,7 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [x] Good Ass Job
 - [ ] Cruel Winter
 - [ ] Thank God For Drugs
-- [ ] Yeezus II
+- [x] Yeezus II
 - [ ] So Help Me God
 - [ ] Wolves
 - [ ] Swish
