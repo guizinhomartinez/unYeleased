@@ -42,9 +42,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
   const [repeatAlbum, setRepeatAlbum] = useState(0);
 <<<<<<< HEAD
+<<<<<<< HEAD
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
 =======
 >>>>>>> de944e2 (Backend update)
+=======
+>>>>>>> de944e2e80b1e6cd4115050e0587a23654d257d6
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
