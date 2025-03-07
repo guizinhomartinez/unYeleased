@@ -197,10 +197,7 @@ export default function Page() {
                                             </div>
                                             <div className="flex gap-1 items-center justify-center">
                                                 <Badge className="mt-2 rounded-full" onClick={(e) => e.stopPropagation()}>{entry.tags && entry.tags[0]}</Badge>
-                                                <Badge className="mt-2 rounded-full" variant='outline' onClick={(e) => { e.stopPropagation() }}>
-                                                    <Disc className="mr-1.5" size='20' />
-                                                    {entry.tags && entry.tags[1]}
-                                                </Badge>
+                                                <Badge className="mt-2 rounded-full" variant='secondary' onClick={(e) => { e.stopPropagation() }}>{entry.tags && entry.tags[1]}</Badge>
                                             </div>
                                         </div>
                                     </motion.div>
