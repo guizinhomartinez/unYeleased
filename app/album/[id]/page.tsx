@@ -14,6 +14,7 @@ import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExpla
 import { useQueryState } from "nuqs";
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchAlbumInfo, fetchAlbumSongs } from '@/components/fetching';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Song {
   title: string;
@@ -275,7 +276,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                       {!isPlaying ? String('Play') : String('')}
                     </div>
                   </Button>
-                  {imageSize === 260 ?
+                  {!useIsMobile() ?
                     <Button variant='outline' aria-label='Toggle explanation' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
                       <BookOpenText size='24' />
                       Album Explanation
@@ -337,7 +338,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           songVal={playingSong}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}
-          optionalAppear={appearBar}
           volumeVal={volumeVal}
           setVolumeVal={setVolumeVal}
           image={`/song-files/covers/${id.toLowerCase()}.jpg`}
@@ -346,6 +346,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           repeat={repeatAlbum}
           setRepeat={setRepeatAlbum}
           id={id}
+          albumName={albumName}
         />
       </div>
     </div>
