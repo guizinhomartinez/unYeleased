@@ -34,6 +34,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const navigationStuff = [
     {
@@ -59,24 +60,7 @@ const navigationStuff = [
 ]
 
 export default function Navbar({ className }: { className?: string }) {
-    const [mediumScreen, setMediumScreen] = useState(false);
     const pathName = usePathname();
-
-    useEffect(() => {
-        const isScreenSmall = () => {
-            if (window.innerWidth < 768)
-                setMediumScreen(true)
-            else
-                setMediumScreen(false)
-        }
-        isScreenSmall()
-
-        window.addEventListener('resize', isScreenSmall)
-
-        return () => (
-            window.addEventListener('resize', isScreenSmall)
-        )
-    })
 
     return (
         <>
@@ -84,9 +68,9 @@ export default function Navbar({ className }: { className?: string }) {
                 <div className="items-center flex gap-2">
                     {navigationStuff.map((item, index) => (
                         <Link href={item.link} key={index}>
-                            <Button variant='outline' size={`${!mediumScreen ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link && 'active-button')}>
+                            <Button variant='outline' size={`${!useIsMobile() ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link && 'active-button')}>
                                 {item.component}
-                                {!mediumScreen ? String(item.name) : String('')}
+                                {!useIsMobile() ? String(item.name) : String('')}
                             </Button>
                         </Link>
                     ))}

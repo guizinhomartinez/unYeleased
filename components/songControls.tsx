@@ -1,23 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
 import { SongControlsSmall } from "./songControlsSubcomponents/songControlsSmall";
 import { DefaultSongControls } from "./songControlsSubcomponents/DefaultSongControls";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface songControlsInterface {
     songRef: any;
     songVal: string;
     isPlaying: boolean;
-    setIsPlaying: any;
-    optionalAppear: boolean;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     volumeVal: number;
     setVolumeVal: any;
     image: string;
     songCreator: string;
     handleSkipSong: (back: boolean) => void;
     repeat: number;
-    setRepeat: any;
+    setRepeat: Dispatch<SetStateAction<number>>;
     id: string;
+    albumName?: string;
 }
 
 export const SongControls = ({
@@ -25,7 +26,6 @@ export const SongControls = ({
     songVal,
     isPlaying,
     setIsPlaying,
-    optionalAppear,
     volumeVal,
     setVolumeVal,
     image,
@@ -33,21 +33,25 @@ export const SongControls = ({
     handleSkipSong,
     repeat,
     setRepeat,
-    id
+    id,
+    albumName
 }: songControlsInterface) => {
-    const [mediumScreen, setMediumScreen] = useState(false);
+    const [currentTimeVal, setCurrentTimeVal] = useState(0);
 
     useEffect(() => {
-        const isScreenSmall = () => {
-            if (window.innerWidth < 768) setMediumScreen(true);
-            else setMediumScreen(false);
+        const song = songRef.current;
+        if (!song) return;
+
+        const updateTime = () => {
+            setCurrentTimeVal(song.currentTime);
         };
-        isScreenSmall();
 
-        window.addEventListener("resize", isScreenSmall);
+        song.addEventListener("timeupdate", updateTime);
 
-        return () => window.addEventListener("resize", isScreenSmall);
-    });
+        return () => {
+            song.removeEventListener("timeupdate", updateTime);
+        };
+    }, []);
 
     // this basically just adds support for stuff like media buttons and mobile media players in notification tray
 
@@ -57,38 +61,37 @@ export const SongControls = ({
         if (!song) return;
 
         if ("mediaSession" in navigator) {
+            navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
+            navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
+            navigator.mediaSession.setActionHandler("previoustrack", () => handleSkipSong(true));
+            navigator.mediaSession.setActionHandler("nexttrack", () => handleSkipSong(false));
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: songVal || "No Track Found",
+                artist: songCreator || "Unknown",
+                album: albumName || id,
+                artwork: [
+                    {
+                        src: image,
+                        sizes: '96x96,128x128,192x192',
+                        type: "image/jpeg",
+                    },
+                ],
+            });
             try {
-                navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
-                navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
-                navigator.mediaSession.setActionHandler("previoustrack", () => handleSkipSong(true));
-                navigator.mediaSession.setActionHandler("nexttrack", () => handleSkipSong(false));
-
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: songVal,
-                    artist: songCreator,
-                    album: "Yandhi",
-                    artwork: [
-                        {
-                            src: image,
-                            sizes: "96x96",
-                            type: "image/jpg",
-                        },
-                    ],
-                });
-
                 navigator.mediaSession.setPositionState({
                     duration: songRef.current.duration || 0,
-                    position: songRef.current.currentTime || 0,
+                    position: currentTimeVal || 0,
                 })
             } catch (e) {
                 console.log(e);
             }
         }
-    }, [handleSkipSong, songVal, songCreator, image, songRef]);
+    }, [handleSkipSong, songVal, songCreator, image, songRef, currentTimeVal]);
 
     return (
         <>
-            {!mediumScreen ? (
+            {!useIsMobile() ? (
                 <div
                     className={`fixed bottom-2 rounded-2xl w-full max-w-[95.5vw]
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
@@ -99,7 +102,6 @@ export const SongControls = ({
                         songVal={songVal}
                         isPlaying={isPlaying}
                         setIsPlaying={setIsPlaying}
-                        optionalAppear={optionalAppear}
                         volumeVal={volumeVal}
                         setVolumeVal={setVolumeVal}
                         image={image}
@@ -124,7 +126,6 @@ export const SongControls = ({
                                     songVal={songVal}
                                     isPlaying={isPlaying}
                                     setIsPlaying={setIsPlaying}
-                                    optionalAppear={optionalAppear}
                                     volumeVal={volumeVal}
                                     setVolumeVal={setVolumeVal}
                                     image={image}

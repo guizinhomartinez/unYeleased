@@ -10,7 +10,6 @@ export const SongControlsSmall = ({
     songVal,
     isPlaying,
     setIsPlaying,
-    optionalAppear,
     volumeVal,
     setVolumeVal,
     image,
