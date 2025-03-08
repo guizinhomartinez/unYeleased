@@ -15,6 +15,7 @@ import { useQueryState } from "nuqs";
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchAlbumInfo, fetchAlbumSongs } from '@/components/fetching';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 interface Song {
   title: string;
@@ -308,7 +309,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
               </div>
             </div> */}
-            <div className='border-2 border-secondary rounded-lg bg-primary-foreground/60 mb-24'>
+            <div className={cn('border-2 border-secondary rounded-lg bg-primary-foreground/60 transition-all duration-500', appearBar ? 'mb-24' : '-mb-4')}>
               {songs.map((element, index) => (
                 <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-center gap-3'>
@@ -347,6 +348,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           setRepeat={setRepeatAlbum}
           id={id}
           albumName={albumName}
+          appearBar={appearBar}
+          setAppearBar={setAppearBar}
         />
       </div>
     </div>

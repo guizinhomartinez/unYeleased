@@ -41,7 +41,6 @@ export default function Page() {
     const [show2025, setShow2025] = React.useState<Checked>(true);
     const [show2024, setShow2024] = React.useState<Checked>(false);
     const [none, setNone] = React.useState<Checked>(false);
-    const [mediumScreen, setMediumScreen] = useState(false);
     const [entries, setEntries] = useState<Song[]>([]);
     const [searchQuery, setSearchQuery] = useState("")
 
@@ -51,18 +50,6 @@ export default function Page() {
     useEffect(() => {
         setColor(resolvedTheme === "dark" ? "#ffffff" : "#000000");
     }, [resolvedTheme]);
-
-    useEffect(() => {
-        const isScreenSmall = () => {
-            if (window.innerWidth < 768) setMediumScreen(true);
-            else setMediumScreen(false);
-        };
-        isScreenSmall();
-
-        window.addEventListener("resize", isScreenSmall);
-
-        return () => window.addEventListener("resize", isScreenSmall);
-    });
 
     useEffect(() => {
         try {

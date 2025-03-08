@@ -4,6 +4,7 @@ import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
 import { SongControlsSmall } from "./songControlsSubcomponents/songControlsSmall";
 import { DefaultSongControls } from "./songControlsSubcomponents/DefaultSongControls";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export interface songControlsInterface {
     songRef: any;
@@ -19,6 +20,8 @@ export interface songControlsInterface {
     setRepeat: Dispatch<SetStateAction<number>>;
     id: string;
     albumName?: string;
+    appearBar: boolean;
+    setAppearBar: any;
 }
 
 export const SongControls = ({
@@ -34,7 +37,9 @@ export const SongControls = ({
     repeat,
     setRepeat,
     id,
-    albumName
+    albumName,
+    appearBar,
+    setAppearBar
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
 
@@ -78,13 +83,15 @@ export const SongControls = ({
                     },
                 ],
             });
-            try {
-                navigator.mediaSession.setPositionState({
-                    duration: songRef.current.duration || 0,
-                    position: currentTimeVal || 0,
-                })
-            } catch (e) {
-                console.log(e);
+            if (song.duration && !isNaN(song.duration)) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: song.duration,
+                        position: currentTimeVal || 0,
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
     }, [handleSkipSong, songVal, songCreator, image, songRef, currentTimeVal]);
@@ -93,9 +100,9 @@ export const SongControls = ({
         <>
             {!useIsMobile() ? (
                 <div
-                    className={`fixed bottom-2 rounded-2xl w-full max-w-[95.5vw]
+                    className={cn(`fixed bottom-2 rounded-xl w-full max-w-[95.2vw]
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
-                    flex items-center transition-all duration-500 shadow-lg`}
+                    flex items-center transition-all duration-500 shadow-lg`, !appearBar ? 'translate-y-32' : 'translate-y-0')}
                 >
                     <DefaultSongControls
                         songRef={songRef}
@@ -110,6 +117,8 @@ export const SongControls = ({
                         repeat={repeat}
                         setRepeat={setRepeat}
                         id={id}
+                        appearBar={appearBar}
+                        setAppearBar={setAppearBar}
                     />
                 </div>
             ) : (
@@ -134,6 +143,8 @@ export const SongControls = ({
                                     repeat={repeat}
                                     setRepeat={setRepeat}
                                     id={id}
+                                    appearBar={appearBar}
+                                    setAppearBar={setAppearBar}
                                 />
                             </div>
                         </DrawerTrigger>

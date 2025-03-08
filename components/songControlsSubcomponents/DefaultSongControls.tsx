@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { songControlsInterface } from "../songControls";
 import Image from 'next/image'
 import { Button } from "../ui/button";
-import { MicVocal, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
+import { ChevronDown, MicVocal, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,9 @@ export const DefaultSongControls = ({
     repeat,
     setRepeat,
     songCreator,
-    handleSkipSong
+    handleSkipSong,
+    appearBar,
+    setAppearBar
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
@@ -74,6 +76,8 @@ export const DefaultSongControls = ({
                     shareButton?.click();
                 case "l":
                     lyricsButton?.click();
+                case "h":
+                    setAppearBar(!appearBar);
             }
 
             if (e.metaKey || e.ctrlKey) {
@@ -117,6 +121,7 @@ export const DefaultSongControls = ({
     return (
         <>
             <div className="flex w-full justify-between items-center" onKeyDown={(e) => handleKeyDown}>
+                <Button className={cn('absolute -top-4 right-0 bg-primary-foreground rounded-full duration-500 border-2 border-secondary', !appearBar && 'rotate-180 -top-14')} size='icon' variant='outline' onClick={() => setAppearBar(!appearBar)}><ChevronDown /></Button>
                 <div className="flex items-center gap-3 select-none w-full">
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
