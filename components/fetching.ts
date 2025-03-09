@@ -37,3 +37,9 @@ export async function fetchSinglesExplanation(id:string) {
     const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/explanation.txt`);
     return response.text();
 }
+
+// album lyrics
+export async function fetchAlbumLyrics(id:any, songName:any) {
+    const response = await fetch(`/song-files/songLyrics/${id}/${songName}.lrc`);
+    return response.text();
+}

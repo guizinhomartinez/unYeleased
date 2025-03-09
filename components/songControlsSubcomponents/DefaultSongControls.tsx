@@ -27,7 +27,8 @@ export const DefaultSongControls = ({
     songCreator,
     handleSkipSong,
     appearBar,
-    setAppearBar
+    setAppearBar,
+    id
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
@@ -58,16 +59,18 @@ export const DefaultSongControls = ({
         const shareButton = document.getElementById("share-button");
         const lyricsButton = document.getElementById("lyrics-button");
         const handleKey = (e: KeyboardEvent) => {
-            e.preventDefault();
             switch (e.key) {
                 case " ":
                     setIsPlaying(!isPlaying);
+                    e.preventDefault();
                     break;
                 case "ArrowLeft":
                     songRef.current.currentTime -= 5;
+                    e.preventDefault();
                     break;
                 case "ArrowRight":
                     songRef.current.currentTime += 5;
+                    e.preventDefault();
                     break;
                 case "r":
                     setRepeat(repeat >= 2 ? 0 : repeat + 1);
@@ -203,8 +206,8 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-48 h-full rounded-xl bg-background">
-                                <Lyrics />
+                            <PopoverContent className="min-w-[350px] h-full rounded-xl bg-background p-2" side='top'>
+                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
                             </PopoverContent>
                         </Popover>
                     </div>

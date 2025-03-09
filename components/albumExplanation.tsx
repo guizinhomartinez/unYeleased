@@ -37,52 +37,51 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     }, [id])
 
     return (
-        <div className="flex h-screen">
-            <Separator orientation="vertical" className="h-screen rounded-full bg-gradient-to-b from-muted/80 to-transparent to-95% mt-1 -translate-x-4" />
-            <div className="w-[32vw] bg-primary-foreground p-3 mt-3 mr-8 rounded-xl top-12 mb-32 ml-3 border-2 border-secondary overflow-scroll">
-                <div className="text-3xl font-semibold">Album Explanation</div>
+        <>
+            <div className="relative">
+                <p className='text-3xl font-bold text-center'>Album Explanation</p>
                 <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-                <div className="overflow-hidden">
-                    {DynamicHeader ? (
-                        <ScrollArea className="text-md pr-3">
-                            <DynamicHeader components={overrideComponents} />
-                        </ScrollArea>
-                    ) : (
-                        <LoaderCircleIcon className="-ms-1 animate-spin" aria-hidden="true" />
-                    )}
-                    <div className="w-full flex flex-col justify-center bg-primary-foreground">
-                        <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="w-full items-center">
-                                    Original Source{source.length > 1 && "s"}
-                                    <ExternalLink />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogTitle>
-                                    Sources
-                                </DialogTitle>
-                                <DialogDescription>All sources used for this explanation</DialogDescription>
-                                {source.map((item, index) => (
-                                    <Link href={item} key={index} target="_blank" className="w-full">
-                                        <Button variant='secondary' className="w-full">
-                                            {item}
-                                        </Button>
-                                    </Link>
-                                ))}
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+            </div>
+
+            <div className="h-[93%] overflow-scroll">
+                {DynamicHeader ? (
+                    <ScrollArea className="text-md pr-3">
+                        <DynamicHeader components={overrideComponents} />
+                    </ScrollArea>
+                ) : (
+                    <LoaderCircleIcon className="-ms-1 animate-spin" aria-hidden="true" />
+                )}
+                <div className="w-full flex flex-col justify-center">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="w-full items-center my-4">
+                                Original Source{source.length > 1 && "s"}
+                                <ExternalLink />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogTitle>
+                                Sources
+                            </DialogTitle>
+                            <DialogDescription>All sources used for this explanation</DialogDescription>
+                            {source.map((item, index) => (
+                                <Link href={item} key={index} target="_blank" className="w-full">
+                                    <Button variant='secondary' className="w-full">
+                                        {item}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
 export const AlbumExplanationSmall = ({ id }: { id: string }) => {
     const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
-    const [source, setSource] = useState("");
+    const [source, setSource] = useState<string[]>([]);
 
     useEffect(() => {
         const loadMdxComponent = async () => {
@@ -97,7 +96,8 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
 
         const fetchSource = async () => {
             const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
-            setSource(data);
+            const formattedData = data.split('\n');
+            setSource(formattedData);
         }
 
         loadMdxComponent();
@@ -106,8 +106,6 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
 
     return (
         <div className="p-4 overflow-y-scroll h-[80vh]">
-            <div className="text-2xl font-semibold mt-6 text-center">Album Explanation</div>
-            <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
             <div className="mx-0.5">
                 {DynamicHeader ? (
                     <DynamicHeader components={overrideComponents} />
@@ -115,13 +113,28 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
                     <Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />
                 )}
             </div>
-            <div className="mt-4">
-                <Link href={source} target="_blank" className="mx-auto w-full">
-                    <Button className="w-full items-center">
-                        Original Source{source.length > 1 && "s"}
-                        <ExternalLink />
-                    </Button>
-                </Link>
+            <div className="w-full flex flex-col justify-center">
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="w-full items-center my-4">
+                            Original Source{source.length > 1 && "s"}
+                            <ExternalLink />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[90%] rounded-xl">
+                        <DialogTitle>
+                            Sources
+                        </DialogTitle>
+                        <DialogDescription>All sources used for this explanation</DialogDescription>
+                        {source.map((item, index) => (
+                            <Link href={item} key={index} target="_blank" className="w-full">
+                                <Button variant='secondary' className="w-full">
+                                    {item}
+                                </Button>
+                            </Link>
+                        ))}
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     )

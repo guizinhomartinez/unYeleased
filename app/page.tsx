@@ -64,16 +64,6 @@ export default function Page() {
         }
     })
 
-    const filteredEntries = entries.filter((item, a, b) => {
-        if (show2025) {
-            item.tags[0].includes("2025")
-        } else if (show2024) {
-            item.tags[0].includes("2018")
-        } else {
-            null
-        }
-    });
-
     const handleKeyDown = useEffect(() => {
         const search = document.getElementById("search");
         const handleKey = (e: KeyboardEvent) => {
@@ -183,8 +173,8 @@ export default function Page() {
                                                 }
                                             </div>
                                             <div className="flex gap-1 items-center justify-center">
-                                                <Badge className="mt-2 rounded-full" onClick={(e) => e.stopPropagation()}>{entry.tags && entry.tags[0]}</Badge>
-                                                <Badge className="mt-2 rounded-full" variant='secondary' onClick={(e) => { e.stopPropagation() }}>{entry.tags && entry.tags[1]}</Badge>
+                                                <Badge className="mt-2 rounded-full" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
+                                                <Badge className="mt-2 rounded-full" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
                                             </div>
                                         </div>
                                     </motion.div>

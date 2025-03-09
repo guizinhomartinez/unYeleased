@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { Loader2, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
+import { Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { DialogHeader } from "../ui/dialog";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import { Marquee } from "@/components/magicui/marquee";
 
 interface miniPlayerInterface {
     albumCover: string;
@@ -81,7 +82,7 @@ export const MiniPlayer = ({
                     </div>
                     <div className="flex gap-2 mt-4">
                         <div className="flex flex-col overflow-hidden flex-1">
-                            <div className="text-2xl font-semibold w-full scrolling-text relative select-none leading-none">{songVal || "No Track Found"}</div>
+                            <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2" pauseOnHover>{songVal || "No Track Found"}</Marquee>
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                         </div>
                         <div className="items-center flex gap-2">

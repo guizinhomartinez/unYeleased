@@ -25,6 +25,7 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [ ] War
 - [ ] YEBU
 - [ ] Watch The Throne 2
+- [ ] Bad Bitch Playbook Volume 1
 - [ ] VULTURES 3
 
 ### UI

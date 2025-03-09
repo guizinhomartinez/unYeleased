@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { Pause, Play, SkipForward } from "lucide-react";
 import { Progress } from "../ui/progress";
 import { songControlsInterface } from "../songControls";
+import '@public/CSS/song-controls.css';
 
 export const SongControlsSmall = ({
     songRef,
@@ -48,7 +49,7 @@ export const SongControlsSmall = ({
         <>
             <div className="flex flex-col w-full">
                 <div className="flex items-center py-3 px-3 justify-between">
-                    <div className="flex items-center gap-2 flex-1 select-none max-w-[70%] shadowed-text relative">
+                    <div className="flex items-center gap-2 flex-1 select-none max-w-[70%] shadowed-song-name relative">
                         <Image
                             src={image}
                             alt={image}
@@ -57,7 +58,7 @@ export const SongControlsSmall = ({
                             className="rounded-lg"
                         />
                         <div className="overflow-hidden">
-                            <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis w-fit shadowed-text-div">
+                            <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis w-fit">
                                 {songVal !== "" ? songVal : "No Track Found"}
                             </div>
                             <div className="text-sm text-muted-foreground">
@@ -70,7 +71,7 @@ export const SongControlsSmall = ({
                         <Button className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} size="icon" onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}>
                             {!isPlaying ? <Play /> : <Pause />}
                         </Button>
-                        <Button size="icon" className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} variant="ghost" onClick={() => handleSkipSong(false)}>
+                        <Button size="icon" className={`p-5 pr-2 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`} variant="ghost" onClick={() => handleSkipSong(false)}>
                             <SkipForward />
                         </Button>
                     </div>
