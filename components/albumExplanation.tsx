@@ -55,7 +55,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button className="w-full items-center">
-                                    {source.length > 1 ? "Original Sources" : "Original Source"}
+                                    Original Source{source.length > 1 && "s"}
                                     <ExternalLink />
                                 </Button>
                             </DialogTrigger>
@@ -118,7 +118,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             <div className="mt-4">
                 <Link href={source} target="_blank" className="mx-auto w-full">
                     <Button className="w-full items-center">
-                        Original Source(s)
+                        Original Source{source.length > 1 && "s"}
                         <ExternalLink />
                     </Button>
                 </Link>
