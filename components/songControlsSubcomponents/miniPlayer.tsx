@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";
@@ -44,6 +44,7 @@ export const MiniPlayer = ({
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
+    const [isOverflowing, setIsOverflowing] = useState(false);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -73,6 +74,19 @@ export const MiniPlayer = ({
         useEffectConst();
     }, [handleSkipSong]);
 
+    useEffect(() => {
+        const checkIfOverflowed = () => {
+            const songName = document.getElementById('song-name')
+            if (!songName) return;
+
+            if (songName.scrollWidth > songName.clientWidth) {
+                setIsOverflowing(true);
+                console.log(songName.scrollWidth > songName.clientWidth);
+            }
+        }
+        checkIfOverflowed();
+    }, [songVal])
+
     return (
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
@@ -82,7 +96,15 @@ export const MiniPlayer = ({
                     </div>
                     <div className="flex gap-2 mt-4">
                         <div className="flex flex-col overflow-hidden flex-1">
-                            <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2" pauseOnHover>{songVal || "No Track Found"}</Marquee>
+                            {isOverflowing ?
+                                <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2" id='song-name' pauseOnHover>
+                                    {songVal || "No Track Found"}
+                                </Marquee>
+                                :
+                                <div className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none" id='song-name'>
+                                    {songVal || "No Track Found"}
+                                </div>
+                            }
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                         </div>
                         <div className="items-center flex gap-2">
@@ -163,10 +185,10 @@ export const MiniPlayer = ({
                     </div>
                 </div>
                 <div className="flex mt-12 md:mt-0 h-full items-center gap-2">
-                        <Button onClick={() => {songRef.current && muteSong(songRef)}}
-                            variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
-                            <VolumeIcon size='18' repeat={repeat} songRef={songRef} volumeVal={volumeVal} />
-                        </Button>
+                    <Button onClick={() => { songRef.current && muteSong(songRef) }}
+                        variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
+                        <VolumeIcon size='18' repeat={repeat} songRef={songRef} volumeVal={volumeVal} />
+                    </Button>
                     <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={setVolumeVal} />
                     <Label className="w-12 text-right">{volumeVal}%</Label>
                 </div>
