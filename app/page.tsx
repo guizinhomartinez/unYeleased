@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown, ArrowDownUp, Disc, Info, Loader2 } from "lucide-react"
+import { ArrowDown, ArrowDownUp, ChevronDown, Disc, Info, Loader2, X } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export default function Page() {
     const [show2024, setShow2024] = React.useState<Checked>(false);
     const [none, setNone] = React.useState<Checked>(false);
     const [entries, setEntries] = useState<Song[]>([]);
-    const [searchQuery, setSearchQuery] = useState("")
+    const [searchQuery, setSearchQuery] = useState("");
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -141,49 +141,64 @@ export default function Page() {
                         </DropdownMenu>
                         <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
                             <div className="flex w-full max-w-sm items-center relative">
-                                <Input placeholder="Search..." className="rounded-xl transition-all h-10 shadow-md" type="search" onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
-                                <div className="text-muted-foreground/80 pointer-events-none ml-auto flex items-center justify-center">
-                                    <kbd className="text-muted-foreground inline-flex font-[inherit] text-xs font-medium absolute right-3">
-                                        <span className="opacity-70">⌘</span>K
-                                    </kbd>
+                                <Input placeholder="Search..." className="transition-all h-10 shadow-md" type="search" value={searchQuery} onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
+                                <div className="justify-center items-center absolute right-3 inline-flex gap-2">
+                                    <div className="text-muted-foreground/80 pointer-events-none ml-auto flex items-center justify-center">
+                                        <kbd className="text-muted-foreground font-[inherit] text-xs font-medium ">
+                                            <span className="opacity-70">⌘</span>K
+                                        </kbd>
+                                    </div>
+                                    <Button variant='link' size='icon' className={cn("w-fit h-fit", searchQuery === "" && "hidden")} onClick={() => setSearchQuery("")}>
+                                        <X size='20' />
+                                    </Button>
                                 </div>
                             </div>
                         </React.Suspense>
                     </div>
                     <div className="grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-4">
                         {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
-                            <Link href={entry.link} key={index}>
-                                <AnimatePresence>
-                                    <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full cursor-pointer shadow-md" key={index}>
-                                        <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
-                                        <div className="flex flex-col justify-center items-center w-full">
-                                            <div className="font-semibold text-start">{entry.text}</div>
-                                            <div className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</div>
-                                            <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
-                                                {entry.subtext != null ?
-                                                    <div className="flex flex-col px-2 py-1 justify-start">
-                                                        <div className="font-semibold">Description</div>
-                                                        <div className="whitespace-pre-wrap text-sm">{entry.subtext}</div>
-                                                    </div>
-                                                    :
-                                                    <div className="flex flex-col px-2 py-1 justify-start cursor-not-allowed">
-                                                        <div className="font-semibold">Description</div>
-                                                        <div className="whitespace-pre-wrap text-primary/50 text-sm">No description given</div>
-                                                    </div>
-                                                }
-                                            </div>
-                                            <div className="flex gap-1 items-center justify-center">
-                                                <Badge className="mt-2 rounded-full" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
-                                                <Badge className="mt-2 rounded-full" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </AnimatePresence>
-                            </Link>
+                            <div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md" key={index}>
+                                <Link href={entry.link} className="cursor-pointer">
+                                    <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
+                                </Link>
+                                <div className="flex flex-col justify-center items-center w-full">
+                                    <Link href={entry.link} className="cursor-pointer">
+                                        <p className="font-semibold text-start hover:underline">{entry.text}</p>
+                                    </Link>
+                                    <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
+                                    <Description entry={entry} />
+                                    <div className="flex gap-1 items-center justify-center">
+                                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
+                                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
             </div>
         </>
     );
+}
+
+const Description = ({ entry }: { entry: any }) => {
+    const [showDescription, setShowDescription] = useState<boolean>(false);
+
+    return (
+        <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
+            <button className={cn("flex flex-col px-2 py-1 justify-start overflow-hidden cursor-pointer select-none w-full", entry.subtext === null && "cursor-not-allowed")} onClick={() => setShowDescription(!showDescription)}>
+                <div className="flex justify-between items-center">
+                    <p className={cn("text-base", entry.subtext === null && "text-primary/50 text-sm font-normal")}>{entry.subtext != null ? "Description" : "No Description"}</p>
+                    <Button className={cn('duration-300 p-px bg-transparent border-none m-0 w-fit h-fit hover:bg-transparent', showDescription && 'rotate-180', entry.subtext === null && "hidden")} disabled={entry.subtext === null} size='icon' variant='outline'>
+                        <ChevronDown size='16' />
+                    </Button>
+                </div>
+                {entry.subtext != null &&
+                    <p className={cn("whitespace-pre-wrap text-left text-primary/50 text-sm overflow-hidden transition-[max-height] duration-300 max-h-0", showDescription && 'max-h-40 transition-[max-height] duration-300')}>
+                        {entry.subtext}
+                    </p>
+                }
+            </button>
+        </div>
+    )
 }

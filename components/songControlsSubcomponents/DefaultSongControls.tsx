@@ -85,22 +85,28 @@ export const DefaultSongControls = ({
 
             if (e.metaKey || e.ctrlKey) {
                 if (e.key === "ArrowRight") {
+                    e.preventDefault();
                     handleSkipSong(false);
                 } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
                     handleSkipSong(true);
                 }
             }
 
             if (e.key === "ArrowUp") {
+                e.preventDefault();
                 setVolumeVal(volumeVal + 10);
             } else if (e.key === "ArrowDown") {
+                e.preventDefault();
                 setVolumeVal(volumeVal - 10);
             }
 
             if (e.shiftKey) {
                 if (e.key === "ArrowUp") {
+                    e.preventDefault();
                     setVolumeVal(volumeVal + 5);
                 } else if (e.key === "ArrowDown") {
+                    e.preventDefault();
                     setVolumeVal(volumeVal - 5);
                 }
             }
@@ -207,7 +213,7 @@ export const DefaultSongControls = ({
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="min-w-[350px] h-full rounded-xl bg-background p-2" side='top'>
-                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
+                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} songRef={songRef} />
                             </PopoverContent>
                         </Popover>
                     </div>

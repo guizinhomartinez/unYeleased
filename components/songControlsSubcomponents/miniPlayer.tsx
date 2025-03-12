@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";

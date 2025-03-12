@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "./ui/button"
@@ -43,14 +43,20 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                 <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
             </div>
 
-            <div className="h-[93%] overflow-scroll">
-                {DynamicHeader ? (
-                    <ScrollArea className="text-md pr-3">
-                        <DynamicHeader components={overrideComponents} />
-                    </ScrollArea>
-                ) : (
-                    <LoaderCircleIcon className="-ms-1 animate-spin" aria-hidden="true" />
-                )}
+            <div className="h-[93%] overflow-y-scroll">
+                <Suspense fallback={
+                    <div className="h-full w-full bg-transparent">
+                        <LoaderCircleIcon className="-ms-1 animate-spin" aria-hidden="true" />
+                    </div>
+                }>
+                    {DynamicHeader ? (
+                        <ScrollArea className="text-md pr-3">
+                            <DynamicHeader components={overrideComponents} />
+                        </ScrollArea>
+                    ) : (
+                        <LoaderCircleIcon className="-ms-1 animate-spin" aria-hidden="true" />
+                    )}
+                </Suspense>
                 <div className="w-full flex flex-col justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
