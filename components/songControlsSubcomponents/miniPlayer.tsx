@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+"use client"
+
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";
+import { EllipsisVertical, Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -12,6 +14,10 @@ import { DialogHeader } from "../ui/dialog";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { Marquee } from "@/components/magicui/marquee";
+import { toast } from "sonner";
+import image from "next/image";
+import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
+import { SongControlsSmall } from "./songControlsSmall";
 
 interface miniPlayerInterface {
     albumCover: string;
@@ -22,7 +28,7 @@ interface miniPlayerInterface {
     volumeVal: number;
     setVolumeVal: any;
     songCreator: string;
-    handleSkipSong: (back: boolean) => void;
+    handleSkipSong: any;
     repeat: number;
     setRepeat: any;
 }
@@ -44,7 +50,8 @@ export const MiniPlayer = ({
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
-    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    // console.log(songVal);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -74,58 +81,37 @@ export const MiniPlayer = ({
         useEffectConst();
     }, [handleSkipSong]);
 
-    useEffect(() => {
-        const checkIfOverflowed = () => {
-            const songName = document.getElementById('song-name')
-            if (!songName) return;
-
-            if (songName.scrollWidth > songName.clientWidth) {
-                setIsOverflowing(true);
-                console.log(songName.scrollWidth > songName.clientWidth);
-            }
-        }
-        checkIfOverflowed();
-    }, [songVal])
-
     return (
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
                 <div className="flex flex-col gap-4 mt-0">
                     <div className="flex flex-col relative items-center">
-                        <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg" />
+                        <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none" />
                     </div>
                     <div className="flex gap-2 mt-4">
-                        <div className="flex flex-col overflow-hidden flex-1">
-                            {isOverflowing ?
-                                <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2" id='song-name' pauseOnHover>
-                                    {songVal || "No Track Found"}
-                                </Marquee>
-                                :
-                                <div className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none" id='song-name'>
-                                    {songVal || "No Track Found"}
-                                </div>
-                            }
+                        <div className="flex flex-col overflow-hidden flex-1 gap-1">
+                            {/* <AutoMarquee text={songVal} /> */}
+                            <p className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none">
+                                {songVal || "No Track Found"}
+                            </p>
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                         </div>
                         <div className="items-center flex gap-2">
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    {songRef.current ?
-                                        <Button className="rounded-full" variant='secondary' size='icon'>
+                            <Drawer>
+                                <DrawerTrigger asChild>
+                                    <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
+                                        <EllipsisVertical size='24' />
+                                    </Button>
+                                </DrawerTrigger>
+                                <DrawerContent className="max-h-[100%] rounded-xl">
+                                    <div className="p-8 w-full flex flex-col gap-2">
+                                        <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                                             <Share />
-                                        </Button> :
-                                        <Button className="rounded-full" variant='secondary' size='icon' disabled>
-                                            <Share />
+                                            Share song
                                         </Button>
-                                    }
-                                </DialogTrigger>
-                                <DialogContent className="max-w-[90%] rounded-xl">
-                                    <DialogHeader>
-                                        <DialogTitle>Share song</DialogTitle>
-                                    </DialogHeader>
-                                    <ShareSong />
-                                </DialogContent>
-                            </Dialog>
+                                    </div>
+                                </DrawerContent>
+                            </Drawer>
                         </div>
                     </div>
                 </div>
@@ -194,5 +180,37 @@ export const MiniPlayer = ({
                 </div>
             </div>
         </ScrollArea>
+    );
+};
+
+const AutoMarquee = ({ text, }: { text: string }) => {
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const textRef = useRef(null);
+    const [dummyEl, setDummyEl] = useState<boolean>(false);
+
+    React.useMemo(() => {
+        const checkWrap = () => {
+            if (textRef.current && text) {
+                const { offsetWidth, scrollWidth } = textRef.current;
+                const THRESHOLD = 0;
+                // setIsOverflowing(scrollWidth > offsetWidth + THRESHOLD);
+                setIsOverflowing(dummyEl);
+            }
+        };
+
+        checkWrap();
+
+        window.addEventListener("resize", checkWrap);
+        return () => window.removeEventListener("resize", checkWrap);
+    }, [text, dummyEl]);
+
+    return isOverflowing ? (
+        <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2 whitespace-nowrap animate-marquee" onClick={() => setDummyEl(!dummyEl)}>
+            {text || "No Track Found"}
+        </Marquee>
+    ) : (
+        <span ref={textRef} className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none whitespace-nowrap" onClick={() => setDummyEl(!dummyEl)}>
+            {text || "No Track Found"}
+        </span>
     );
 };

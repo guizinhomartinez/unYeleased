@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown, ArrowDownUp, ChevronDown, Disc, Info, Loader2, X } from "lucide-react"
+import { ArrowDown, ArrowDownUp, ChevronDown, Disc, Grid2X2, Info, List, Loader2, MoonIcon, SunIcon, X } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,8 @@ import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatePresence, motion } from "motion/react";
 import { fetchHomeInfo } from "@/components/fetching";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Switch } from "@/components/ui/switch";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
@@ -37,10 +39,18 @@ interface Song {
     creators: string;
 }
 
+interface Albums {
+    entry: any;
+    isGrid: boolean;
+    setSearchQuery: any;
+    index: any;
+}
+
 export default function Page() {
-    const [show2025, setShow2025] = React.useState<Checked>(true);
-    const [show2024, setShow2024] = React.useState<Checked>(false);
-    const [none, setNone] = React.useState<Checked>(false);
+    const [show2025, setShow2025] = useState(true);
+    const [show2024, setShow2024] = useState(false);
+    const [none, setNone] = useState(false);
+    const [isGrid, setIsGrid] = useState(true);
     const [entries, setEntries] = useState<Song[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -118,27 +128,44 @@ export default function Page() {
 
                 <div className="mt-12 h-full">
                     <div className="flex justify-between gap-2 items-center" id="albums">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button className="rounded-xl shadow-md">
-                                    <ArrowDownUp />
-                                    Sort by...
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="start">
-                                <DropdownMenuLabel>Year sorting</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuCheckboxItem checked={none} onCheckedChange={setNone} onChange={() => setSearchQuery('')}>
-                                    None
-                                </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem checked={show2025} onCheckedChange={setShow2025} onChange={() => setSearchQuery('2025')}>
-                                    2025
-                                </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem checked={show2024} onCheckedChange={setShow2024} onChange={() => setSearchQuery('2024')}>
-                                    2024
-                                </DropdownMenuCheckboxItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex gap-4 items-center">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button className="rounded-xl shadow-md">
+                                        <ArrowDownUp />
+                                        Sort by...
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56" align="start">
+                                    <DropdownMenuLabel>Year sorting</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuCheckboxItem checked={none} onCheckedChange={setNone} onChange={() => setSearchQuery('')}>
+                                        None
+                                    </DropdownMenuCheckboxItem>
+                                    <DropdownMenuCheckboxItem checked={show2025} onCheckedChange={setShow2025} onChange={() => setSearchQuery('2025')}>
+                                        2025
+                                    </DropdownMenuCheckboxItem>
+                                    <DropdownMenuCheckboxItem checked={show2024} onCheckedChange={setShow2024} onChange={() => setSearchQuery('2024')}>
+                                        2024
+                                    </DropdownMenuCheckboxItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            <div>
+                                <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">
+                                    <Switch
+                                        checked={isGrid}
+                                        onCheckedChange={setIsGrid}
+                                        className="peer data-[state=checked]:bg-input/50 data-[state=unchecked]:bg-input/50 absolute inset-0 h-[inherit] w-auto [&_span]:h-full [&_span]:w-1/2 [&_span]:transition-transform [&_span]:duration-300 [&_span]:[transition-timing-function:cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-full [&_span]:data-[state=checked]:rtl:-translate-x-full"
+                                    />
+                                    <span className="peer-data-[state=checked]:text-muted-foreground/70 pointer-events-none relative ms-0.5 flex min-w-8 items-center justify-center text-center">
+                                        <List size={16} aria-hidden="true" />
+                                    </span>
+                                    <span className="peer-data-[state=unchecked]:text-muted-foreground/70 pointer-events-none relative me-0.5 flex min-w-8 items-center justify-center text-center">
+                                        <Grid2X2 size={16} aria-hidden="true" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                         <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
                             <div className="flex w-full max-w-sm items-center relative">
                                 <Input placeholder="Search..." className="transition-all h-10 shadow-md" type="search" value={searchQuery} onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
@@ -155,30 +182,60 @@ export default function Page() {
                             </div>
                         </React.Suspense>
                     </div>
-                    <div className="grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mt-4">
+                    <div className={cn(isGrid && "grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
                         {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
-                            <div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md" key={index}>
-                                <Link href={entry.link} className="cursor-pointer">
-                                    <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
-                                </Link>
-                                <div className="flex flex-col justify-center items-center w-full">
-                                    <Link href={entry.link} className="cursor-pointer">
-                                        <p className="font-semibold text-start hover:underline">{entry.text}</p>
-                                    </Link>
-                                    <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
-                                    <Description entry={entry} />
-                                    <div className="flex gap-1 items-center justify-center">
-                                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
-                                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
-                                    </div>
-                                </div>
-                            </div>
+                            <AnimatePresence>
+                                <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
+                            </AnimatePresence>
                         ))}
                     </div>
                 </div>
             </div>
         </>
     );
+}
+
+const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
+    if (isGrid) {
+        return (
+            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut", delay: 0.2 }}>
+                <Link href={entry.link} className="cursor-pointer">
+                    <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
+                </Link>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <Link href={entry.link} className="cursor-pointer">
+                        <p className="font-semibold text-start hover:underline">{entry.text}</p>
+                    </Link>
+                    <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
+                    <Description entry={entry} />
+                    <div className="flex gap-1 items-center justify-center">
+                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
+                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
+                    </div>
+                </div>
+            </motion.div>
+        )
+    } else {
+        return (
+            <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+                <Link href={entry.link} className="cursor-pointer">
+                    <Image src={`${entry.image}`} alt="Job Well Done" width={125} height={125} className="rounded-xl shadow-md" priority={true} />
+                </Link>
+                <div className="flex flex-col gap-3">
+                    <div className="items-start justify-start w-full">
+                        <Link href={entry.link} className="cursor-pointer">
+                            <p className="font-semibold text-start hover:underline text-lg">{entry.text}</p>
+                        </Link>
+                        <p className="whitespace-pre-wrap text-left text-sm text-muted-foreground">{entry.creators}</p>
+                    </div>
+                    <div className="flex gap-1">
+                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
+                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
+                    </div>
+                </div>
+            </motion.div>
+        )
+    }
 }
 
 const Description = ({ entry }: { entry: any }) => {

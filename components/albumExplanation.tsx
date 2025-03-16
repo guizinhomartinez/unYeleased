@@ -111,7 +111,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
     }, [id])
 
     return (
-        <div className="p-4 overflow-y-scroll h-[80vh]">
+        <div className="p-4 overflow-y-scroll">
             <div className="mx-0.5">
                 {DynamicHeader ? (
                     <DynamicHeader components={overrideComponents} />
@@ -122,7 +122,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             <div className="w-full flex flex-col justify-center">
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button className="w-full items-center my-4">
+                        <Button className="w-full items-center mt-4">
                             Original Source{source.length > 1 && "s"}
                             <ExternalLink />
                         </Button>

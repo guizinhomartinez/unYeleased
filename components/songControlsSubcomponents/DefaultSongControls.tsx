@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { songControlsInterface } from "../songControls";
 import Image from 'next/image'
 import { Button } from "../ui/button";
-import { ChevronDown, MicVocal, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
+import { ArrowBigUp, ChevronDown, Command, EllipsisVertical, KeyboardIcon, MicVocal, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,14 @@ import ShareSong from "../shareSong";
 import VolumeSlider from "./volumeSlider";
 import '@public/CSS/song-controls.css';
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import { toast } from "sonner"
+
+type KeyboardThing = {
+    letter: any;
+    type?: string;
+    letter2?: any;
+    description: string;
+}[];
 
 export const DefaultSongControls = ({
     songRef,
@@ -56,7 +64,6 @@ export const DefaultSongControls = ({
     }
 
     const handleKeyDown = useEffect(() => {
-        const shareButton = document.getElementById("share-button");
         const lyricsButton = document.getElementById("lyrics-button");
         const handleKey = (e: KeyboardEvent) => {
             switch (e.key) {
@@ -76,7 +83,7 @@ export const DefaultSongControls = ({
                     setRepeat(repeat >= 2 ? 0 : repeat + 1);
                     break;
                 case "s":
-                    shareButton?.click();
+                    navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard");
                 case "l":
                     lyricsButton?.click();
                 case "h":
@@ -119,6 +126,15 @@ export const DefaultSongControls = ({
         };
     })
 
+    const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setVolumeVal((prev: number) => {
+            let newValue = prev + (event.deltaY > 0 ? -5 : 5);
+            return Math.min(100, Math.max(0, newValue));
+        });
+    };
+
     useEffect(() => {
         useEffectConst();
     }, []);
@@ -127,6 +143,65 @@ export const DefaultSongControls = ({
         useEffectConst();
     }, [handleSkipSong]);
 
+    const keyboardThing: KeyboardThing = [
+        {
+            letter: "H",
+            type: "text",
+            description: "for hiding/showing the music bar"
+        },
+        {
+            letter: "R",
+            type: "text",
+            description: "has 3 states: none, repeat album or repeat song"
+        },
+        {
+            letter: "S",
+            type: "text",
+            description: "for copying the song's URL to your clipboard"
+        },
+        {
+            letter: "L",
+            type: "text",
+            description: "for seeing the song's lyrics"
+        },
+        {
+            letter: <MoveLeft size='16' />,
+            description: "for going back 5 seconds"
+        },
+        {
+            letter: <MoveRight size='16' />,
+            description: "for skipping 5 seconds"
+        },
+        {
+            letter: <MoveUp size='16' />,
+            description: "for making the volume 10% louder"
+        },
+        {
+            letter: <MoveDown size='16' />,
+            description: "for making the volume 10% quieter"
+        },
+        {
+            letter: <Command size='16' />,
+            letter2: <MoveLeft size='16' />,
+            description: "for going back a song"
+        },
+        {
+            letter: <Command size='16' />,
+            letter2: <MoveRight size='16' />,
+            description: "for skipping a song"
+        },
+        {
+            letter: <ArrowBigUp size='20' />,
+            letter2: <MoveUp size='16' />,
+            description: "for making the volume 5% louder"
+        },
+        {
+            letter: <ArrowBigUp size='20' />,
+            letter2: <MoveDown size='16' />,
+            description: "for making the volume 5% quieter"
+        },
+    ]
+
     return (
         <>
             <div className="flex w-full justify-between items-center" onKeyDown={(e) => handleKeyDown}>
@@ -134,10 +209,12 @@ export const DefaultSongControls = ({
                 <div className="flex items-center gap-3 select-none w-full">
                     <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
                     <div>
-                        <div className="font-semibold text-md">
+                        <p className="font-semibold text-md" title={songVal || "No Track Found"}>
                             {songVal || "No Track Found"}
-                        </div>
-                        <div className="text-sm text-muted-foreground">{songCreator || "Unknown"}</div>
+                        </p>
+                        <p className="text-sm text-muted-foreground" title={songCreator || "Unknown"}>
+                            {songCreator || "Unknown"}
+                        </p>
                     </div>
                 </div>
 
@@ -193,27 +270,55 @@ export const DefaultSongControls = ({
 
                 <div className="flex items-center justify-end w-full select-none" onClick={(e) => e.stopPropagation()}>
                     <div className="items-center flex gap-2">
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button">
-                                    <Share />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-md">
-                                <DialogHeader>
-                                    <DialogTitle>Share song</DialogTitle>
-                                </DialogHeader>
-                                <ShareSong />
-                            </DialogContent>
-                        </Dialog>
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="lyrics-button">
+                                <Button className="rounded-full" size='icon' variant='secondary' disabled={!songRef.current} id="lyrics-button">
+                                    <EllipsisVertical />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="min-w-[200px] h-full bg-background rounded-xl p-2 flex flex-col w-full gap-2" side='top'>
+                                <Button className="w-full rounded-xl" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
+                                    <Share />
+                                    Share song
+                                </Button>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full rounded-xl" variant='secondary' disabled={!songRef.current} id="share-button">
+                                            <KeyboardIcon />
+                                            Shortcuts
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Keyboard shortcuts</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="flex flex-col gap-2">
+                                            {keyboardThing.map((thing, index) => (
+                                                <div className="flex gap-2 items-center" key={index}>
+                                                    <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
+                                                        <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
+                                                            {thing.letter}
+                                                        </p>
+                                                        <p>
+                                                            {thing.letter2}
+                                                        </p>
+                                                    </kbd>
+                                                    {thing.description}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button className="rounded-full" size='icon' variant='secondary' disabled={!songRef.current} id="lyrics-button">
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="min-w-[350px] h-full rounded-xl bg-background p-2" side='top'>
-                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} songRef={songRef} />
+                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
                             </PopoverContent>
                         </Popover>
                     </div>
@@ -223,7 +328,7 @@ export const DefaultSongControls = ({
                             variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
                             <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />
                         </Button>
-                        <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} />
+                        <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} onWheel={handleWheel} />
                         <Label className="w-12 text-right">{volumeVal}%</Label>
                     </div>
                 </div>

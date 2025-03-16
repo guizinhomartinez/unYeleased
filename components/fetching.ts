@@ -39,7 +39,17 @@ export async function fetchSinglesExplanation(id:string) {
 }
 
 // album lyrics
-export async function fetchAlbumLyrics(id:any, songName:any) {
-    const response = await fetch(`/song-files/songLyrics/${id}/${songName}.lrc`);
-    return response.text();
+export async function fetchAlbumLyrics(id: any, songName: any) {
+    let response = ""; // Initialize as an empty string instead of an array
+    try {
+        const res = await fetch(`/song-files/songLyrics/${id}/${songName}.lrc`);
+        if (res.ok) {  // Check if the request was successful
+            response = await res.text(); // Extract the text from the response
+        } else {
+            response = "Error: Unable to fetch lyrics"; // Handle non-200 responses
+        }
+    } catch (e) {
+        response = "Error: Network or server issue"; // Handle fetch failure
+    }
+    return response;
 }

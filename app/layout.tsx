@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Toaster } from "sonner";
 
 const yeezy = localFont({
   src: '../public/yeezy_tstar-bold-webfont.ttf'
@@ -63,7 +64,7 @@ export default function RootLayout({
             showAtBottom={false}
           />
           <NuqsAdapter>
-          {children}
+            {children}
           </NuqsAdapter>
         </ThemeProvider>
       </body>

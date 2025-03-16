@@ -17,12 +17,15 @@ import { fetchAlbumInfo, fetchAlbumSongs } from '@/components/fetching';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Toaster } from 'sonner';
 
 interface Song {
   title: string;
   artist: string;
-  songLocation: string;
 }
+
+const snapPoints = [0.8, 1];
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -45,6 +48,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
   const [repeatAlbum, setRepeatAlbum] = useState(0);
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [indexOfSongs, setIndexOfSongs] = useState<number[]>([]);
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -245,6 +251,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div>
+      <Toaster position="top-center" style={{ backgroundColor: 'red' }} />
       <div className='flex flex-col md:flex-row gap-4 transition-all duration-300'>
         <div className='flex-1'>
           <div className='absolute left-4 md:left-5 top-2'>
@@ -298,7 +305,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent className='h-[80%] items-center rounded-t-3xl'>
+                      <DrawerContent className={cn('h-[80%] items-center')}>
                         <DrawerHeader className='border-b-4 border-muted w-[90%]'>
                           <DrawerTitle className='text-2xl font-semibold mt-6 text-center'>Album Explanation</DrawerTitle>
                         </DrawerHeader>
@@ -314,14 +321,14 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
 
           <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
-            {/* <div className='flex items-center relative'>
+            <div className='flex items-center relative'>
               <Input type='search' className='pl-[3em] bg-primary-foreground border-2 border-secondary' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for your favorite song"></Input>
               <div className='absolute left-3 pr-2 py-2 border-r-2 border-r-secondary cursor-pointer'>
                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
               </div>
-            </div> */}
+            </div>
             <div className={cn('border-2 border-secondary rounded-lg bg-primary-foreground/60 transition-all duration-500', appearBar ? 'mb-24' : '-mb-4')}>
-              {songs.map((element, index) => (
+              {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                 <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-left gap-3 relative'>
                     <div className={cn('cursor-default rounded-full w-6 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div>
