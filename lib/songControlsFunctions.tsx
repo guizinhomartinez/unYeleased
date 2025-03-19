@@ -3,8 +3,8 @@ import { RefObject } from "react";
 import { LucideProps } from "lucide-react";
 
 interface AudioControls {
-    repeat: number;
-    songRef: RefObject<HTMLAudioElement>;
+    repeat?: number;
+    songRef: any;
     volumeVal: number;
 }
 
@@ -24,7 +24,7 @@ export const formattedSongTime = (songTime: number, songTimeType: number, curren
         : formatTime(songTime);
 };
 
-export const handleSliderChange = (value: number[], setSliderValue:any, songRef:RefObject<HTMLAudioElement>, setCurrentTimeVal:any) => {
+export const handleSliderChange = (value: number[], setSliderValue: any, songRef: RefObject<HTMLAudioElement>, setCurrentTimeVal: any) => {
     const newValue = value[0];
     setSliderValue(newValue)
     if (songRef.current) {
@@ -34,7 +34,7 @@ export const handleSliderChange = (value: number[], setSliderValue:any, songRef:
     }
 }
 
-export const muteSong = (songRef:RefObject<HTMLAudioElement>) => {
+export const muteSong = (songRef: any) => {
     if (!songRef.current) return;
     songRef.current && (songRef.current.muted = !songRef.current.muted);
 }
@@ -55,6 +55,6 @@ export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioControls & Luc
     }
 };
 
-export const RepeatIcon = ({ repeat, ...props }: Pick<AudioControls, "repeat">) => {
-    return repeat === 2 ? <Repeat1 {...props} /> : <Repeat {...props} />;
+export const RepeatIcon = ({ repeat, size }: { repeat: number, size?:string }) => {
+    return repeat === 2 ? <Repeat1 size={size} /> : <Repeat size={size} />;
 };

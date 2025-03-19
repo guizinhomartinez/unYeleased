@@ -1,29 +1,48 @@
 "use client"
 
 import Image from "next/image";
-import { BookOpenText, ChevronLeft, Dot, ExternalLink, Pause, Play, Share, X } from "lucide-react";
+import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { Label } from "@/components/ui/label";
-import { HandleTransition } from "@/components/handleTransition";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { ScrollArea } from "./ui/scroll-area";
-import ShareSong from "./shareSong";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { toast, Toaster } from "sonner";
+import { Label } from "./ui/label";
+import VolumeSlider from "./songControlsSubcomponents/volumeSlider";
+import { muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import Link from "next/link";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
 
-export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics", lyrics = "banana" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string, lyrics: string }) {
+type KeyboardThing = {
+    letter: any;
+    type?: string;
+    letter2?: any;
+    description: string;
+}[];
+
+export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics", lyrics = "banana" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string, lyrics: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
     const [showExplanation, setShowExplanation] = useState(false);
     const songRef = useRef<HTMLAudioElement | null>(null);
-    const [showKeybind, setShowKeybind] = useState(true);
-    const [showLyrics, setShowLyrics] = useState(false);
     const [volumeVal, setVolumeVal] = useState(100);
     const [sliderValue, setSliderValue] = useState(0);
+    const [imageSize, setImageSize] = useState(250);
 
     useEffect(() => {
         const storedVolume = localStorage.getItem("volume") || 100;
@@ -113,16 +132,6 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
         };
     }, [handleClick]);
 
-    useEffect(() => {
-        if (window.innerWidth < 768) {
-            return setShowKeybind(false);
-        } else {
-            return setShowKeybind(true);
-        }
-    }, [])
-
-    const [parent] = useAutoAnimate();
-
     const handleSliderChange = (value: number[]) => {
         const newValue = value[0];
         setSliderValue(newValue)
@@ -132,6 +141,23 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
             setCurrentTimeVal(newTime);
         }
     }
+
+    useEffect(() => {
+        const reiszeImage = () => {
+            if (window.innerWidth < 768) {
+                setImageSize(280);
+            } else {
+                setImageSize(260);
+            }
+        }
+
+        reiszeImage();
+
+        window.addEventListener("resize", reiszeImage);
+        return () => {
+            window.removeEventListener("resize", reiszeImage);
+        }
+    })
 
     useEffect(() => {
         if (songVal) {
@@ -144,75 +170,211 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
     }, [songVal]);
 
     return (
-        <div className="flex flex-col md:flex-row h-screen w-screen" ref={parent}>
-            <Navbar text={text} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
-            <div className="flex flex-1 flex-grow">
-                <div className="flex flex-col justify-center items-center gap-0 md:gap-16 flex-1">
-                    <div className="absolute top-2 left-2 inline-flex items-center">
-                        <HandleTransition href="/">
-                            <Button className="" size='icon' variant='ghost'><ChevronLeft /></Button>
-                        </HandleTransition>
-                        <Dot className={`mr-1 ${!showKeybind && 'hidden'}`} />
-                        <div className={`flex gap-2 items-center ${!showKeybind && 'hidden'}`}>
-                            <div className="w-7 h-7 rounded-md border border-primary/15 bg-secondary text-sm shadow-md flex justify-center items-center">
-                                <div>S</div>
+        <>
+            <Toaster position="top-center" />
+            <div className='absolute left-2 top-2'>
+                <Link href="/">
+                    <Button className="rounded-full" size='icon' variant='ghost'>
+                        <ChevronLeft />
+                    </Button>
+                </Link>
+            </div>
+            <div className={cn("grid gap-2 m-0 mt-4 md:m-12 items-center justify-items-center overflow-x-hidden", imageSize === 260 && (showExplanation && 'grid-cols-2'))}>
+                <div className="flex gap-2 h-full -translate-x-[1px] md:translate-x-0">
+                    <div className="flex flex-col gap-2 md:border md:border-muted p-5 rounded-xl">
+                        <Image width={300} height={300} alt="Single Cover" src={image} className="w-full rounded-xl select-none pointer-events-none" />
+                        <div className="flex justify-between items-center gap-2 mt-1">
+                            <div>
+                                <p className="font-bold text-2xl">{text}</p>
+                                <p className="text-muted-foreground/80">{subtext}</p>
                             </div>
-                            For Song Info
+                            <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />
                         </div>
-                    </div>
-                    <div className={`flex flex-col w-full h-full md:w-[55vw] translate-y-14`}>
-                        <Image src={image} alt={subtext} width={300} height={300} className="cursor-pointer mx-auto w-auto h-auto rounded-xl shadow-lg" id="image-cover" onClick={() => { setIsPlaying(!isPlaying); }} />
-                        <div className="flex flex-col mt-7">
-                            <div className="flex justify-center items-center">
-                                <div className="mr-24">
-                                    <div className="text-2xl font-bold">{text}</div>
-                                    <div className="text-primary/50 text-md">{subtext}</div>
-                                </div>
-                                <div>
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current} id="share-button">
-                                                <Share />
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="sm:max-w-md">
-                                            <DialogHeader>
-                                                <DialogTitle>Share song</DialogTitle>
-                                            </DialogHeader>
-                                            <ShareSong />
-                                        </DialogContent>
-                                    </Dialog>
-                                </div>
+                        <div className="flex flex-col justify-center items-center mt-4 gap-4">
+                            <div className="flex gap-2 w-full">
+                                <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
+                                <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
+                                <div className="text-md opacity-60 text-right w-12">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
                             </div>
-                            <div className="flex mx-auto gap-2 mt-4">
-                                <div className="text-md opacity-60 w-12 text-right">{formatTime(currentTimeVal)}</div>
-                                <Slider value={[sliderValue]} max={100} step={1} className="w-[18.5em] [&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
-                                <div className="text-md opacity-60 text-center w-12">{formatTime(songTime)}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={`flex flex-col gap-4 mb-6 mt-12 md:mt-0 h-full translate-y-14`}>
-                        <div className="mx-auto flex flex-col gap-4">
-                            <div className="mx-auto">
-                                <Button className="p-5 rounded-full  dark:bg-secondary dark:text-secondary-foreground" size="icon" onClick={() => { setIsPlaying(!isPlaying); }}>
-                                    {!isPlaying ? <Play /> : <Pause />}
+                            <div className="flex justify-between w-full items-center gap-4 mt-4">
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    variant="ghost"
+                                    onClick={() => {
+                                        const song = songRef.current;
+                                        if (!song) return;
+                                        song.currentTime = 0;
+                                    }}
+                                >
+                                    <Rewind size='32' />
+                                </Button>
+                                <div className="flex justify-center w-full items-center gap-7">
+                                    <Button
+                                        size="icon"
+                                        className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                        variant="ghost"
+                                        onClick={() => {
+                                            const song = songRef.current;
+                                            if (!song) return;
+                                            song.currentTime -= 10;
+                                        }}
+                                    >
+                                        <RotateCcw size='32' />
+                                    </Button>
+                                    <Button
+                                        className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                        size="icon"
+                                        onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                                    >
+                                        {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                        variant="ghost"
+                                        onClick={() => {
+                                            const song = songRef.current;
+                                            if (!song) return;
+                                            song.currentTime += 10;
+                                        }}
+                                    >
+                                        <RotateCw size='32' />
+                                    </Button>
+                                </div>
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    variant="ghost"
+                                    onClick={() => {
+                                        const song = songRef.current;
+                                        if (!song) return;
+                                        song.currentTime += 10;
+                                    }}
+                                >
+                                    <RepeatIcon repeat={0} size='32' />
                                 </Button>
                             </div>
-                            <Button className="rounded-full  dark:bg-secondary dark:text-secondary-foreground" onClick={() => handleClick()}>
-                                <BookOpenText />
-                                Song explanation
-                            </Button>
-                        </div>
-                        <div className="flex gap-4 mx-auto">
-                            <VolumeSlider className="w-48" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
-                            <Label>{volumeVal}%</Label>
+                            <div className="flex gap-4 w-full items-center">
+                                <Button onClick={() => { songRef.current && muteSong(songRef) }}
+                                    variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
+                                    <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} />
+                                </Button>
+                                <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
+                                <Label className="-translate-y-0.5">{volumeVal}%</Label>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {showExplanation && imageSize === 260 && (
+                    <div className="flex gap-2 h-full">
+                        <InfoCard
+                            backgroundLore={backgroundLore}
+                            linkToGenius={linkToGenius}
+                            lyrics={lyrics}
+                            onClose={handleClick}
+                            shouldShowClose={true}
+                        />
+                    </div>
+                )}
             </div>
-            {showExplanation && <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />}
-        </div>
+        </>
     );
+}
+
+const PopoverMenu = ({
+    showExplanation,
+    setShowExplanation,
+    backgroundLore,
+    linkToGenius,
+    lyrics,
+    onClose
+}: {
+    showExplanation: any,
+    setShowExplanation: any,
+    backgroundLore: string,
+    linkToGenius: string,
+    lyrics: string,
+    onClose: () => void
+}) => {
+    const keyboardThing: KeyboardThing = [
+        {
+            letter: "S",
+            type: "text",
+            description: "for hiding/showing the explanation menu"
+        },
+        {
+            letter: <SpaceIcon />,
+            type: "text",
+            description: "for pausing the song"
+        }
+    ]
+
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button className="rounded-full" size='icon' variant='secondary' id="lyrics-button">
+                    <EllipsisVertical />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-[200px] h-full bg-background rounded-xl p-2 flex flex-col w-full gap-2" side='top' align='end'>
+                <Button className="w-full rounded-xl" variant='secondary' id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
+                    <Share />
+                    Share song
+                </Button>
+                {!useIsMobile() &&
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="w-full rounded-xl" variant='secondary' id="share-button">
+                                <KeyboardIcon />
+                                Shortcuts
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md rounded-xl">
+                            <DialogHeader>
+                                <DialogTitle>Keyboard shortcuts</DialogTitle>
+                            </DialogHeader>
+                            <div className="flex flex-col gap-2">
+                                {keyboardThing.map((thing, index) => (
+                                    <div className="flex gap-2 items-center" key={index}>
+                                        <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
+                                            <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
+                                                {thing.letter}
+                                            </p>
+                                            <p>
+                                                {thing.letter2}
+                                            </p>
+                                        </kbd>
+                                        {thing.description}
+                                    </div>
+                                ))}
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                }
+                {!useIsMobile() ?
+                    <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button" onClick={() => setShowExplanation(!showExplanation)}>
+                        <BookOpenText />
+                        {!showExplanation ? "Show" : "Hide"} Explanation
+                    </Button>
+                    :
+                    <Drawer>
+                        <DrawerTrigger asChild>
+                            <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button">
+                                <BookOpenText />
+                                Show Explanation
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                            <div className="w-[30vw]">
+                                <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={onClose} shouldShowClose={false} />
+                            </div>
+                        </DrawerContent>
+                    </Drawer>
+                }
+            </PopoverContent>
+        </Popover>
+    )
 }
 
 const InfoCard = ({
@@ -220,11 +382,13 @@ const InfoCard = ({
     linkToGenius,
     lyrics,
     onClose,
+    shouldShowClose
 }: {
     backgroundLore: string;
     linkToGenius: string;
     lyrics: string;
     onClose: () => void;
+    shouldShowClose: boolean;
 }) => {
     const formattedLyrics = lyrics.split('\n').map((line, index) => {
         if (line.trim() === '') {
@@ -238,87 +402,57 @@ const InfoCard = ({
         }
     });
 
-    const styles = "p-6 no-uppercase-letters lore-tab";
+    const formattedExplanation = backgroundLore.split("\n").map((line, index) => {
+        if (line.trim() === '') {
+            return <div key={index} className="[&:not(:last-child)]:mb-2"></div>;
+        } else {
+            return (
+                <div key={index} className="mb-0.5">
+                    <div>{line}</div>
+                </div>
+            );
+        }
+    });
 
     return (
-        <div className={`flex flex-col h-screen flex-1 md:mt-14 mt-24 md:max-w-[45%] m-7 pb-4 md:mr-12 md:pb-0`}>
-            <div className="flex flex-col h-fit pb-4 p-4 py-8 md:p-8 bg-secondary/10 rounded-xl">
-                <div className="flex relative justify-between w-full flex-grow">
-                    <div className="cursor-pointer absolute -right-2 -top-6 md:-right-6 rounded-full text-muted-foreground/80" onClick={onClose}>
-                        <X size='20' />
-                    </div>
-                </div>
-                <Tabs defaultValue="explanation" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 rounded-full">
-                        <TabsTrigger value="explanation" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">See Explanation</TabsTrigger>
-                        <TabsTrigger value="lyrics" className="rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Lyrics</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="explanation" className="bg-primary-foreground rounded-xl mx-0.5 border-2 border-secondary">
-                        <p className={`${styles}`}>{backgroundLore}</p>
-                    </TabsContent>
-                    <TabsContent value="lyrics" className="bg-primary-foreground rounded-xl mx-0.5 border-2 border-secondary">
-                        <div className={`${styles} lyrics-tab h-[80vh]`}>
-                            <ScrollArea className="h-[73vh] w-full">
-                                {formattedLyrics}
-                            </ScrollArea>
+        <div className={cn("flex flex-col gap-2 p-4 rounded-xl h-full relative flex-grow", shouldShowClose && 'border border-muted min-w-full', !shouldShowClose && 'w-screen')}>
+            {shouldShowClose && <X className="h-4 w-4 absolute top-3 right-3 cursor-pointer" onClick={onClose} />}
+            <Tabs defaultValue="explanation" className={cn(shouldShowClose && 'mt-4')}>
+                <TabsList className="w-full flex justify-between rounded-xl gap-1">
+                    <TabsTrigger value="explanation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><BookOpenText size='16' /> Explanation</TabsTrigger>
+                    <TabsTrigger value="lyrics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><Mic2Icon size='16' /> Lyrics</TabsTrigger>
+                </TabsList>
+                <TabsContent value="explanation" className="bg-secondary rounded-xl max-h-[75vh] mx-0.5 overflow-y-scroll">
+                    <p className="p-4">{formattedExplanation}</p>
+                    <div className="flex flex-col gap-3 justify-center items-center border-t border-t-primary/30 py-4 mx-4">
+                        <div className="text-primary/50 text-sm text-center">
+                            (All descriptions and lyrics are from Genius.com)
                         </div>
-                    </TabsContent>
-                </Tabs>
-                <div className="flex flex-col gap-6 justify-center items-center rounded-xl bg-primary-foreground/50 border border-secondary mt-4 mx-0.5 p-4">
-                    <div className="text-primary/50">
-                        All descriptions and lyrics are from Genius.com. Please, check them out by clicking the button below.
+                        <a href={linkToGenius} className="w-full" target="_blank">
+                            <Button className="antialiased items-center w-full rounded-full">
+                                Original Link
+                                <ExternalLink />
+                            </Button>
+                        </a>
                     </div>
-                    <a href={linkToGenius} className="" target="_blank">
-                        <Button variant={"secondary"} className="antialiased items-center  transition-all duration-150">
-                            Original Link
-                            <ExternalLink />
-                        </Button>
-                    </a>
-                </div>
-            </div>
+                </TabsContent>
+                <TabsContent value="lyrics" className="bg-secondary rounded-xl max-h-[75vh] mx-0.5 overflow-y-scroll">
+                    <div className="p-4 overflow-y-scroll">
+                        {formattedLyrics}
+                    </div>
+                    <div className="flex flex-col gap-3 justify-center items-center border-t border-t-primary/30 py-4 mx-4">
+                        <div className="text-primary/50 text-sm text-center">
+                            (All descriptions and lyrics are from Genius.com)
+                        </div>
+                        <a href={linkToGenius} className="w-full" target="_blank">
+                            <Button className="antialiased items-center w-full rounded-full">
+                                Original Link
+                                <ExternalLink />
+                            </Button>
+                        </a>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 };
-
-const Navbar = ({ text, isPlaying, setIsPlaying }: { text: string, isPlaying: boolean, setIsPlaying: any }) => {
-    const [showNavbar, setShowNavbar] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 400) {
-                setShowNavbar(true);
-            } else {
-                setShowNavbar(false);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-    return (
-        <div className={`flex justify-between items-center fixed border border-secondary w-[86vw] md:w-[95vw] h-12 px-1 bg-primary-foreground/50 backdrop-blur-md z-[500] shadow-lg transition-all duration-500 my-1.5 left-1/2 -translate-x-1/2 rounded-full ${!showNavbar ? '-translate-y-12 opacity-0' : ''}`}>
-            <Button variant="outline" className="bg-transparent rounded-full border-none text-lg" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{text}</Button>
-            <Button variant="outline" className="bg-transparent px-3.5 py-5 rounded-full border-none text-primary" onClick={() => { setIsPlaying(!isPlaying); }}>
-                {!isPlaying ? <Play fill="#fff" /> : <Pause fill="#fff" />}
-            </Button>
-        </div>
-    );
-};
-
-type SliderProps = React.ComponentProps<typeof Slider>;
-
-function VolumeSlider({ className, ...props }: SliderProps) {
-    return (
-        <Slider
-            defaultValue={[100]}
-            max={100}
-            step={1}
-            className={cn("w-full", className)}
-            {...props}
-        />
-    );
-}

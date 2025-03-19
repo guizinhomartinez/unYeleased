@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Toaster } from 'sonner';
+import Link from 'next/link';
 
 interface Song {
   title: string;
@@ -255,11 +256,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <div className='flex flex-col md:flex-row gap-4 transition-all duration-300'>
         <div className='flex-1'>
           <div className='absolute left-4 md:left-5 top-2'>
-            <HandleTransition href="/">
+            <Link href="/">
               <Button className="" size='icon' variant='ghost'>
                 <ChevronLeft />
               </Button>
-            </HandleTransition>
+            </Link>
           </div>
           <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
             <div className='flex flex-col md:flex-row items-center gap-5'>

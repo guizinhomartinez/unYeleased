@@ -8,7 +8,7 @@ export default function Page() {
     return (
         <>
             <div className='m-4 md:md-8 mt-0 pt-4 items-center flex flex-col justify-center'>
-                <ScrollProgress className="top-0" />
+                {/* <ScrollProgress className="top-0" /> */}
                 <div className='w-full'>
                     <Navbar />
                 </div>

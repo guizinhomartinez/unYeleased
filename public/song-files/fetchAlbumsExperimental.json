@@ -20,15 +20,23 @@
             "image": "/song-files/covers/bully-big.jpg",
             "text": "Beauty and The Beast",
             "subtext": "Version from Yeezy.com",
-            "tags": ["2025", "Single"],
+            "tags": ["2025", "Single", "Bully"],
             "link": "/single/beauty-and-the-beast",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "/song-files/covers/bully-big.jpg",
+            "text": "World War 3",
+            "subtext": "Released on March 6th on Ye's X account",
+            "tags": ["2025", "Single", "Bully"],
+            "link": "/single/world-war-3",
             "creators": "Kanye West"
         },
         {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
             "subtext": "Full Version",
-            "tags": ["2025", "Single"],
+            "tags": ["2025", "Single", "Wheels Fall Off"],
             "link": "/single/wheels-fall-off-full",
             "creators": "Kanye West"
         },
@@ -36,7 +44,7 @@
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
             "subtext": "Released Clean Version",
-            "tags": ["2025", "Single"],
+            "tags": ["2025", "Single", "Wheels Fall Off"],
             "link": "/single/wheels-fall-off-released",
             "creators": "Kanye West"
         },

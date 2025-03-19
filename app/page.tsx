@@ -16,7 +16,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Particles } from "@/components/magicui/particles";
@@ -25,7 +25,6 @@ import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatePresence, motion } from "motion/react";
 import { fetchHomeInfo } from "@/components/fetching";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Switch } from "@/components/ui/switch";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
@@ -93,7 +92,6 @@ export default function Page() {
         };
     })
 
-
     return (
         <>
             <div className="m-4 md:md-8 mb-0">
@@ -129,7 +127,7 @@ export default function Page() {
                 <div className="mt-12 h-full">
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <div className="flex gap-4 items-center">
-                            <DropdownMenu>
+                            {/* <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button className="rounded-xl shadow-md">
                                         <ArrowDownUp />
@@ -149,7 +147,7 @@ export default function Page() {
                                         2024
                                     </DropdownMenuCheckboxItem>
                                 </DropdownMenuContent>
-                            </DropdownMenu>
+                            </DropdownMenu> */}
                             <div>
                                 <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">
                                     <Switch
@@ -183,7 +181,7 @@ export default function Page() {
                         </React.Suspense>
                     </div>
                     <div className={cn(isGrid && "grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
-                        {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
+                        {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()) || (op.tags[2] && op.tags[2].toLowerCase().includes(searchQuery.toLowerCase())))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
                             <AnimatePresence>
                                 <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
                             </AnimatePresence>
@@ -209,8 +207,19 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
                     <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
                     <Description entry={entry} />
                     <div className="flex gap-1 items-center justify-center">
-                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
-                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
+                        {entry.tags.map((tag: string, index: number) => (
+                            <Badge
+                                key={index}
+                                className="mt-2 rounded-full cursor-pointer select-none"
+                                variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSearchQuery(tag);
+                                }}
+                            >
+                                {tag}
+                            </Badge>
+                        ))}
                     </div>
                 </div>
             </motion.div>
@@ -229,8 +238,19 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
                         <p className="whitespace-pre-wrap text-left text-sm text-muted-foreground">{entry.creators}</p>
                     </div>
                     <div className="flex gap-1">
-                        <Badge className="mt-2 rounded-full cursor-pointer select-none" onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[0]); }}>{entry.tags && entry.tags[0]}</Badge>
-                        <Badge className="mt-2 rounded-full cursor-pointer select-none" variant='secondary' onClick={(e) => { e.stopPropagation(); setSearchQuery(entry.tags[1]); }}>{entry.tags && entry.tags[1]}</Badge>
+                        {entry.tags.map((tag: string, index: number) => (
+                            <Badge
+                                key={index}
+                                className="mt-2 rounded-full cursor-pointer select-none"
+                                variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSearchQuery(tag);
+                                }}
+                            >
+                                {tag}
+                            </Badge>
+                        ))}
                     </div>
                 </div>
             </motion.div>

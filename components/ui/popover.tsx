@@ -27,7 +27,7 @@ const PopoverContent = React.forwardRef<
       {...props}
     >
       {props.children}
-      <PopoverPrimitive.Arrow className="z-[60] -translate-y-px fill-popover" />
+      {/* <PopoverPrimitive.Arrow className="z-[60] -translate-y-px fill-popover" /> */}
     </PopoverPrimitive.Content>
   </PopoverPrimitive.Portal>
 ))

@@ -2,6 +2,7 @@
 
 import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/components/fetching";
 import { Player } from "@/components/player";
+import { PlayerRewrite } from "@/components/player-rewrite";
 import { use, useEffect, useState } from "react";
 
 export default function SinglesPage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,6 +41,6 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
     }, [id]);
 
     return (
-        <Player image={image} text={text} subtext={subtext} songVal={songVal} backgroundLore={explanation} linkToGenius={link} lyrics={lyrics} />
+        <PlayerRewrite image={image} text={text} subtext={subtext} songVal={songVal} backgroundLore={explanation} linkToGenius={link} lyrics={lyrics} />
     )
 }
