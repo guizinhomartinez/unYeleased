@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
+import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
@@ -16,6 +16,7 @@ import VolumeSlider from "./songControlsSubcomponents/volumeSlider";
 import { muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Drawer as Drawer2 } from 'vaul';
 import {
     Drawer,
     DrawerClose,
@@ -43,6 +44,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
     const [volumeVal, setVolumeVal] = useState(100);
     const [sliderValue, setSliderValue] = useState(0);
     const [imageSize, setImageSize] = useState(250);
+    const [repeat, setRepeat] = useState(false);
 
     useEffect(() => {
         const storedVolume = localStorage.getItem("volume") || 100;
@@ -106,6 +108,26 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
         useEffectConst();
     }, [songVal, isPlaying]);
 
+    React.useMemo(() => {
+        const song = songRef.current;
+
+        if (!song) return;
+
+        const repeatSong = () => {
+            if (repeat) {
+                song.currentTime = 0;
+                song.play();
+                setIsPlaying(true);
+            }
+        }
+
+        song.addEventListener("ended", repeatSong);
+
+        return () => {
+            song.removeEventListener("ended", repeatSong);
+        };
+    }, [songVal, isPlaying, repeat])
+
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
@@ -114,14 +136,53 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
 
     const handleClick = () => setShowExplanation(!showExplanation);
 
+    const goBackFunc = () => {
+        const song = songRef.current;
+        if (!song) return;
+        song.currentTime = 0;
+    }
+
+    const skipTimeFunc = (back: boolean) => {
+        if (back) {
+            const song = songRef.current;
+            if (!song) return;
+            song.currentTime -= 10;
+        } else {
+            const song = songRef.current;
+            if (!song) return;
+            song.currentTime += 10;
+        }
+    }
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "s") {
-                handleClick();
-            }
-            if (e.key === " ") {
-                e.preventDefault();
-                setIsPlaying(!isPlaying);
+            switch (e.key) {
+                case "s":
+                    handleClick();
+                    break;
+                case "r":
+                    setRepeat(!repeat);
+                    break;
+                case " ":
+                    e.preventDefault();
+                    setIsPlaying(!isPlaying);
+                    break;
+                case "ArrowLeft":
+                    skipTimeFunc(true);
+                    e.preventDefault();
+                    break;
+                case "ArrowRight":
+                    skipTimeFunc(false);
+                    e.preventDefault();
+                    break;
+                case "ArrowUp":
+                    setVolumeVal(volumeVal + 10);
+                    e.preventDefault();
+                    break;
+                case "ArrowDown":
+                    setVolumeVal(volumeVal - 10);
+                    e.preventDefault();
+                    break;
             }
         };
 
@@ -163,120 +224,128 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
         if (songVal) {
             try {
                 songRef.current = new Audio(songVal);
+                songRef.current.loop = repeat;
             } catch (e) {
                 console.log(e);
             }
         }
     }, [songVal]);
 
+    useEffect(() => {
+        const song = songRef.current;
+        if (!song) return;
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
+            navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
+            navigator.mediaSession.setActionHandler("previoustrack", () => skipTimeFunc(true));
+            navigator.mediaSession.setActionHandler("nexttrack", () => skipTimeFunc(false));
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: songVal.replace("/song-files/songs/singles/", "") || "No Track Found",
+                artist: "Kanye West",
+                album: songVal.replace("/song-files/songs/singles/", "") || "No Album Found",
+                artwork: [
+                    {
+                        src: image,
+                        sizes: '96x96,128x128,192x192',
+                        type: "image/jpeg",
+                    },
+                ],
+            });
+            if (song.duration && !isNaN(song.duration)) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: song.duration,
+                        position: currentTimeVal || 0,
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        }
+    }, [songVal, image, songRef, currentTimeVal]);
+
     return (
         <>
             <Toaster position="top-center" />
-            <div className='absolute left-2 top-2'>
+            <div className='fixed top-2 left-2'>
                 <Link href="/">
                     <Button className="rounded-full" size='icon' variant='ghost'>
                         <ChevronLeft />
                     </Button>
                 </Link>
             </div>
-            <div className={cn("grid gap-2 m-0 mt-4 md:m-12 items-center justify-items-center overflow-x-hidden", imageSize === 260 && (showExplanation && 'grid-cols-2'))}>
-                <div className="flex gap-2 h-full -translate-x-[1px] md:translate-x-0">
-                    <div className="flex flex-col gap-2 md:border md:border-muted p-5 rounded-xl">
-                        <Image width={300} height={300} alt="Single Cover" src={image} className="w-full rounded-xl select-none pointer-events-none" />
-                        <div className="flex justify-between items-center gap-2 mt-1">
-                            <div>
-                                <p className="font-bold text-2xl">{text}</p>
-                                <p className="text-muted-foreground/80">{subtext}</p>
-                            </div>
-                            <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />
+
+            <div className="flex justify-center items-center align-center md:m-4 mt-8 md:mt-4 overflow-y-auto mr-1">
+                <div className="flex flex-col gap-2 md:border md:border-muted p-5 rounded-xl overflow-y-auto">
+                    <Image width={300} height={300} alt="Single Cover" src={image} className="before:size-[600px] before:bg-secondary before:animate-pulse w-full rounded-xl select-none pointer-events-none" />
+                    <div className="flex justify-between items-center gap-2 mt-1">
+                        <div>
+                            <p className="font-bold text-2xl">{text}</p>
+                            <p className="text-muted-foreground/80">{subtext}</p>
                         </div>
-                        <div className="flex flex-col justify-center items-center mt-4 gap-4">
-                            <div className="flex gap-2 w-full">
-                                <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
-                                <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
-                                <div className="text-md opacity-60 text-right w-12">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
-                            </div>
-                            <div className="flex justify-between w-full items-center gap-4 mt-4">
-                                <Button
-                                    size="icon"
-                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                    variant="ghost"
-                                    onClick={() => {
-                                        const song = songRef.current;
-                                        if (!song) return;
-                                        song.currentTime = 0;
-                                    }}
-                                >
-                                    <Rewind size='32' />
-                                </Button>
-                                <div className="flex justify-center w-full items-center gap-7">
-                                    <Button
-                                        size="icon"
-                                        className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                        variant="ghost"
-                                        onClick={() => {
-                                            const song = songRef.current;
-                                            if (!song) return;
-                                            song.currentTime -= 10;
-                                        }}
-                                    >
-                                        <RotateCcw size='32' />
-                                    </Button>
-                                    <Button
-                                        className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                        size="icon"
-                                        onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                                    >
-                                        {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
-                                    </Button>
-                                    <Button
-                                        size="icon"
-                                        className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                        variant="ghost"
-                                        onClick={() => {
-                                            const song = songRef.current;
-                                            if (!song) return;
-                                            song.currentTime += 10;
-                                        }}
-                                    >
-                                        <RotateCw size='32' />
-                                    </Button>
-                                </div>
-                                <Button
-                                    size="icon"
-                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                    variant="ghost"
-                                    onClick={() => {
-                                        const song = songRef.current;
-                                        if (!song) return;
-                                        song.currentTime += 10;
-                                    }}
-                                >
-                                    <RepeatIcon repeat={0} size='32' />
-                                </Button>
-                            </div>
-                            <div className="flex gap-4 w-full items-center">
-                                <Button onClick={() => { songRef.current && muteSong(songRef) }}
-                                    variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
-                                    <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} />
-                                </Button>
-                                <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
-                                <Label className="-translate-y-0.5">{volumeVal}%</Label>
-                            </div>
+                        <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />
+                    </div>
+                    <div className="flex flex-col justify-center items-center mt-4 gap-4">
+                        <div className="flex gap-2 w-full">
+                            <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
+                            <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
+                            <div className="text-md opacity-60 text-right w-12">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
+                        </div>
+                        <div className="flex justify-between w-full items-center gap-4 mt-4">
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                variant="ghost"
+                                onClick={() => { goBackFunc(); }}
+                            >
+                                <Rewind size='32' />
+                            </Button>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                variant="ghost"
+                                onClick={() => { skipTimeFunc(true); }}
+                            >
+                                <RotateCcw size='32' />
+                            </Button>
+                            <Button
+                                className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                size="icon"
+                                onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                            >
+                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                            </Button>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                variant="ghost"
+                                onClick={() => {
+                                    skipTimeFunc(false);
+                                }}
+                            >
+                                <RotateCw size='32' />
+                            </Button>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full sm:bg-transparent sm:focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', !repeat && 'opacity-50')}
+                                variant="ghost"
+                                onClick={() => setRepeat(!repeat)}
+                            >
+                                <RepeatIcon repeat={!repeat ? 0 : 1} size='32' />
+                            </Button>
+                        </div>
+                        <div className="flex gap-4 w-full items-center">
+                            <Button onClick={() => { songRef.current && muteSong(songRef) }}
+                                variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
+                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} />
+                            </Button>
+                            <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
+                            <Label className="-translate-y-0.5">{volumeVal}%</Label>
                         </div>
                     </div>
                 </div>
-                {showExplanation && imageSize === 260 && (
-                    <div className="flex gap-2 h-full">
-                        <InfoCard
-                            backgroundLore={backgroundLore}
-                            linkToGenius={linkToGenius}
-                            lyrics={lyrics}
-                            onClose={handleClick}
-                            shouldShowClose={true}
-                        />
-                    </div>
-                )}
             </div>
         </>
     );
@@ -302,6 +371,27 @@ const PopoverMenu = ({
             letter: "S",
             type: "text",
             description: "for hiding/showing the explanation menu"
+        },
+        {
+            letter: "R",
+            type: "text",
+            description: "for repeating the song"
+        },
+        {
+            letter: <MoveLeft size='16' />,
+            description: "for going back 5 seconds"
+        },
+        {
+            letter: <MoveRight size='16' />,
+            description: "for skipping 5 seconds"
+        },
+        {
+            letter: <MoveUp size='16' />,
+            description: "for making the volume 10% louder"
+        },
+        {
+            letter: <MoveDown size='16' />,
+            description: "for making the volume 10% quieter"
         },
         {
             letter: <SpaceIcon />,
@@ -353,10 +443,29 @@ const PopoverMenu = ({
                     </Dialog>
                 }
                 {!useIsMobile() ?
-                    <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button" onClick={() => setShowExplanation(!showExplanation)}>
-                        <BookOpenText />
-                        {!showExplanation ? "Show" : "Hide"} Explanation
-                    </Button>
+                    <Drawer2.Root direction="right">
+                        <Drawer2.Trigger asChild>
+                            <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button">
+                                <BookOpenText />
+                                Show Explanation
+                            </Button>
+                        </Drawer2.Trigger>
+                        <Drawer2.Portal>
+                            <Drawer2.Overlay className="fixed inset-0 bg-black/40 z-[500]" />
+                            <Drawer2.Content
+                                className="right-4 top-4 bottom-4 fixed z-[501] outline-none w-[30%] group"
+                                // The gap between the edge of the screen and the drawer2 is 8px in this case.
+                                style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
+                            >
+                                <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
+                                <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
+                                    <div className="max-w-md mx-auto overflow-y-auto">
+                                        <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={onClose} shouldShowClose={false} />
+                                    </div>
+                                </div>
+                            </Drawer2.Content>
+                        </Drawer2.Portal>
+                    </Drawer2.Root>
                     :
                     <Drawer>
                         <DrawerTrigger asChild>
@@ -415,43 +524,33 @@ const InfoCard = ({
     });
 
     return (
-        <div className={cn("flex flex-col gap-2 p-4 rounded-xl h-full relative flex-grow", shouldShowClose && 'border border-muted min-w-full', !shouldShowClose && 'w-screen')}>
-            {shouldShowClose && <X className="h-4 w-4 absolute top-3 right-3 cursor-pointer" onClick={onClose} />}
-            <Tabs defaultValue="explanation" className={cn(shouldShowClose && 'mt-4')}>
-                <TabsList className="w-full flex justify-between rounded-xl gap-1">
-                    <TabsTrigger value="explanation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><BookOpenText size='16' /> Explanation</TabsTrigger>
-                    <TabsTrigger value="lyrics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><Mic2Icon size='16' /> Lyrics</TabsTrigger>
-                </TabsList>
-                <TabsContent value="explanation" className="bg-secondary rounded-xl max-h-[75vh] mx-0.5 overflow-y-scroll">
+        <div className={cn("p-3 h-fit", useIsMobile() && 'h-[85vh] max-h-[97vh] w-screen overflow-y-auto')}>
+            <Tabs defaultValue="explanation">
+                <div className="relative">
+                    <TabsList className="w-full flex justify-between rounded-xl gap-1 sticky top-10">
+                        <TabsTrigger value="explanation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><BookOpenText size='16' /> Explanation</TabsTrigger>
+                        <TabsTrigger value="lyrics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><Mic2Icon size='16' /> Lyrics</TabsTrigger>
+                    </TabsList>
+                </div>
+                <TabsContent value="explanation" className="bg-secondary rounded-xl mx-0.5 overflow-y-auto">
                     <p className="p-4">{formattedExplanation}</p>
-                    <div className="flex flex-col gap-3 justify-center items-center border-t border-t-primary/30 py-4 mx-4">
-                        <div className="text-primary/50 text-sm text-center">
-                            (All descriptions and lyrics are from Genius.com)
-                        </div>
-                        <a href={linkToGenius} className="w-full" target="_blank">
-                            <Button className="antialiased items-center w-full rounded-full">
-                                Original Link
-                                <ExternalLink />
-                            </Button>
-                        </a>
-                    </div>
                 </TabsContent>
-                <TabsContent value="lyrics" className="bg-secondary rounded-xl max-h-[75vh] mx-0.5 overflow-y-scroll">
-                    <div className="p-4 overflow-y-scroll">
+                <TabsContent value="lyrics" className="bg-secondary rounded-xl mx-0.5 overflow-y-auto">
+                    <div className="p-4 overflow-y-auto">
                         {formattedLyrics}
                     </div>
-                    <div className="flex flex-col gap-3 justify-center items-center border-t border-t-primary/30 py-4 mx-4">
-                        <div className="text-primary/50 text-sm text-center">
-                            (All descriptions and lyrics are from Genius.com)
-                        </div>
-                        <a href={linkToGenius} className="w-full" target="_blank">
-                            <Button className="antialiased items-center w-full rounded-full">
-                                Original Link
-                                <ExternalLink />
-                            </Button>
-                        </a>
-                    </div>
                 </TabsContent>
+                <div className="flex flex-col gap-3 justify-center items-center bg-ring/10 p-4 mx-0.5 rounded-xl mt-2">
+                    <div className="text-primary/50 text-sm text-center">
+                        (All descriptions and lyrics are from Genius/YouTube)
+                    </div>
+                    <a href={linkToGenius} className="w-full" target="_blank">
+                        <Button className="antialiased items-center w-full rounded-full">
+                            Original Source
+                            <ExternalLink />
+                        </Button>
+                    </a>
+                </div>
             </Tabs>
         </div>
     );

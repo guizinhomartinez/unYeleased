@@ -33,6 +33,14 @@
             "creators": "Kanye West"
         },
         {
+            "image": "/song-files/covers/bully.jpg",
+            "text": "BULLY V1",
+            "subtext": "First official release of Bully",
+            "tags": ["2025", "Album", "Bully"],
+            "link": "/album/bully",
+            "creators": "Kanye West"
+        },
+        {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
             "text": "Wheels Fall Off",
             "subtext": "Full Version",

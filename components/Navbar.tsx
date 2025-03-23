@@ -153,7 +153,7 @@ const Password = () => {
                     )}
                 />
 
-                <Button type="submit" className="flex justify-center items-center" disabled={loadingNextPage}>
+                <Button type="submit" className={cn("flex justify-center items-center", loadingNextPage && "cursor-progress")} disabled={loadingNextPage}>
                     {loadingNextPage && <LoaderCircleIcon className="-ms-1 animate-spin" size={16} aria-hidden="true" />}
                     {!loadingNextPage && "Submit"}
                 </Button>

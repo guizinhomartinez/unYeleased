@@ -15,26 +15,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
     const [source, setSource] = useState<string[]>([]);
 
-    useEffect(() => {
-        const loadMdxComponent = async () => {
-            try {
-                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
-                setDynamicHeader(() => module.default);
-            } catch (error) {
-                console.error("Failed to load MDX file:", error);
-                setDynamicHeader(() => () => <p>Failed to load album explanation.</p>);
-            }
-        }
-
-        const fetchSource = async () => {
-            const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
-            const formattedData = data.split('\n');
-            setSource(formattedData);
-        }
-
-        loadMdxComponent();
-        fetchSource();
-    }, [id])
+    fetchAlbumStuff(id, setDynamicHeader, setSource)
 
     return (
         <>
@@ -60,7 +41,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
                 <div className="w-full flex flex-col justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="w-full items-center my-4">
+                            <Button className="w-full items-center my-4" disabled={source[0] === "File was not able to be fetched"}>
                                 Original Source{source.length > 1 && "s"}
                                 <ExternalLink />
                             </Button>
@@ -89,26 +70,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
     const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
     const [source, setSource] = useState<string[]>([]);
 
-    useEffect(() => {
-        const loadMdxComponent = async () => {
-            try {
-                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
-                setDynamicHeader(() => module.default);
-            } catch (error) {
-                console.error("Failed to load MDX file:", error);
-                setDynamicHeader(() => () => <p>Failed to load album explanation.</p>);
-            }
-        }
-
-        const fetchSource = async () => {
-            const data = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`).then(resp => resp.text());
-            const formattedData = data.split('\n');
-            setSource(formattedData);
-        }
-
-        loadMdxComponent();
-        fetchSource();
-    }, [id])
+    fetchAlbumStuff(id, setDynamicHeader, setSource);
 
     return (
         <div className="p-4 overflow-y-scroll">
@@ -122,7 +84,7 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             <div className="w-full flex flex-col justify-center">
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button className="w-full items-center mt-4">
+                        <Button className="w-full items-center mt-4" disabled={source[0] === "File was not able to be fetched"}>
                             Original Source{source.length > 1 && "s"}
                             <ExternalLink />
                         </Button>
@@ -144,4 +106,37 @@ export const AlbumExplanationSmall = ({ id }: { id: string }) => {
             </div>
         </div>
     )
+}
+
+function fetchAlbumStuff(id: string, setDynamicHeader: React.Dispatch<React.SetStateAction<React.FC<{ components?: Record<string, React.FC<any>> }> | null>>, setSource: React.Dispatch<React.SetStateAction<string[]>>) {
+    useEffect(() => {
+        const loadMdxComponent = async () => {
+            try {
+                const module = await import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`)
+                setDynamicHeader(() => module.default)
+            } catch (error) {
+                console.error("Failed to load MDX file:", error)
+                setDynamicHeader(() => () => <p>Failed to load album explanation.</p>)
+            }
+        }
+
+        const fetchSource = async () => {
+            try {
+                let response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`);
+
+                if (!response.ok) {
+                    response = await fetch(`../song-files/albumInfo/source.txt`);
+                }
+
+                const data = await response.text();
+                const formattedData = data.split("\n");
+                setSource(formattedData);
+            } catch (error) {
+                console.error("Error fetching source.txt:", error);
+            }
+        }
+
+        loadMdxComponent()
+        fetchSource()
+    }, [id])
 }
