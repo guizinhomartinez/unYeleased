@@ -83,11 +83,15 @@ export const DefaultSongControls = ({
                     setRepeat(repeat >= 2 ? 0 : repeat + 1);
                     break;
                 case "s":
-                    navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard");
+                    navigator.clipboard.writeText(location.href);
+                    toast("Copied song link to clipboard");
+                    break;
                 case "l":
                     lyricsButton?.click();
+                    break;
                 case "h":
                     setAppearBar(!appearBar);
+                    break;
             }
 
             if (e.metaKey || e.ctrlKey) {
