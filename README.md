@@ -5,28 +5,27 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 ## Goals
 
 ### Missing albums
-- [x] Yandhi
-- [ ] Turbografx 16
-- [ ] Swish
-- [x] Good Ass Job
+- [x] Bad Bitch Playbook
 - [ ] Cruel Winter
-- [ ] Thank God For Drugs
-- [x] Yeezus II
-- [ ] So Help Me God
-- [ ] Wolves
-- [ ] Swish
-- [ ] WAVES
-- [x] Job Well Done (AKA Good Ass Job 2018)
-- [ ] LOVE EVERYONE
-- [ ] Jesus Is King II
-- [ ] God's Country
-- [ ] DONDA: WITH CHILD
 - [ ] DONDA II
-- [ ] War
-- [ ] YEBU
-- [ ] Watch The Throne 2
-- [ ] Bad Bitch Playbook Volume 1
+- [ ] DONDA: WITH CHILD
+- [ ] God's Country
+- [x] Good Ass Job
+- [x] Job Well Done (AKA Good Ass Job 2018)
+- [ ] Jesus Is King II
+- [ ] LOVE EVERYONE
+- [ ] Swish
+- [ ] Turbografx 16
 - [ ] VULTURES 3
+- [ ] War
+- [ ] Watch The Throne 2
+- [ ] YEBU
+- [x] Yeezus II
+- [x] Yandhi
+- [ ] ~~WAVES~~
+- [ ] ~~Wolves~~
+- [ ] So Help Me God
+- [ ] Thank God For Drugs
 
 ### UI
 - [x] Music player

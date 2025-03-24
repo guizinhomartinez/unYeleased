@@ -19,12 +19,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer as Drawer2 } from 'vaul';
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
 
@@ -35,7 +30,58 @@ type KeyboardThing = {
     description: string;
 }[];
 
-export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics", lyrics = "banana" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string, lyrics: string }) {
+type PlayerRewrite = {
+    image: string;
+    text: string;
+    subtext: string;
+    songVal: string;
+    backgroundLore: string;
+    linkToGenius: string;
+    lyrics: string;
+};
+
+type Menu = {
+    showExplanation: any;
+    setShowExplanation: any;
+    backgroundLore: string;
+    linkToGenius: string;
+    lyrics: string;
+    songRef?: any;
+};
+
+type InfoCard = {
+    backgroundLore: string;
+    linkToGenius: string;
+    lyrics: string;
+    shouldShowClose: boolean;
+};
+
+type MenuItems = {
+    icon: any;
+    text: string;
+    type: number;
+}
+
+const PopoverMenuItems: MenuItems[] = [
+    {
+        icon: <Share />,
+        text: "Share",
+        type: 0
+    },
+    {
+        icon: <KeyboardIcon />,
+        text: "Shortcuts",
+        type: 1
+    },
+    {
+        icon: <BookOpenText />,
+        text: "Explanation & lyrics",
+        type: 0
+    },
+];
+
+
+export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, linkToGenius, lyrics }: PlayerRewrite) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
@@ -204,14 +250,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
     }
 
     useEffect(() => {
-        const reiszeImage = () => {
-            if (window.innerWidth < 768) {
-                setImageSize(280);
-            } else {
-                setImageSize(260);
-            }
-        }
-
+        const reiszeImage = () => setImageSize(window.innerWidth < 768 ? 280 : 260);
         reiszeImage();
 
         window.addEventListener("resize", reiszeImage);
@@ -242,9 +281,9 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
             navigator.mediaSession.setActionHandler("nexttrack", () => skipTimeFunc(false));
 
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: songVal.replace("/song-files/songs/singles/", "") || "No Track Found",
+                title: text || "No Track Found",
                 artist: "Kanye West",
-                album: songVal.replace("/song-files/songs/singles/", "") || "No Album Found",
+                album: text || "No Album Found",
                 artwork: [
                     {
                         src: image,
@@ -285,7 +324,11 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
                             <p className="font-bold text-2xl">{text}</p>
                             <p className="text-muted-foreground/80">{subtext}</p>
                         </div>
-                        <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={handleClick} />
+                        {!useIsMobile() ?
+                            <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} />
+                            :
+                            <DrawerMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} songRef={songRef} />
+                        }
                     </div>
                     <div className="flex flex-col justify-center items-center mt-4 gap-4">
                         <div className="flex gap-2 w-full">
@@ -351,21 +394,55 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore = 
     );
 }
 
+const DrawerMenu = ({
+    showExplanation,
+    setShowExplanation,
+    backgroundLore,
+    linkToGenius,
+    lyrics,
+    songRef
+}: Menu) => {
+    return (
+        <Drawer>
+            <DrawerTrigger asChild>
+                <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
+                    <EllipsisVertical size='24' />
+                </Button>
+            </DrawerTrigger>
+            <DrawerContent className="max-h-[100%] rounded-xl">
+                <div className="p-8 px-4 w-full flex flex-col gap-3">
+                    <Button className="rounded-full" variant='secondary' disabled={!songRef.current}
+                        onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
+                        {PopoverMenuItems[0].icon}
+                        {PopoverMenuItems[0].text}
+                    </Button>
+                    <Drawer>
+                        <DrawerTrigger asChild>
+                            <Button className="w-full rounded-full" size='icon' variant='secondary' id="share-button">
+                                {PopoverMenuItems[2].icon}
+                                {PopoverMenuItems[2].text}
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                            <div className="w-[30vw]">
+                                <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} shouldShowClose={false} />
+                            </div>
+                        </DrawerContent>
+                    </Drawer>
+                </div>
+            </DrawerContent>
+        </Drawer>
+    )
+}
+
 const PopoverMenu = ({
     showExplanation,
     setShowExplanation,
     backgroundLore,
     linkToGenius,
     lyrics,
-    onClose
-}: {
-    showExplanation: any,
-    setShowExplanation: any,
-    backgroundLore: string,
-    linkToGenius: string,
-    lyrics: string,
-    onClose: () => void
-}) => {
+    songRef
+}: Menu) => {
     const keyboardThing: KeyboardThing = [
         {
             letter: "S",
@@ -395,7 +472,6 @@ const PopoverMenu = ({
         },
         {
             letter: <SpaceIcon />,
-            type: "text",
             description: "for pausing the song"
         }
     ]
@@ -409,78 +485,60 @@ const PopoverMenu = ({
             </PopoverTrigger>
             <PopoverContent className="min-w-[200px] h-full bg-background rounded-xl p-2 flex flex-col w-full gap-2" side='top' align='end'>
                 <Button className="w-full rounded-xl" variant='secondary' id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
-                    <Share />
-                    Share song
+                    {PopoverMenuItems[0].icon}
+                    {PopoverMenuItems[0].text}
                 </Button>
-                {!useIsMobile() &&
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button className="w-full rounded-xl" variant='secondary' id="share-button">
-                                <KeyboardIcon />
-                                Shortcuts
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-md rounded-xl">
-                            <DialogHeader>
-                                <DialogTitle>Keyboard shortcuts</DialogTitle>
-                            </DialogHeader>
-                            <div className="flex flex-col gap-2">
-                                {keyboardThing.map((thing, index) => (
-                                    <div className="flex gap-2 items-center" key={index}>
-                                        <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
-                                            <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
-                                                {thing.letter}
-                                            </p>
-                                            <p>
-                                                {thing.letter2}
-                                            </p>
-                                        </kbd>
-                                        {thing.description}
-                                    </div>
-                                ))}
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-                }
-                {!useIsMobile() ?
-                    <Drawer2.Root direction="right">
-                        <Drawer2.Trigger asChild>
-                            <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button">
-                                <BookOpenText />
-                                Show Explanation
-                            </Button>
-                        </Drawer2.Trigger>
-                        <Drawer2.Portal>
-                            <Drawer2.Overlay className="fixed inset-0 bg-black/40 z-[500]" />
-                            <Drawer2.Content
-                                className="right-4 top-4 bottom-4 fixed z-[501] outline-none w-[30%] group"
-                                // The gap between the edge of the screen and the drawer2 is 8px in this case.
-                                style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
-                            >
-                                <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
-                                <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
-                                    <div className="max-w-md mx-auto overflow-y-auto">
-                                        <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={onClose} shouldShowClose={false} />
-                                    </div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="w-full rounded-xl" variant='secondary' id="share-button">
+                            {PopoverMenuItems[1].icon}
+                            {PopoverMenuItems[1].text}
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md rounded-xl">
+                        <DialogHeader>
+                            <DialogTitle>Keyboard shortcuts</DialogTitle>
+                        </DialogHeader>
+                        <div className="flex flex-col gap-2">
+                            {keyboardThing.map((thing, index) => (
+                                <div className="flex gap-2 items-center" key={index}>
+                                    <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
+                                        <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
+                                            {thing.letter}
+                                        </p>
+                                        <p>
+                                            {thing.letter2}
+                                        </p>
+                                    </kbd>
+                                    {thing.description}
                                 </div>
-                            </Drawer2.Content>
-                        </Drawer2.Portal>
-                    </Drawer2.Root>
-                    :
-                    <Drawer>
-                        <DrawerTrigger asChild>
-                            <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button">
-                                <BookOpenText />
-                                Show Explanation
-                            </Button>
-                        </DrawerTrigger>
-                        <DrawerContent>
-                            <div className="w-[30vw]">
-                                <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} onClose={onClose} shouldShowClose={false} />
+                            ))}
+                        </div>
+                    </DialogContent>
+                </Dialog>
+                <Drawer2.Root direction="right">
+                    <Drawer2.Trigger asChild>
+                        <Button className="w-full rounded-xl" size='icon' variant='secondary' id="share-button">
+                            {PopoverMenuItems[2].icon}
+                            {PopoverMenuItems[2].text}
+                        </Button>
+                    </Drawer2.Trigger>
+                    <Drawer2.Portal>
+                        <Drawer2.Overlay className="fixed inset-0 bg-black/40 z-[500]" />
+                        <Drawer2.Content
+                            className="right-4 top-4 bottom-4 fixed z-[501] outline-none w-[30%] group"
+                            // The gap between the edge of the screen and the drawer2 is 8px in this case.
+                            style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
+                        >
+                            <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
+                            <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
+                                <div className="max-w-md mx-auto overflow-y-auto">
+                                    <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} shouldShowClose={false} />
+                                </div>
                             </div>
-                        </DrawerContent>
-                    </Drawer>
-                }
+                        </Drawer2.Content>
+                    </Drawer2.Portal>
+                </Drawer2.Root>
             </PopoverContent>
         </Popover>
     )
@@ -490,15 +548,8 @@ const InfoCard = ({
     backgroundLore,
     linkToGenius,
     lyrics,
-    onClose,
     shouldShowClose
-}: {
-    backgroundLore: string;
-    linkToGenius: string;
-    lyrics: string;
-    onClose: () => void;
-    shouldShowClose: boolean;
-}) => {
+}: InfoCard) => {
     const formattedLyrics = lyrics.split('\n').map((line, index) => {
         if (line.trim() === '') {
             return <div key={index} className="mb-8"></div>;
@@ -524,12 +575,12 @@ const InfoCard = ({
     });
 
     return (
-        <div className={cn("p-3 h-fit", useIsMobile() && 'h-[85vh] max-h-[97vh] w-screen overflow-y-auto')}>
+        <div className={cn("p-3 h-fit", useIsMobile() && 'h-[93vh] max-h-[97vh] w-screen overflow-y-auto')}>
             <Tabs defaultValue="explanation">
                 <div className="relative">
-                    <TabsList className="w-full flex justify-between rounded-xl gap-1 sticky top-10">
-                        <TabsTrigger value="explanation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><BookOpenText size='16' /> Explanation</TabsTrigger>
-                        <TabsTrigger value="lyrics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-lg inline-flex gap-2 items-center"><Mic2Icon size='16' /> Lyrics</TabsTrigger>
+                    <TabsList className="w-full flex justify-between rounded-2xl gap-1 sticky top-10">
+                        <TabsTrigger value="explanation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-xl inline-flex gap-2 items-center"><BookOpenText size='16' /> Explanation</TabsTrigger>
+                        <TabsTrigger value="lyrics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground w-full rounded-xl inline-flex gap-2 items-center"><Mic2Icon size='16' /> Lyrics</TabsTrigger>
                     </TabsList>
                 </div>
                 <TabsContent value="explanation" className="bg-secondary rounded-xl mx-0.5 overflow-y-auto">
@@ -540,7 +591,7 @@ const InfoCard = ({
                         {formattedLyrics}
                     </div>
                 </TabsContent>
-                <div className="flex flex-col gap-3 justify-center items-center bg-ring/10 p-4 mx-0.5 rounded-xl mt-2">
+                <div className="flex flex-col gap-3 justify-center items-center bg-secondary p-4 mx-0.5 rounded-xl mt-2">
                     <div className="text-primary/50 text-sm text-center">
                         (All descriptions and lyrics are from Genius/YouTube)
                     </div>

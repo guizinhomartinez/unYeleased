@@ -24,7 +24,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatePresence, motion } from "motion/react";
-import { fetchHomeInfo } from "@/components/fetching";
+import { fetchHomeInfo } from "@/lib/fetching";
 import { Switch } from "@/components/ui/switch";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]

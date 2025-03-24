@@ -14,7 +14,7 @@
             "subtext": null,
             "link": "/album/job-well-done",
             "tags": ["2018", "Album"],
-            "creators": "Kanye West, Chance the Rapper"
+            "creators": "Kanye West & Chance the Rapper"
         },
         {
             "image": "/song-files/covers/bully-big.jpg",
@@ -46,7 +46,7 @@
             "subtext": "Full Version",
             "tags": ["2025", "Single", "Wheels Fall Off"],
             "link": "/single/wheels-fall-off-full",
-            "creators": "Kanye West"
+            "creators": "Kanye West & Ty Dolla $ign"
         },
         {
             "image": "/song-files/covers/wheels-fall-off-big.jpg",
@@ -54,7 +54,7 @@
             "subtext": "Released Clean Version",
             "tags": ["2025", "Single", "Wheels Fall Off"],
             "link": "/single/wheels-fall-off-released",
-            "creators": "Kanye West"
+            "creators": "Kanye West & Ty Dolla $ign"
         },
         {
             "image": "/song-files/covers/good-ass-job.jpg",
@@ -63,6 +63,14 @@
             "tags": ["2009", "Album"],
             "link": "/album/good-ass-job",
             "creators": "Kanye West"
+        },
+        {
+            "image": "/song-files/covers/bad-bitch-playbook.jpg",
+            "text": "Bad Bitch Playbook",
+            "subtext": null,
+            "tags": ["2023", "Album"],
+            "link": "/album/bad-bitch-playbook",
+            "creators": "¥$"
         },
         {
             "image": "/song-files/covers/yeezus-2.jpg",

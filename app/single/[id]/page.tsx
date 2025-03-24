@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/components/fetching";
+import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/lib/fetching";
 import { Player } from "@/components/player";
 import { PlayerRewrite } from "@/components/player-rewrite";
 import { use, useEffect, useState } from "react";

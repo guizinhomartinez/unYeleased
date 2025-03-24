@@ -279,7 +279,7 @@ export const DefaultSongControls = ({
                             <PopoverContent className="min-w-[200px] h-full bg-background rounded-xl p-2 flex flex-col w-full gap-2" side='top'>
                                 <Button className="w-full rounded-xl" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                                     <Share />
-                                    Share song
+                                    Share
                                 </Button>
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -317,7 +317,7 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="min-w-[350px] h-full rounded-xl bg-background p-2" side='top'>
+                            <PopoverContent className="min-w-96 h-full rounded-xl bg-background p-2" side='top'>
                                 <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
                             </PopoverContent>
                         </Popover>

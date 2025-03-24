@@ -161,6 +161,7 @@ export const SongControls = ({
                                 setRepeat={setRepeat}
                                 volumeVal={volumeVal}
                                 setVolumeVal={setVolumeVal}
+                                id={id}
                             />
                             {/* <Button className="w-fit mx-auto m-12 opacity-0">My balls</Button> */}
                         </DrawerContent>

@@ -2,24 +2,24 @@
 
 import Image from 'next/image'
 import * as React from 'react'
-import { useEffect, useState, useRef, use } from 'react';
-import { BookOpenText, ChevronLeft, Dot, Pause, Play, Search } from "lucide-react";
-import { HandleTransition } from '@/components/handleTransition';
+import { useEffect, useState, useRef, use, useMemo } from 'react';
+import { BookOpenText, ChevronLeft, Dot, Maximize2, Minimize2, Pause, Play, Search } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { SongControls } from '@/components/songControls';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import '@public/CSS/song-controls.css';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
-import { AlbumExplanation, AlbumExplanationSmall } from '@/components/albumExplanation';
+import { AlbumExplanation } from '@/components/albumExplanation';
 import { useQueryState } from "nuqs";
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchAlbumInfo, fetchAlbumSongs } from '@/components/fetching';
+import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Toaster } from 'sonner';
 import Link from 'next/link';
+import { Drawer as Drawer2 } from 'vaul';
+import { Separator } from '@/components/ui/separator';
 
 interface Song {
   title: string;
@@ -52,6 +52,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [indexOfSongs, setIndexOfSongs] = useState<number[]>([]);
   const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+  const [albumDuration, setAlbumDuration] = useState<number>(0);
+  const [fullscreen, setFullscreen] = useState<boolean>(false);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -191,13 +193,15 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setIsPlaying(true);
     }
 
-    if (repeatAlbum === 2) return repeatSong();
+    if (repeatAlbum === 2)
+      return repeatSong();
 
-    if (newIndex !== songs.length) return setupNextSong(newIndex);
+    if (newIndex !== songs.length)
+      return setupNextSong(newIndex);
 
     const newSongIndex: any[] = [(repeatAlbum === 0 ? currentSongIndex + 1 : 0), (repeatAlbum === 0 ? false : true)];
 
-    setupNextSong(newSongIndex[0], newSongIndex[1]);
+    setupNextSong(0, repeatAlbum !== 0);
   }
 
   const handleSkipSong = (back: boolean) => setSkipDirection(back);
@@ -257,7 +261,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         <div className='flex-1'>
           <div className='absolute left-4 md:left-5 top-2'>
             <Link href="/">
-              <Button className="" size='icon' variant='ghost'>
+              <Button className="rounded-full" size='icon' variant='ghost'>
                 <ChevronLeft />
               </Button>
             </Link>
@@ -275,8 +279,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                   </div>
                   <div className='inline-flex items-center justify-center md:justify-normal'>
                     <div className='text-md md:text-xl text-primary/75 whitespace-pre text-center md:text-left'>{songs.length || <Skeleton className='w-5 h-5 translate-y-1 inline-flex' />} songs</div>
-                    {/* <Dot className='text-primary/75' />
-                    <div className='text-md md:text-xl text-primary/75 text-center md:text-left'> {isLoading ? <Skeleton className='w-28 h-6 translate-y-0.5' /> : `${albumDuration}`}</div> */}
+                    {/* {<Dot className='text-primary/75' />
+                    <div className='text-md md:text-xl text-primary/75 text-center md:text-left'> {albumDuration || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>} */}
                   </div>
                 </div>
                 <div className='flex gap-2 justify-center md:justify-normal mt-2'>
@@ -287,17 +291,39 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                     </div>
                   </Button>
                   {!useIsMobile() ?
-                    <Sheet>
-                      <SheetTrigger asChild>
+                    <Drawer2.Root direction="right">
+                      <Drawer2.Trigger asChild>
                         <Button variant='outline' className='rounded-full w-48 h-12' onClick={() => setShowExplanation(!showExplanation)}>
                           <BookOpenText />
                           Album Explanation
                         </Button>
-                      </SheetTrigger>
-                      <SheetContent className='items-center rounded-3xl top-2 right-2 h-[98%]'>
-                        <AlbumExplanation id={id} />
-                      </SheetContent>
-                    </Sheet>
+                      </Drawer2.Trigger>
+                      <Drawer2.Portal>
+                        <Drawer2.Overlay className="fixed inset-0 bg-black/40" />
+                        <Drawer2.Content
+                          className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out", fullscreen ? "max-w-[97.5vw]" : "max-w-[35%]")}
+                          // The gap between the edge of the screen and the drawer2 is 8px in this case.
+                          style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
+                        >
+                          <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
+                          <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
+                            <div className="p-4 overflow-y-auto h-full">
+                              <div className='pt-2'>
+                                <div className='flex items-center justify-between mx-auto'>
+                                  <div className='w-2' />
+                                  <p className='text-3xl font-bold text-center'>Album Explanation</p>
+                                  <div className='cursor-pointer mr-2' onClick={(e) => setFullscreen(!fullscreen)}>
+                                    {!fullscreen ? <Maximize2 /> : <Minimize2 />}
+                                  </div>
+                                </div>
+                                <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
+                              </div>
+                              <AlbumExplanation id={id} />
+                            </div>
+                          </div>
+                        </Drawer2.Content>
+                      </Drawer2.Portal>
+                    </Drawer2.Root>
                     :
                     <Drawer>
                       <DrawerTrigger asChild>
@@ -306,11 +332,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent className={cn('h-[80%] items-center')}>
-                        <DrawerHeader className='border-b-4 border-muted w-[90%]'>
-                          <DrawerTitle className='text-2xl font-semibold mt-6 text-center'>Album Explanation</DrawerTitle>
-                        </DrawerHeader>
-                        <AlbumExplanationSmall id={id} />
+                      <DrawerContent className={cn('h-[93vh] items-center overflow-y-auto')}>
+                        <div className='overflow-y-auto h-full'>
+                          <AlbumExplanation id={id} />
+                        </div>
                       </DrawerContent>
                     </Drawer>
                   }
@@ -330,7 +355,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             </div>
             <div className={cn('border-2 border-secondary rounded-lg bg-primary-foreground/60 transition-all duration-500', appearBar ? 'mb-24' : '-mb-4')}>
               {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
-                <div key={index} className={`flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 ${currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : ''}`} onClick={() => handleClickEvent(element, index)}>
+                <div key={index} className={cn("flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 transition-colors", currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : 'cursor-pointer')} onClick={() => handleClickEvent(element, index)}>
                   <div className='flex items-left gap-3 relative'>
                     <div className={cn('cursor-default rounded-full w-6 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div>
                     <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />

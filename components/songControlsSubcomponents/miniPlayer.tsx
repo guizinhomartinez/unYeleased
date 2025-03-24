@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import image from "next/image";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
 import { SongControlsSmall } from "./songControlsSmall";
+import Lyrics from "./lyrics";
 
 interface miniPlayerInterface {
     albumCover: string;
@@ -31,6 +32,7 @@ interface miniPlayerInterface {
     handleSkipSong: any;
     repeat: number;
     setRepeat: any;
+    id: string;
 }
 
 export const MiniPlayer = ({
@@ -45,11 +47,13 @@ export const MiniPlayer = ({
     repeat,
     setRepeat,
     volumeVal,
+    id
 }: miniPlayerInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTime, setSongtime] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
+    const [showLyrics, setShowLyrics] = useState<boolean>(false);
 
     // console.log(songVal);
 
@@ -85,10 +89,13 @@ export const MiniPlayer = ({
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
                 <div className="flex flex-col gap-4 mt-0">
-                    <div className="flex flex-col relative items-center">
-                        <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none" />
+                    <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(!showLyrics)}>
+                        <div className={cn("w-full h-full bg-black/40 transition-opacity duration-500 absolute inset-0 overflow-hidden", showLyrics ? "opacity-100" : "opacity-0")}>
+                            <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
+                        </div>
+                        <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none w-full" />
                     </div>
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex gap-2 mt-2">
                         <div className="flex flex-col overflow-hidden flex-1 gap-1">
                             {/* <AutoMarquee text={songVal} /> */}
                             <p className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none">
@@ -107,7 +114,7 @@ export const MiniPlayer = ({
                                     <div className="p-8 w-full flex flex-col gap-2">
                                         <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                                             <Share />
-                                            Share song
+                                            Share
                                         </Button>
                                     </div>
                                 </DrawerContent>
