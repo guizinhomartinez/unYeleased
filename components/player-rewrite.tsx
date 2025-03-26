@@ -296,7 +296,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
                 try {
                     navigator.mediaSession.setPositionState({
                         duration: song.duration,
-                        position: currentTimeVal || 0,
+                        position: song.currentTime || 0,
                     })
                 } catch (e) {
                     console.log(e)

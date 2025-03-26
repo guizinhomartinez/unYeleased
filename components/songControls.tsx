@@ -87,7 +87,7 @@ export const SongControls = ({
                 try {
                     navigator.mediaSession.setPositionState({
                         duration: song.duration,
-                        position: currentTimeVal || 0,
+                        position: song.currentTime || 0,
                     })
                 } catch (e) {
                     console.log(e)
@@ -102,7 +102,7 @@ export const SongControls = ({
                 <div
                     className={cn(`fixed bottom-2 rounded-xl w-full max-w-[95.2vw]
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
-                    flex items-center transition-all duration-500 shadow-lg`, !appearBar ? 'translate-y-32' : 'translate-y-0')}
+                    flex items-center transition-all shadow-lg`, songRef.current ? 'translate-y-0' : 'translate-y-32')}
                 >
                     <DefaultSongControls
                         songRef={songRef}
@@ -126,10 +126,9 @@ export const SongControls = ({
                     <Drawer>
                         <DrawerTrigger asChild>
                             <div
-                                className={`fixed bottom-2 rounded-2xl w-full max-w-[92vw] left-1/2 -translate-x-1/2
-                                    bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary flex items-center
-                                    transition-all duration-500 shadow-lg overflow-hidden`}
-                            >
+                                className={cn(`fixed bottom-1 rounded-2xl w-full max-w-[92vw]
+                                    left-1/2 -translate-x-1/2 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondsary
+                                    flex items-center transition-all duration-500 overflow-hidden shadow-xl`, songRef.current ? 'translate-y-0' : 'translate-y-32')}>
                                 <SongControlsSmall
                                     songRef={songRef}
                                     songVal={songVal}

@@ -35,7 +35,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [isPlaying, setIsPlaying] = useState(false);
   const songRef = useRef<HTMLAudioElement | null>(null);
-  const [currentTimeVal, setCurrentTimeVal] = useState(0);
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
@@ -50,9 +49,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [repeatAlbum, setRepeatAlbum] = useState(0);
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [indexOfSongs, setIndexOfSongs] = useState<number[]>([]);
-  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
-  const [albumDuration, setAlbumDuration] = useState<number>(0);
   const [fullscreen, setFullscreen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -111,21 +107,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       };
     }
   }, [isPlaying, playingSong]);
-
-  React.useMemo(() => {
-    const song = songRef.current;
-    if (!song) return;
-
-    const updateTime = () => {
-      setCurrentTimeVal(song.currentTime);
-    };
-
-    song.addEventListener("timeupdate", updateTime);
-
-    return () => {
-      song.removeEventListener("timeupdate", updateTime);
-    };
-  }, []);
 
   useEffect(() => {
     const reiszeImage = () => {
@@ -224,18 +205,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       song.removeEventListener("ended", handleSongEnd);
     };
   }, [currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
-
-  useEffect(() => {
-    const song = songRef.current;
-    if (!song) return;
-    const updateTime = () => setCurrentTimeVal(song.currentTime);
-
-    song.addEventListener("timeupdate", updateTime);
-
-    return () => {
-      song.removeEventListener("timeupdate", updateTime);
-    };
-  })
 
   useEffect(() => {
     const song = songRef.current;

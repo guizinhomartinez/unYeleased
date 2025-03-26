@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { EllipsisVertical, Pause, Play, Share, Shuffle, SkipBack, SkipForward } from "lucide-react";
+import { EllipsisVertical, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -89,9 +89,40 @@ export const MiniPlayer = ({
         <ScrollArea className="-[calc(100vh-4rem)] w-full">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
                 <div className="flex flex-col gap-4 mt-0">
-                    <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(!showLyrics)}>
-                        <div className={cn("w-full h-full bg-black/40 transition-opacity duration-500 absolute inset-0 overflow-hidden", showLyrics ? "opacity-100" : "opacity-0")}>
-                            <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} />
+                    <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(true)}>
+                        <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
+                            <div className="relative w-full h-full">
+                                {showLyrics && <Lyrics currentTimeVal={songRef.current.currentTime} id={id} songVal={songVal} />}
+                                <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
+                                    <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
+                                        <X size='14' />
+                                    </div>
+                                    <Drawer>
+                                        <DrawerTrigger asChild>
+                                            <div>
+                                                <EllipsisVertical className="rotate-90" size='16' />
+                                            </div>
+                                        </DrawerTrigger>
+                                        <DrawerContent className="max-h-[100%] rounded-xl">
+                                            <div className="p-8 w-full flex flex-col gap-2">
+                                                <Drawer>
+                                                    <DrawerTrigger asChild>
+                                                        <Button className="rounded-full" variant='secondary' disabled={!songRef.current}>
+                                                            <Maximize2Icon />
+                                                            Fullscreen
+                                                        </Button>
+                                                    </DrawerTrigger>
+                                                    <DrawerContent className="h-screen rounded-none">
+                                                        <div className="m-4 bg-secondary rounded-xl overflow-y-auto">
+                                                            {showLyrics && <Lyrics currentTimeVal={songRef.current.currentTime} id={id} songVal={songVal} isFullscreen={true} />}
+                                                        </div>
+                                                    </DrawerContent>
+                                                </Drawer>
+                                            </div>
+                                        </DrawerContent>
+                                    </Drawer>
+                                </div>
+                            </div>
                         </div>
                         <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none w-full" />
                     </div>
@@ -141,31 +172,29 @@ export const MiniPlayer = ({
                             >
                                 <Shuffle />
                             </Button>
-                            <div className="flex gap-4 items-center w-full justify-center">
-                                <Button
-                                    size="icon"
-                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                    variant="ghost"
-                                    onClick={() => handleSkipSong(true)}
-                                >
-                                    <SkipBack size='32' />
-                                </Button>
-                                <Button
-                                    className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                    size="icon"
-                                    onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
-                                >
-                                    {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
-                                </Button>
-                                <Button
-                                    size="icon"
-                                    className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                    variant="ghost"
-                                    onClick={() => handleSkipSong(false)}
-                                >
-                                    <SkipForward size='32' />
-                                </Button>
-                            </div>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                variant="ghost"
+                                onClick={() => handleSkipSong(true)}
+                            >
+                                <SkipBack size='32' />
+                            </Button>
+                            <Button
+                                className={cn('p-6 rounded-full focus:bg-primary', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                size="icon"
+                                onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                            >
+                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                            </Button>
+                            <Button
+                                size="icon"
+                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                variant="ghost"
+                                onClick={() => handleSkipSong(false)}
+                            >
+                                <SkipForward size='32' />
+                            </Button>
                             <Button
                                 size="icon"
                                 className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
