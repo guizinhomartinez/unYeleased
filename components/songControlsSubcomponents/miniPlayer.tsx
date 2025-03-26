@@ -92,7 +92,7 @@ export const MiniPlayer = ({
                     <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(true)}>
                         <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
                             <div className="relative w-full h-full">
-                                {showLyrics && <Lyrics currentTimeVal={songRef.current.currentTime} id={id} songVal={songVal} />}
+                                {showLyrics && <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} />}
                                 <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
                                     <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                         <X size='14' />
@@ -114,7 +114,7 @@ export const MiniPlayer = ({
                                                     </DrawerTrigger>
                                                     <DrawerContent className="h-screen rounded-none">
                                                         <div className="m-4 bg-secondary rounded-xl overflow-y-auto">
-                                                            {showLyrics && <Lyrics currentTimeVal={songRef.current.currentTime} id={id} songVal={songVal} isFullscreen={true} />}
+                                                            {showLyrics && <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} isFullscreen={true} />}
                                                         </div>
                                                     </DrawerContent>
                                                 </Drawer>

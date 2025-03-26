@@ -322,7 +322,7 @@ export const DefaultSongControls = ({
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="min-w-96 h-full rounded-xl bg-background p-2" side='top'>
-                                <Lyrics currentTimeVal={songRef.current.currentTime} id={id} songVal={songVal} />
+                                <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} />
                             </PopoverContent>
                         </Popover>
                     </div>
