@@ -66,15 +66,15 @@ export const SongControls = ({
         if (!song) return;
 
         if ("mediaSession" in navigator) {
-            navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true));
-            navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
+            navigator.mediaSession.setActionHandler("play", () => song.play());
+            navigator.mediaSession.setActionHandler("pause", () => song.pause());
             navigator.mediaSession.setActionHandler("previoustrack", () => handleSkipSong(true));
             navigator.mediaSession.setActionHandler("nexttrack", () => handleSkipSong(false));
 
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: songVal || "No Track Found",
-                artist: songCreator || "Unknown",
-                album: albumName || id,
+                title: songVal ? songVal : "No Track Found",
+                artist: songCreator ? songCreator : "Unknown",
+                album: albumName ? albumName : id,
                 artwork: [
                     {
                         src: image,
@@ -83,16 +83,10 @@ export const SongControls = ({
                     },
                 ],
             });
-            if (song.duration && !isNaN(song.duration)) {
-                try {
-                    navigator.mediaSession.setPositionState({
-                        duration: song.duration,
-                        position: song.currentTime || 0,
-                    })
-                } catch (e) {
-                    console.log(e)
-                }
-            }
+            navigator.mediaSession.setPositionState({
+                duration: song.duration ? song.duration : 0,
+                position: song.currentTime ? song.currentTime : 0,
+            })
         }
     }, [handleSkipSong, songVal, songCreator, image, songRef, currentTimeVal]);
 
@@ -102,7 +96,7 @@ export const SongControls = ({
                 <div
                     className={cn(`fixed bottom-2 rounded-xl w-full max-w-[95.2vw]
                     left-1/2 -translate-x-1/2 py-3 px-3 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary
-                    flex items-center transition-all shadow-lg`, songRef.current ? 'translate-y-0' : 'translate-y-32')}
+                    flex items-center transition-all shadow-lg duration-500`, appearBar ? 'translate-y-0' : 'translate-y-32')}
                 >
                     <DefaultSongControls
                         songRef={songRef}

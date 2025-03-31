@@ -52,11 +52,11 @@ const navigationStuff = [
     //     component: <PlusCircle />,
     //     link: "/about/create-album"
     // },
-    {
-        name: "Testing Homepage",
-        component: <HardHat />,
-        link: "/testing"
-    }
+    // {
+    //     name: "Testing Homepage",
+    //     component: <HardHat />,
+    //     link: "/testing"
+    // }
 ]
 
 export default function Navbar({ className }: { className?: string }) {

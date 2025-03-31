@@ -20,7 +20,7 @@ export const SongControlsSmall = ({
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
 
-    const useEffectConst = () => {
+    useEffect(() => {
         const song = songRef.current;
         if (!song) return;
 
@@ -35,14 +35,6 @@ export const SongControlsSmall = ({
         return () => {
             song.removeEventListener("timeupdate", updateTime);
         };
-    }
-
-    useEffect(() => {
-        useEffectConst();
-    }, []);
-
-    useEffect(() => {
-        useEffectConst();
     }, [handleSkipSong]);
 
     return (

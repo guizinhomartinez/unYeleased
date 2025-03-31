@@ -42,7 +42,7 @@ export async function fetchSinglesExplanation(id:string) {
 export async function fetchAlbumLyrics(id: any, songName: any) {
     let response = "";
     try {
-        const res = await fetch(`/song-files/songLyrics/${id}/${songName}.lrc`);
+        const res = await fetch(`/song-files/songLyrics/${id.toLowerCase().replace(" ", "-")}/${songName.toLowerCase().replace(" ", "-")}.lrc`);
         res.ok ? response = await res.text() : response = "Unable to fetch the lyrics :C";
     } catch (e) {
         response = "Error: Network or server issue";

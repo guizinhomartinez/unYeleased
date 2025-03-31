@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { ArrowBigUp, ChevronDown, Command, EllipsisVertical, KeyboardIcon, MicVocal, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { cn } from "@/lib/utils";
+import { cn, lyricsDelay } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import Lyrics from "./lyrics";
@@ -40,28 +40,7 @@ export const DefaultSongControls = ({
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
-    const [songTime, setSongtime] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
-
-    const useEffectConst = () => {
-        const song = songRef.current;
-        if (!song) return;
-
-        const updateTime = () => {
-            if (song.duration) {
-                setSliderValue((song.currentTime / song.duration) * 100);
-            }
-            setCurrentTimeVal(song.currentTime);
-        };
-
-        setSongtime(song.duration);
-
-        song.addEventListener("timeupdate", updateTime);
-
-        return () => {
-            song.removeEventListener("timeupdate", updateTime);
-        };
-    }
 
     const handleKeyDown = useEffect(() => {
         const lyricsButton = document.getElementById("lyrics-button");
@@ -140,12 +119,22 @@ export const DefaultSongControls = ({
     };
 
     useEffect(() => {
-        useEffectConst();
-    }, []);
+        const song = songRef.current;
+        if (!song) return;
 
-    useEffect(() => {
-        useEffectConst();
-    }, [handleSkipSong]);
+        const updateTime = () => {
+            if (song.duration) {
+                setSliderValue((song.currentTime / song.duration) * 100);
+            }
+            setCurrentTimeVal(song.currentTime);
+        };
+
+        song.addEventListener("timeupdate", updateTime);
+
+        return () => {
+            song.removeEventListener("timeupdate", updateTime);
+        };
+    }, [songVal, handleSkipSong]);
 
     const keyboardThing: KeyboardThing = [
         {
@@ -246,7 +235,7 @@ export const DefaultSongControls = ({
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                         >
-                            {!isPlaying ? <Play /> : <Pause />}
+                            {songRef.current && songRef.current.paused ? <Play /> : <Pause />}
                         </Button>
                         <Button
                             size="icon"
@@ -268,7 +257,7 @@ export const DefaultSongControls = ({
                     <div className="flex items-center gap-2">
                         <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
-                        <div className="text-sm text-muted-foreground/80 select-none cursor-pointer w-12" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songTime, songTimeType, currentTimeVal)}</div>
+                        <div className="text-sm text-muted-foreground/80 select-none cursor-pointer w-12" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songRef.current ? songRef.current.duration : 0, songTimeType, currentTimeVal)}</div>
                     </div>
                 </div>
 
@@ -321,13 +310,13 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="min-w-96 h-full rounded-xl bg-background p-2" side='top'>
-                                <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} />
+                            <PopoverContent className="w-[450px] h-full rounded-xl bg-background p-2" side='top'>
+                                <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />
                             </PopoverContent>
                         </Popover>
                     </div>
                     <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2" />
-                    <div className="w-1/2 flex gap-3 items-center">
+                    <div className="w-1/2 flex gap-3 items-center h-full">
                         <Button onClick={() => muteSong(songRef)}
                             variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
                             <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />

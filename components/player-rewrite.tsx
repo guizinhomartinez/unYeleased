@@ -281,9 +281,9 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
             navigator.mediaSession.setActionHandler("nexttrack", () => skipTimeFunc(false));
 
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: text || "No Track Found",
+                title: text ? text : "No Track Found",
                 artist: "Kanye West",
-                album: text || "No Album Found",
+                album: text ? text : "No Single Found",
                 artwork: [
                     {
                         src: image,
@@ -292,16 +292,10 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
                     },
                 ],
             });
-            if (song.duration && !isNaN(song.duration)) {
-                try {
-                    navigator.mediaSession.setPositionState({
-                        duration: song.duration,
-                        position: song.currentTime || 0,
-                    })
-                } catch (e) {
-                    console.log(e)
-                }
-            }
+            navigator.mediaSession.setPositionState({
+                duration: song.duration ? song.duration : 0,
+                position: song.currentTime ? song.currentTime : 0,
+            })
         }
     }, [songVal, image, songRef, currentTimeVal]);
 

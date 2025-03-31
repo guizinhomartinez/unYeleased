@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { EllipsisVertical, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, lyricsDelay } from "@/lib/utils";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
@@ -51,7 +51,6 @@ export const MiniPlayer = ({
 }: miniPlayerInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
-    const [songTime, setSongtime] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
     const [showLyrics, setShowLyrics] = useState<boolean>(false);
 
@@ -67,8 +66,6 @@ export const MiniPlayer = ({
             }
             setCurrentTimeVal(song.currentTime);
         };
-
-        setSongtime(song.duration);
 
         song.addEventListener("timeupdate", updateTime);
 
@@ -92,7 +89,7 @@ export const MiniPlayer = ({
                     <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(true)}>
                         <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
                             <div className="relative w-full h-full">
-                                {showLyrics && <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} />}
+                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
                                 <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
                                     <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                         <X size='14' />
@@ -112,9 +109,9 @@ export const MiniPlayer = ({
                                                             Fullscreen
                                                         </Button>
                                                     </DrawerTrigger>
-                                                    <DrawerContent className="h-screen rounded-none">
+                                                    <DrawerContent className="max-h-[100%] h-[100%] rounded-none">
                                                         <div className="m-4 bg-secondary rounded-xl overflow-y-auto">
-                                                            {showLyrics && <Lyrics currentTimeVal={songRef.current ? songRef.current.currentTime : 0} id={id} songVal={songVal} isFullscreen={true} />}
+                                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isFullscreen={true} />}
                                                         </div>
                                                     </DrawerContent>
                                                 </Drawer>
@@ -158,7 +155,7 @@ export const MiniPlayer = ({
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
                         <div className="flex justify-between items-center">
                             <div className="w-full text-primary/50 text-sm select-none">{formatTime(currentTimeVal) || '0:00'}</div>
-                            <div className="w-full text-right text-primary/50 text-sm select-none" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songTime, songTimeType, currentTimeVal)}</div>
+                            <div className="w-full text-right text-primary/50 text-sm select-none" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songRef.current ? songRef.current.duration : 0, songTimeType, currentTimeVal)}</div>
                         </div>
                     </div>
                     <div className="flex gap-1 items-center">
@@ -185,7 +182,7 @@ export const MiniPlayer = ({
                                 size="icon"
                                 onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                             >
-                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                                {songRef.current.paused ? <Play size='32' /> : <Pause size='32' />}
                             </Button>
                             <Button
                                 size="icon"

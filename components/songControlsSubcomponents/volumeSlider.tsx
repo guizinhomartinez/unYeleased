@@ -12,6 +12,7 @@ export default function VolumeSlider({ className, ...props }: SliderProps) {
             step={1}
             className={cn("w-full", className)}
             onKeyDown={(e) => e.preventDefault()}
+            onWheel={(e) => e.preventDefault()}
             {...props}
         />
     );

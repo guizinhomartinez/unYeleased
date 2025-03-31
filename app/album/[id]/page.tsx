@@ -95,17 +95,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     const song = songRef.current;
-    if (song) {
-      if (isPlaying) {
-        song.play();
-      } else {
-        song.pause();
-      }
+    if (!song) return;
+    isPlaying ? song.play() : song.pause();
 
-      return () => {
-        song.pause();
-      };
-    }
+    return () => {
+      song.pause();
+    };
   }, [isPlaying, playingSong]);
 
   useEffect(() => {
