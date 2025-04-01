@@ -111,7 +111,7 @@ export const MiniPlayer = ({
                                                     </DrawerTrigger>
                                                     <DrawerContent className="max-h-[100%] h-[100%] rounded-none">
                                                         <div className="m-4 bg-secondary rounded-xl overflow-y-auto">
-                                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isFullscreen={true} />}
+                                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
                                                         </div>
                                                     </DrawerContent>
                                                 </Drawer>
@@ -182,7 +182,7 @@ export const MiniPlayer = ({
                                 size="icon"
                                 onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                             >
-                                {songRef.current.paused ? <Play size='32' /> : <Pause size='32' />}
+                                {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
                             </Button>
                             <Button
                                 size="icon"

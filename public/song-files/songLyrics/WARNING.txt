@@ -1,0 +1,1 @@
+Remember to save the lyrics file as UTF-8 and LF, not CLRF!!!!

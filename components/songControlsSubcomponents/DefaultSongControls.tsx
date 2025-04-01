@@ -235,7 +235,7 @@ export const DefaultSongControls = ({
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                         >
-                            {songRef.current && songRef.current.paused ? <Play /> : <Pause />}
+                            {!isPlaying ? <Play /> : <Pause />}
                         </Button>
                         <Button
                             size="icon"
@@ -265,7 +265,7 @@ export const DefaultSongControls = ({
                     <div className="items-center flex gap-2">
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button className="rounded-full" size='icon' variant='secondary' disabled={!songRef.current} id="lyrics-button">
+                                <Button className="rounded-full" size='icon' variant='secondary' disabled={!songRef.current}>
                                     <EllipsisVertical />
                                 </Button>
                             </PopoverTrigger>
@@ -310,8 +310,10 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[450px] h-full rounded-xl bg-background p-2" side='top'>
-                                <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />
+                            <PopoverContent className="w-[450px] h-full rounded-xl p-2" side='top'>
+                                <div className="relative rounded-lg">
+                                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />
+                                </div>
                             </PopoverContent>
                         </Popover>
                     </div>
