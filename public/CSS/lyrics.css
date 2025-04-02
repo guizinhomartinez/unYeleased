@@ -1,0 +1,8 @@
+.lrc {
+    scrollbar-width: none;
+}
+
+.lrc::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}

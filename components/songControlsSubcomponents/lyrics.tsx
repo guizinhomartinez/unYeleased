@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, CSSProperties } from 'react';
 import { fetchAlbumLyrics } from '../../lib/fetching';
 import { cn } from '@/lib/utils';
 import { Lrc, LrcLine } from 'react-lrc';
+import '@/public/CSS/lyrics.css'
 
 export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { currentTimeVal: number, id: string, songVal: string, isSynced?: boolean }) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
@@ -50,7 +51,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
         <div className={cn('rounded-lg p-2 relative overflow-hidden', imageSize === 260 ? 'min-h-[300px] max-h-[500px]' : 'h-full')}>
             {!isSynced ?
                 <Lrc
-                    className='scrollbar-none scroll-smooth'
+                    className='lrc scroll-smooth'
                     lrc={lrcContent}
                     currentMillisecond={currentTimeVal}
                     lineRenderer={lineRenderer}
