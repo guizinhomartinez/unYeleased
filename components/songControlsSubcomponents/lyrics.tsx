@@ -41,7 +41,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
 
     const lineRenderer = useCallback(
         ({ active, line: { content } }: { active: boolean; line: LrcLine }) => (
-            <p className={cn('text-2xl text-center mb-3 font-semibold z-10 select-none', active ? 'text-primary' : 'text-primary/10')}>{content}</p>
+            <p className={cn('text-2xl mb-3 z-10 select-none transition-all duration-500 font-semibold', active ? 'text-primary' : 'text-primary/15')}>{content}</p>
         ),
         []
     );
@@ -50,6 +50,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
         <div className={cn('rounded-lg p-2 relative overflow-hidden', imageSize === 260 ? 'min-h-[300px] max-h-[500px]' : 'h-full')}>
             {!isSynced ?
                 <Lrc
+                    className='scrollbar-none scroll-smooth'
                     lrc={lrcContent}
                     currentMillisecond={currentTimeVal}
                     lineRenderer={lineRenderer}
