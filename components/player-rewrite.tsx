@@ -328,7 +328,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
                         <div className="flex gap-2 w-full">
                             <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
                             <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
-                            <div className="text-md opacity-60 text-right w-12">{isNaN(songTime) ? '0:00' : formatTime(songTime)}</div>
+                            <div className="text-md opacity-60 text-right w-12">{songRef.current ? (isNaN(songRef.current.duration) ? '0:00' : formatTime(songRef.current.duration)) : '0:00'}</div>
                         </div>
                         <div className="flex justify-between w-full items-center gap-4 mt-4">
                             <Button
