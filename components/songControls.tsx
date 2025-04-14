@@ -141,7 +141,7 @@ export const SongControls = ({
                                 />
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent className="max-h-[100%] h-[100%] rounded-t-none">
+                        <DrawerContent className="max-h-full h-full rounded-t-3xl">
                             <MiniPlayer
                                 albumCover={image}
                                 songRef={songRef}

@@ -273,7 +273,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
                             <div className="p-4 overflow-y-auto h-full">
                               <div className='pt-2'>
-                                <div className='flex items-center justify-between mx-auto'>
+                                <div className='flex items-center justify-between mx-auto gap-2'>
                                   <div className='w-2' />
                                   <p className='text-3xl font-bold text-center'>Album Explanation</p>
                                   <div className='cursor-pointer mr-2' onClick={(e) => setFullscreen(!fullscreen)}>
@@ -296,8 +296,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                           Album Explanation
                         </Button>
                       </DrawerTrigger>
-                      <DrawerContent className={cn('h-[93vh] items-center overflow-y-auto')}>
-                        <div className='overflow-y-auto h-full'>
+                      <DrawerContent className={cn('h-[93vh] items-center')}>
+                        <div className='overflow-y-auto h-full w-full'>
                           <AlbumExplanation id={id} />
                         </div>
                       </DrawerContent>
@@ -312,17 +312,20 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
           <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
             <div className='flex items-center relative'>
-              <Input type='search' className='pl-[3em] bg-primary-foreground border-2 border-secondary' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for your favorite song"></Input>
+              <Input type='search' className='pl-[3em] border-2 border-secondary rounded-xl bg-primary-foreground/50' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search for your favorite song"></Input>
               <div className='absolute left-3 pr-2 py-2 border-r-2 border-r-secondary cursor-pointer'>
                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
               </div>
             </div>
-            <div className={cn('border-2 border-secondary rounded-lg bg-primary-foreground/60 transition-all duration-500', appearBar ? 'mb-24' : '-mb-4')}>
+            <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden', appearBar ? 'mb-24' : '-mb-4')}>
               {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
-                <div key={index} className={cn("flex border-b-2 border-b-secondary last-of-type:border-b-transparent p-2 items-center justify-start gap-2 transition-colors", currentSongIndex === index ? 'bg-primary/10 border-b-transparent' : 'cursor-pointer')} onClick={() => handleClickEvent(element, index)}>
-                  <div className='flex items-left gap-3 relative'>
-                    <div className={cn('cursor-default rounded-full w-6 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div>
-                    <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' />
+                <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
+                  <div className='flex items-center gap-3 relative justify-center'>
+                    {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
+                    <div className='w-12 flex items-right justify-center'>
+                      <p className='w-2 text-right'>{index + 1}</p>
+                    </div>
+                    {/* <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' /> */}
                   </div>
                   <div className='select-none whitespace-pre overflow-hidden w-3/4 shadowed-song-name'>
                     <div className="text-sm font-semibold max-w-52">{element.title || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>

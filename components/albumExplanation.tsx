@@ -29,11 +29,11 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
     fetchAlbumStuff(id, setDynamicHeader, setSource);
 
     return (
-        <div className={cn(imageSize === 280 ? "p-4" : "relative")}>
+        <div className={cn(imageSize === 280 ? "p-3" : "relative")}>
             {imageSize === 280 &&
                 <div className='flex flex-col items-center justify-center mx-auto mt-4'>
                     <p className='text-3xl font-bold text-center'>Album Explanation</p>
-                    <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
+                    <Separator orientation="horizontal" className="h-0.5 rounded-full bg-muted mt-2 mb-2" />
                 </div>
             }
             <div className={cn(imageSize === 280 && "mx-0.5")}>

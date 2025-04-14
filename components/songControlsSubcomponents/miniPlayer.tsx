@@ -83,8 +83,8 @@ export const MiniPlayer = ({
     }, [handleSkipSong]);
 
     return (
-        <ScrollArea className="-[calc(100vh-4rem)] w-full">
-            <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full`}>
+        <ScrollArea className="w-full h-full flex flex-col justify-center items-center">
+            <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center`}>
                 <div className="flex flex-col gap-4 mt-0">
                     <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(true)}>
                         <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
@@ -109,9 +109,11 @@ export const MiniPlayer = ({
                                                             Fullscreen
                                                         </Button>
                                                     </DrawerTrigger>
-                                                    <DrawerContent className="max-h-[100%] h-[100%] rounded-none">
-                                                        <div className="m-4 bg-secondary rounded-xl overflow-y-auto">
-                                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
+                                                    <DrawerContent className="max-h-full h-full">
+                                                        <div className="overflow-hidden bg-secondary rounded-xl relative" style={{margin: '1em', height: '100%'}}>
+                                                            <div className="">
+                                                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
+                                                            </div>
                                                         </div>
                                                     </DrawerContent>
                                                 </Drawer>

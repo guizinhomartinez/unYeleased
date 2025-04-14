@@ -310,8 +310,9 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[450px] h-full rounded-xl p-2" side='top'>
-                                <div className="relative rounded-lg">
+                            <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center" side='top' onMouseOver={() => console.log('mouse is over!')} onMouseLeave={() => console.log("mouse is not over!")}>
+                                <div className="relative rounded-lg size-full overflow-hidden px-4">
+                                    <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-xl size-full" />
                                     <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />
                                 </div>
                             </PopoverContent>

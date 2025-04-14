@@ -1,83 +1,129 @@
 {
     "entries": [
         {
-            "image": "/song-files/covers/yandhi.jpg",
+            "image": "yandhi",
             "text": "Yandhi",
             "subtext": null,
             "link": "/album/yandhi",
-            "tags": ["2018", "Album"],
+            "tags": [
+                "2018",
+                "Album"
+            ],
             "creators": "Kanye West"
         },
         {
-            "image": "/song-files/covers/job-well-done.jpg",
+            "image": "job-well-done",
             "text": "Job Well Done",
             "subtext": null,
             "link": "/album/job-well-done",
-            "tags": ["2018", "Album"],
+            "tags": [
+                "2018",
+                "Album"
+            ],
             "creators": "Kanye West & Chance the Rapper"
         },
         {
-            "image": "/song-files/covers/bully-big.jpg",
+            "image": "bully-big",
             "text": "Beauty and The Beast",
             "subtext": "Version from Yeezy.com",
-            "tags": ["2025", "Single", "Bully"],
+            "tags": [
+                "2025",
+                "Single",
+                "Bully"
+            ],
             "link": "/single/beauty-and-the-beast",
             "creators": "Kanye West"
         },
         {
-            "image": "/song-files/covers/bully-big.jpg",
+            "image": "bully-big",
             "text": "World War 3",
             "subtext": "Released on March 6th on Ye's X account",
-            "tags": ["2025", "Single", "Bully"],
+            "tags": [
+                "2025",
+                "Single",
+                "Bully"
+            ],
             "link": "/single/world-war-3",
             "creators": "Kanye West"
         },
         {
-            "image": "/song-files/covers/bully.jpg",
+            "image": "bully",
             "text": "BULLY V1",
             "subtext": "First official release of Bully",
-            "tags": ["2025", "Album", "Bully"],
+            "tags": [
+                "2025",
+                "Album",
+                "Bully"
+            ],
             "link": "/album/bully",
             "creators": "Kanye West"
         },
         {
-            "image": "/song-files/covers/wheels-fall-off-big.jpg",
+            "image": "wheels-fall-off-big",
             "text": "Wheels Fall Off",
             "subtext": "Full Version",
-            "tags": ["2025", "Single", "Wheels Fall Off"],
+            "tags": [
+                "2025",
+                "Single",
+                "Wheels Fall Off"
+            ],
             "link": "/single/wheels-fall-off-full",
             "creators": "Kanye West & Ty Dolla $ign"
         },
         {
-            "image": "/song-files/covers/wheels-fall-off-big.jpg",
+            "image": "wheels-fall-off-big",
             "text": "Wheels Fall Off",
             "subtext": "Released Clean Version",
-            "tags": ["2025", "Single", "Wheels Fall Off"],
+            "tags": [
+                "2025",
+                "Single",
+                "Wheels Fall Off"
+            ],
             "link": "/single/wheels-fall-off-released",
             "creators": "Kanye West & Ty Dolla $ign"
         },
         {
-            "image": "/song-files/covers/good-ass-job.jpg",
+            "image": "good-ass-job",
             "text": "Good Ass Job",
             "subtext": null,
-            "tags": ["2009", "Album"],
+            "tags": [
+                "2009",
+                "Album"
+            ],
             "link": "/album/good-ass-job",
             "creators": "Kanye West"
         },
         {
-            "image": "/song-files/covers/bad-bitch-playbook.jpg",
+            "image": "bad-bitch-playbook",
             "text": "Bad Bitch Playbook",
             "subtext": null,
-            "tags": ["2023", "Album"],
+            "tags": [
+                "2023",
+                "Album"
+            ],
             "link": "/album/bad-bitch-playbook",
             "creators": "¥$"
         },
         {
-            "image": "/song-files/covers/yeezus-2.jpg",
+            "image": "yeezus-2",
             "text": "Yeezus 2",
             "subtext": null,
-            "tags": ["2014", "Album"],
+            "tags": [
+                "2014",
+                "Album"
+            ],
             "link": "/album/yeezus-2",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "donda-2",
+            "text": "Donda 2",
+            "subtext": null,
+            "tags": [
+                "2022",
+                "Album"
+            ],
+            "link": "/album/donda-2",
             "creators": "Kanye West"
         }
     ]

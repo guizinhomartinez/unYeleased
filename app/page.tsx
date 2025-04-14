@@ -198,7 +198,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
         return (
             <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut", delay: 0.2 }}>
                 <Link href={entry.link} className="cursor-pointer">
-                    <Image src={`${entry.image}`} alt="Job Well Done" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
+                    <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
                 </Link>
                 <div className="flex flex-col justify-center items-center w-full">
                     <Link href={entry.link} className="cursor-pointer">
@@ -210,7 +210,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
                         {entry.tags.map((tag: string, index: number) => (
                             <Badge
                                 key={index}
-                                className="mt-2 rounded-full cursor-pointer select-none"
+                                className="mt-2 rounded-full cursor-pointer select-none whitespace-nowrap overflow-auto"
                                 variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -227,8 +227,8 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
     } else {
         return (
             <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
-                <Link href={entry.link} className="cursor-pointer">
-                    <Image src={`${entry.image}`} alt="Job Well Done" width={125} height={125} className="rounded-xl shadow-md" priority={true} />
+                <Link href={entry.link} className="cursor-pointer max-w-24">
+                    <Image src={`${entry.image}`} alt="Album cover" width={120} height={120} className="rounded-xl shadow-md" priority={true} />
                 </Link>
                 <div className="flex flex-col gap-3">
                     <div className="items-start justify-start w-full">
@@ -241,7 +241,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
                         {entry.tags.map((tag: string, index: number) => (
                             <Badge
                                 key={index}
-                                className="mt-2 rounded-full cursor-pointer select-none"
+                                className={cn("mt-2 rounded-full cursor-pointer select-none", index === 2 && "hidden")}
                                 variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
                                 onClick={(e) => {
                                     e.stopPropagation();

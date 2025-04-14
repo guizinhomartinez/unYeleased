@@ -1,0 +1,76 @@
+{
+    "config": [
+        {
+            "albumName": "Donda 2",
+            "albumCreator": "Kanye West",
+            "year": "2022",
+            "credits": "Credits to Genius for the tracklist. Credits to [yeunrlsd], Dante Spence, dx4 and Toosie Beats for the songs."
+        }
+    ],
+    "tracks": [
+        {
+            "title": "True Love",
+            "artist": "Kanye West & XXXTENTACION"
+        },
+        {
+            "title": "Broken Road",
+            "artist": "Kanye West, Don Toliver & Shenseaa"
+        },
+        {
+            "title": "Get Lost",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Too Easy",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Flowers",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Security",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "We Did It, Kid",
+            "artist": "Kanye West, Baby Keem & Migos"
+        },
+        {
+            "title": "Pablo",
+            "artist": "Kanye West, Future & Travis Scott"
+        },
+        {
+            "title": "Louie Bags",
+            "artist": "Kanye West & Jack Harlow"
+        },
+        {
+            "title": "Happy",
+            "artist": "Kanye West & Future"
+        },
+        {
+            "title": "Sci Fi",
+            "artist": "Kanye West & Sean Leon"
+        },
+        {
+            "title": "Selfish",
+            "artist": "Kanye West & XXXTENTACION"
+        },
+        {
+            "title": "Lord Lift Me Up",
+            "artist": "Kanye West & Vory"
+        },
+        {
+            "title": "City Of Gods",
+            "artist": "Kanye West, Alicia Keys & Flivio Foreign"
+        },
+        {
+            "title": "First Time In A Long Time",
+            "artist": "Kanye West & Soulja Boy"
+        },
+        {
+            "title": "Eazy",
+            "artist": "Kanye West & The Game"
+        }
+    ]
+}

@@ -7,7 +7,7 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 ### Missing albums
 - [x] Bad Bitch Playbook
 - [ ] Cruel Winter
-- [ ] DONDA II
+- [x] DONDA 2
 - [ ] DONDA: WITH CHILD
 - [ ] God's Country
 - [x] Good Ass Job
