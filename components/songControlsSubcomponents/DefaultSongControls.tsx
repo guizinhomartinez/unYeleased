@@ -14,6 +14,8 @@ import VolumeSlider from "./volumeSlider";
 import '@public/CSS/song-controls.css';
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { toast } from "sonner"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { motion } from "motion/react";
 
 type KeyboardThing = {
     letter: any;
@@ -41,6 +43,7 @@ export const DefaultSongControls = ({
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
+    const [isSynced, setIsSynced] = useState(true);
 
     const handleKeyDown = useEffect(() => {
         const lyricsButton = document.getElementById("lyrics-button");
@@ -310,10 +313,28 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center" side='top' onMouseOver={() => console.log('mouse is over!')} onMouseLeave={() => console.log("mouse is not over!")}>
-                                <div className="relative rounded-lg size-full overflow-hidden px-4">
-                                    <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-xl size-full" />
-                                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />
+                            <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center group" side='top' onMouseOver={() => console.log('mouse is over!')} onMouseLeave={() => console.log("mouse is not over!")}>
+                                <div className="relative rounded-lg size-full overflow-hidden">
+                                    <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
+                                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />
+                                    <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-90 opacity-0 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
+                                        <div className="rounded-full flex justify-center items-center w-full relative">
+                                            <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>
+                                                Synced
+                                            </div>
+                                            <div onClick={() => setIsSynced(false)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", isSynced && "cursor-pointer")}>
+                                                Normal
+                                            </div>
+                                        </div>
+                                        <motion.span
+                                            className="absolute top-0 bg-primary mix-blend-difference w-1/2 h-full"
+                                            animate={{
+                                                left: isSynced ? "0%" : "50%",
+                                            }}
+                                            transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
+                                            style={{ borderRadius: 9999 }}
+                                        />
+                                    </div>
                                 </div>
                             </PopoverContent>
                         </Popover>

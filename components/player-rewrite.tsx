@@ -1,20 +1,18 @@
 "use client"
 
 import Image from "next/image";
-import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
+import { BookOpenText, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { Label } from "./ui/label";
 import VolumeSlider from "./songControlsSubcomponents/volumeSlider";
 import { muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
-import Link from "next/link";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer as Drawer2 } from 'vaul';
 import {
@@ -22,6 +20,7 @@ import {
     DrawerContent,
     DrawerTrigger,
 } from "@/components/ui/drawer"
+import BasicPageStuff from "./basicPageStuff";
 
 type KeyboardThing = {
     letter: any;
@@ -301,14 +300,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
 
     return (
         <>
-            <Toaster position="top-center" />
-            <div className='fixed top-2 left-2'>
-                <Link href="/">
-                    <Button className="rounded-full" size='icon' variant='ghost'>
-                        <ChevronLeft />
-                    </Button>
-                </Link>
-            </div>
+            <BasicPageStuff />
 
             <div className="flex justify-center items-center align-center md:m-4 mt-8 md:mt-4 overflow-y-auto mr-1">
                 <div className="flex flex-col gap-2 md:border md:border-muted p-5 rounded-xl overflow-y-auto">

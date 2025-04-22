@@ -5,19 +5,14 @@ import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { EllipsisVertical, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
 import { cn, lyricsDelay } from "@/lib/utils";
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
-import ShareSong from "../shareSong";
 import { Button } from "../ui/button";
-import { DialogHeader } from "../ui/dialog";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { Marquee } from "@/components/magicui/marquee";
 import { toast } from "sonner";
-import image from "next/image";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
-import { SongControlsSmall } from "./songControlsSmall";
 import Lyrics from "./lyrics";
 
 interface miniPlayerInterface {
@@ -86,7 +81,7 @@ export const MiniPlayer = ({
         <ScrollArea className="w-full h-full flex flex-col justify-center items-center">
             <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center`}>
                 <div className="flex flex-col gap-4 mt-0">
-                    <div className="flex flex-col relative items-center" onClick={() => setShowLyrics(true)}>
+                    <div className="flex flex-col relative items-center" style={{clipPath: 'inset(0 round 1em)'}} onClick={() => setShowLyrics(true)}>
                         <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
                             <div className="relative w-full h-full">
                                 {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
@@ -110,8 +105,9 @@ export const MiniPlayer = ({
                                                         </Button>
                                                     </DrawerTrigger>
                                                     <DrawerContent className="max-h-full h-full">
-                                                        <div className="overflow-hidden bg-secondary rounded-xl relative" style={{margin: '1em', height: '100%'}}>
-                                                            <div className="">
+                                                        <div className="bg-secondary rounded-xl relative scroll-smooth" style={{ margin: '1em', height: '100%' }}>
+                                                            <div className="relative rounded-xl overflow-hidden">
+                                                                <Image src={albumCover} alt={albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
                                                                 {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
                                                             </div>
                                                         </div>

@@ -4,10 +4,9 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 
 ## Goals
 
-### Missing albums
+### Added albums (checked) and missing albums (unchecked)
 - [x] Bad Bitch Playbook
-- [ ] Cruel Winter
-- [x] DONDA 2
+- [x] Donda 2
 - [ ] DONDA: WITH CHILD
 - [ ] God's Country
 - [x] Good Ass Job
@@ -17,15 +16,18 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [ ] Swish
 - [ ] Turbografx 16
 - [ ] VULTURES 3
-- [ ] War
-- [ ] Watch The Throne 2
+- [ ] WAR
 - [ ] YEBU
 - [x] Yeezus II
 - [x] Yandhi
-- [ ] ~~WAVES~~
-- [ ] ~~Wolves~~
+- [ ] Waves
 - [ ] So Help Me God
 - [ ] Thank God For Drugs
+
+### Albums that will not be added (this list can change over time!)
+- [ ] ~~Cruel Winter~~
+- [ ] ~~Watch The Throne 2~~
+- [ ] ~~Wolves~~
 
 ### UI
 - [x] Music player
@@ -37,5 +39,4 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [x] Sort albums by latest or oldest
 - [x] Backend for explanation of albums
 - [ ] Full interface for creating custom albums
-- [ ] Transitions and animations for everything
 - [x] Better white theme

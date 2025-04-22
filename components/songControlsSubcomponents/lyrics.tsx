@@ -33,7 +33,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
         loadLyrics();
     }, [songVal, id]);
 
-    const lrcContainerStyle = {
+    const lrcContainerStyle:React.CSSProperties = {
         height: imageSize === 280 ? '100%' : '500px',
         margin: '0.2em',
         flex: 1,
@@ -48,7 +48,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
     );
 
     return (
-        <div className={cn('rounded-lg p-2 relative overflow-hidden', imageSize === 260 ? 'min-h-[300px] max-h-[500px]' : 'h-full')}>
+        <div className={cn('rounded-lg p-2 relative', imageSize === 260 ? 'min-h-[300px] max-h-[500px]' : 'h-full')}>
             {!isSynced ?
                 <Lrc
                     className='lrc scroll-smooth'
@@ -60,11 +60,13 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
                     recoverAutoScrollInterval={2500}
                 />
                 :
-                LyricFile.map((line, index) => (
-                    <div key={index} className={cn("whitespace-pre-wrap text-white", imageSize === 280 && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
-                        {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
-                    </div>
-                ))
+                <div className="overflow-y-auto scroll-smooth pb-16 px-5" style={lrcContainerStyle}>
+                    {LyricFile.map((line, index) => (
+                        <div key={index} className={cn("whitespace-pre-wrap text-white", imageSize === 280 && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
+                            {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
+                        </div>
+                    ))}
+                </div>
             }
 
         </div>

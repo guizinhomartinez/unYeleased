@@ -228,7 +228,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
         return (
             <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                 <Link href={entry.link} className="cursor-pointer max-w-24">
-                    <Image src={`${entry.image}`} alt="Album cover" width={120} height={120} className="rounded-xl shadow-md" priority={true} />
+                    <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={120} height={120} className="rounded-xl shadow-md" priority={true} />
                 </Link>
                 <div className="flex flex-col gap-3">
                     <div className="items-start justify-start w-full">
