@@ -22,6 +22,7 @@ export interface songControlsInterface {
     albumName?: string;
     appearBar: boolean;
     setAppearBar: any;
+    isLoading: boolean;
 }
 
 export const SongControls = ({
@@ -39,7 +40,8 @@ export const SongControls = ({
     id,
     albumName,
     appearBar,
-    setAppearBar
+    setAppearBar,
+    isLoading
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
 
@@ -113,6 +115,7 @@ export const SongControls = ({
                         id={id}
                         appearBar={appearBar}
                         setAppearBar={setAppearBar}
+                        isLoading={isLoading}
                     />
                 </div>
             ) : (
@@ -138,6 +141,7 @@ export const SongControls = ({
                                     id={id}
                                     appearBar={appearBar}
                                     setAppearBar={setAppearBar}
+                                    isLoading={isLoading}
                                 />
                             </div>
                         </DrawerTrigger>
@@ -155,8 +159,8 @@ export const SongControls = ({
                                 volumeVal={volumeVal}
                                 setVolumeVal={setVolumeVal}
                                 id={id}
+                                isLoading={isLoading}
                             />
-                            {/* <Button className="w-fit mx-auto m-12 opacity-0">My balls</Button> */}
                         </DrawerContent>
                     </Drawer>
                 </div>

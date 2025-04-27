@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { songControlsInterface } from "../songControls";
 import Image from 'next/image'
 import { Button } from "../ui/button";
-import { ArrowBigUp, ChevronDown, Command, EllipsisVertical, KeyboardIcon, MicVocal, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
+import { ArrowBigUp, ChevronDown, Command, EllipsisVertical, KeyboardIcon, LoaderCircleIcon, MicVocal, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { cn, lyricsDelay } from "@/lib/utils";
@@ -38,7 +38,8 @@ export const DefaultSongControls = ({
     handleSkipSong,
     appearBar,
     setAppearBar,
-    id
+    id,
+    isLoading
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
@@ -227,22 +228,22 @@ export const DefaultSongControls = ({
                         </Button>
                         <Button
                             size="icon"
-                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             variant="ghost"
                             onClick={() => handleSkipSong(true)}
                         >
                             <SkipBack />
                         </Button>
                         <Button
-                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                         >
-                            {!isPlaying ? <Play /> : <Pause />}
+                            {!isLoading ? !isPlaying ? <Play /> : <Pause /> : <LoaderCircleIcon className="animate-spin" />}
                         </Button>
                         <Button
                             size="icon"
-                            className={`p-5 rounded-full ${songVal !== "" ? "" : "opacity-50 cursor-not-allowed"}`}
+                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             variant="ghost"
                             onClick={() => handleSkipSong(false)}
                         >
@@ -258,7 +259,7 @@ export const DefaultSongControls = ({
                         </Button>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(currentTimeVal)}</div>
+                        <div className="text-sm text-muted-foreground/80 w-12 text-right">{formatTime(songRef.current ? songRef.current.currentTime : 0)}</div>
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
                         <div className="text-sm text-muted-foreground/80 select-none cursor-pointer w-12" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songRef.current ? songRef.current.duration : 0, songTimeType, currentTimeVal)}</div>
                     </div>
@@ -313,7 +314,7 @@ export const DefaultSongControls = ({
                                     <MicVocal />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center group" side='top' onMouseOver={() => console.log('mouse is over!')} onMouseLeave={() => console.log("mouse is not over!")}>
+                            <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center group" side='top'>
                                 <div className="relative rounded-lg size-full overflow-hidden">
                                     <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
                                     <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />

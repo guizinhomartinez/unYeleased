@@ -7,7 +7,7 @@ import { useQueryState } from "nuqs";
 import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
-import { Song } from '@/lib/utils';
+import { capitalizeFirstLetter, Song } from '@/lib/utils';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -32,6 +32,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [fullscreen, setFullscreen] = useState<boolean>(false);
   const [newPageLayout, setNewPageLayout] = useState<Number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -69,15 +70,22 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [id]);
 
   useEffect(() => {
+    document.title = `${albumName || capitalizeFirstLetter(id)} | UnYeleased`;
+  }, [albumName]);
+
+  useEffect(() => {
     const audioPrefix = `/song-files/songs/${id}/`;
     const audioFileType = '.m4a';
 
     if (playingSong) {
       try {
+        setIsLoading(true);
         songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
         songRef.current.loop = (repeatAlbum === 2 && true);
+        songRef.current.addEventListener("canplaythrough", () => setIsLoading(false));
       } catch (e) {
         console.log(e);
+        setIsLoading(false);
       }
     }
   }, [playingSong, id]);
@@ -145,11 +153,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   function endedSongFunction(newIndex: number) {
     const setupNextSong = (songIndex: number, play: boolean = true) => {
+      if (songRef.current) {
+        if (Math.round(songRef.current.currentTime) >= 5 && skipDirection === true) {
+          songRef.current.currentTime = 0;
+          return;
+        }
+      }
       setCurrentSongIndex(songIndex);
       setPlayingSong(songs[songIndex].title);
       setSongCreator(songs[songIndex].artist);
       setIsPlaying(play);
     }
+
     const repeatSong = () => {
       if (songRef.current) {
         songRef.current.currentTime = 0;
@@ -232,6 +247,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         repeatAlbum={repeatAlbum}
         setRepeatAlbum={setRepeatAlbum}
         credits={credits}
+        isLoading={isLoading}
       />
     )
   } else {
@@ -263,6 +279,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         repeatAlbum={repeatAlbum}
         setRepeatAlbum={setRepeatAlbum}
         credits={credits}
+        isLoading={isLoading}
       />
     );
   }

@@ -38,12 +38,13 @@ import { Switch } from "./ui/switch";
 import Link from "next/link";
 import { Label } from "./ui/label";
 
-export default function SettingsPage() {
+export default function SettingsPage({ mobile }: { mobile: boolean }) {
     const { setTheme, theme } = useTheme();
 
     return (
         <div className="flex flex-col gap-4">
-            <p className="font-semibold text-xl">Settings</p>
+            <p className={cn("font-semibold text-xl", mobile && "text-center mt-4 -mb-2")}>Settings</p>
+            {mobile && <div className="w-full h-[2px] bg-muted" />}
             <Tabs defaultValue="appearence" orientation="vertical" className="flex-row rounded-full h-full">
                 <TabsList className="flex-col justify-start rounded-xl bg-primary-foreground">
                     <TabsTrigger value="appearence" title="appearence" className="py-3 inline-flex gap-2 justify-start rounded-xl">

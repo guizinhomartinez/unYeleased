@@ -8,7 +8,7 @@ import { Drawer as Drawer2 } from 'vaul';
 import { Separator } from "./ui/separator";
 import { AlbumExplanation } from "./albumExplanation";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { AlbumExplanationInterface, albumPage, cn, Song } from "@/lib/utils";
+import { AlbumExplanationInterface, albumPage, capitalizeFirstLetter, cn, Song } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
@@ -42,9 +42,9 @@ export default function AlbumPage(
         handleSkipSong,
         repeatAlbum,
         setRepeatAlbum,
-        credits
+        credits,
+        isLoading
     }: albumPage) {
-    const capitalizeFirstLetter = (val: string) => String(val).charAt(0).toUpperCase() + String(val).slice(1);
     return (
         <div>
             <BasicPageStuff />
@@ -140,6 +140,7 @@ export default function AlbumPage(
                     albumName={albumName}
                     appearBar={appearBar}
                     setAppearBar={setAppearBar}
+                    isLoading={isLoading}
                 />
             </div>
         </div>

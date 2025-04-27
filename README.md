@@ -1,6 +1,6 @@
 # UnYeleased
 
-This repo is for the source code of UnYeleased. The purpose of it is for you to be able to access all of Ye's unreleased catalog without the hasle of searching for it in different websites and Youtube Playlists. This is currently in VERY early alpha, so don't expect everything to be here right now.
+This repo is for the source code of UnYeleased. The purpose of it is for you to be able to access all of Ye's unreleased catalog without the hasle of searching for it in different websites and Youtube Playlists. This is currently in early alpha, so don't expect everything to be here right now.
 
 ## Goals
 
@@ -40,3 +40,4 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [x] Backend for explanation of albums
 - [ ] Full interface for creating custom albums
 - [x] Better white theme
+- [ ] Scrolling text when song name or credits are too long

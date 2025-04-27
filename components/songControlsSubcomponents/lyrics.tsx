@@ -42,7 +42,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
 
     const lineRenderer = useCallback(
         ({ active, line: { content } }: { active: boolean; line: LrcLine }) => (
-            <p className={cn('text-2xl mb-3 z-10 select-none transition-all duration-500 font-semibold text-center', active ? 'text-primary/95 scale-100' : 'text-primary/10 scale-95 blur-[2px]')}>{content}</p>
+            <p className={cn('text-2xl mb-3 z-10 select-none transition-all duration-500 font-semibold text-center', active ? 'text-white/95 scale-100' : 'text-white/10 scale-95 blur-[2px]')}>{content}</p>
         ),
         []
     );

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { useIsMobile } from "@/hooks/use-mobile"
 import SettingsPage from "./settingsPage"
+import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer"
 
 const navigationStuff = [
     {
@@ -51,17 +52,33 @@ export default function Navbar({ className }: { className?: string }) {
                     ))}
                 </div>
                 <div className="flex gap-2">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button className="rounded-full" variant='outline'>
-                                <Settings />
-                                Settings
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="h-max gap-0 m-0">
-                            <SettingsPage />
-                        </DialogContent>
-                    </Dialog>
+                    {!useIsMobile() ?
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="rounded-full" variant='outline'>
+                                    <Settings />
+                                    Settings
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="h-max gap-0 m-0">
+                                <SettingsPage mobile={useIsMobile()} />
+                            </DialogContent>
+                        </Dialog>
+                        :
+                        <Drawer>
+                            <DrawerTrigger asChild>
+                                <Button className="rounded-full" variant='outline'>
+                                    <Settings />
+                                    Settings
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent className="rounded-t-3xl max-h-full bg-background">
+                                <div className="px-3 pb-4">
+                                    <SettingsPage mobile={useIsMobile()} />
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
+                    }
                     <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank">
                         <Button variant='outline' className="rounded-full">
                             <Github />

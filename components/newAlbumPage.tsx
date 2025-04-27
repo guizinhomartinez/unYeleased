@@ -43,14 +43,15 @@ export default function NewAlbumPage(
         setVolumeVal,
         songCreator,
         volumeVal,
-        year
+        year,
+        isLoading
     }: albumPage) {
     return (
         <div>
             <BasicPageStuff />
             <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
                 <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
-                    <div className="sticky top-5 flex flex-col gap-2">
+                    <div className="relative flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !useIsMobile() ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
                             <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none z-10" />
                             <div className="flex gap-2 flex-col items-center justify-center">
@@ -134,6 +135,7 @@ export default function NewAlbumPage(
                     albumName={albumName}
                     appearBar={appearBar}
                     setAppearBar={setAppearBar}
+                    isLoading={isLoading}
                 />
             </div>
         </div>

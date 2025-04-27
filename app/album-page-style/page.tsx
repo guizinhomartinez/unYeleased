@@ -25,23 +25,29 @@ export default function AlbumPageStyle() {
 
 function ActualAlbumPageStyle() {
     const [styleOption, setStyleOption] = useState<Number>(0);
+    const [isLoaded, setIsLoaded] = useState(false);
     const [hidePane, setHidePane] = useState<Boolean>(false);
+
+    useEffect(() => {
+        document.title = `Choose your style | UnYeleased`;
+    }, []);
 
     useEffect(() => {
         const storedStyle = localStorage.getItem("album-page-style");
         if (storedStyle !== null) {
             setStyleOption(Number(storedStyle));
         }
+        setIsLoaded(true);
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("album-page-style", String(styleOption));
+        isLoaded && localStorage.setItem("album-page-style", String(styleOption));
     }, [styleOption]);
 
     return (
         <div className="flex flex-col md:flex-row w-full h-full overflow-hidden">
             <div className="md:w-[60%] max-h-[80vh]">
-                <div className='p-2 md:p-6 max-h-screen overflow-y-auto'>
+                <div className='p-2 md:p-6 max-h-screen overflow-y-auto relative'>
                     <AnimatePresence>
                         {styleOption === 0 ?
                             <NormalStyle />
@@ -53,14 +59,14 @@ function ActualAlbumPageStyle() {
                 </div>
             </div>
             <div className={cn("md:w-[40%] h-full relative md:overflow-hidden")} onClick={() => setHidePane(!hidePane)}>
-                <div className="p-6 md:border-l-2 md:border-l-muted h-fit md:h-screen rounded-t-2xl md:rounded-none bg-primary-foreground md:bg-transparent shadow-xl">
+                <div className="p-6 border-t-2 border-t-muted md:border-t-transparent md:border-l-2 md:border-l-muted h-fit md:h-screen rounded-t-2xl md:rounded-none bg-primary-foreground md:bg-primary-foreground/25 shadow-xl">
                     <p className='font-semibold text-2xl'>Preferred style</p>
                     <div className='w-[150%] h-[2px] bg-muted -translate-x-6 mt-6' />
                     <div className="flex flex-col gap-4 mt-6 [&>div]:overflow-hidden justify-center items-center grow">
-                        <div className={cn('rounded-xl p-4 flex justify-center items-center select-none cursor-pointer w-full h-full transition-all border-2 duration-300', styleOption === 0 ? 'bg-secondary border-primary' : 'bg-primary-foreground/50')} onClick={() => setStyleOption(0)}>
+                        <div className={cn('rounded-xl p-4 flex justify-center items-center select-none cursor-pointer w-full h-full transition-all border-2 duration-300 bg-primary-foreground/50', styleOption === 0 && 'bg-secondary border-primary')} onClick={() => setStyleOption(0)}>
                             <p>Normal style</p>
                         </div>
-                        <div className={cn('rounded-xl p-4 flex justify-center items-center select-none cursor-pointer w-full h-full transition-all border-2 duration-300 gap-2', styleOption === 1 ? 'bg-secondary border-primary' : 'bg-primary-foreground/50')} onClick={() => setStyleOption(1)}>
+                        <div className={cn('rounded-xl p-4 flex justify-center items-center select-none cursor-pointer w-full h-full transition-all border-2 gap-2 duration-300 bg-primary-foreground/50', styleOption === 1 && 'bg-secondary border-primary')} onClick={() => setStyleOption(1)}>
                             <PaintbrushVertical />
                             <p>YT Music-like style</p>
                         </div>
@@ -81,7 +87,7 @@ function ActualAlbumPageStyle() {
                     </div>
                 </div>
             </div>
-            <BasicPageStuff />
+            <BasicPageStuff albumPageStyle={true} />
         </div>
     )
 }
@@ -109,7 +115,7 @@ function NormalStyle() {
 
     return (
         <motion.div initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }} className='mb-16 md:mb-0'>
-            <div className='-translate-x-[16px]'>
+            <div className='md:-translate-x-[16px]'>
                 <div className='flex flex-col md:flex-row gap-4 transition-all duration-300'>
                     <div className='flex-1'>
                         <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
@@ -174,7 +180,9 @@ function NormalStyle() {
 }
 
 function SecondStyleWIP() {
-    return <div>This show-off is currently a WIP, so just test it yourself by going to an album or something</div>
+    return (
+        !useIsMobile() ? <motion.div initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }} className='p-6 pt-20 text-center m-auto h-fit w-fit'>This show-off is currently in WIP, so just test it yourself by going to an album page</motion.div> : <div><SecondStyle /></div>
+    )
 }
 
 function SecondStyle() {
@@ -200,13 +208,13 @@ function SecondStyle() {
 
     return (
         <motion.div initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }} className='h-screen p-3'>
-            <div className='flex gap-4 flex-col md:flex-row'>
-                <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
+            <div className='flex gap-4 flex-col'>
+                <div className={'flex gap-y-2 flex-col items-center justify-start'}>
                     <div className="sticky top-5 flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !useIsMobile() ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
                             <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none z-10" />
                             <div className="flex gap-2 flex-col items-center justify-center">
-                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!useIsMobile() ? 260 : 320} height={!useIsMobile() ? 260 : 320} priority={true} className='md:mt-4 rounded-xl z-20' />
+                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!useIsMobile() ? 260 : 320} height={!useIsMobile() ? 260 : 320} priority={true} className='rounded-xl z-20' />
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold'>{albumName}</p>
                                     <p className='text-primary/60'>{albumCreator}</p>
@@ -219,9 +227,9 @@ function SecondStyle() {
                         </div>
                     </div>
                 </div>
-                {useIsMobile() && <div className="my-2 h-px w-full bg-muted" />}
-                <div className="flex flex-col gap-2 w-full h-full">
-                    <div className='flex gap-4 justify-between items-center md:items-end w-full'>
+                <div className="my-2 h-px w-full bg-muted" />
+                <div className="flex flex-col gap-2 w-full h-full mb-16">
+                    <div className='flex gap-4 justify-between items-center w-full'>
                         <p className="font-semibold text-3xl">Tracklist</p>
                         <div className="inline-flex gap-2">
 

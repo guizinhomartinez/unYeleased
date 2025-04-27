@@ -34,6 +34,7 @@ export interface albumPage {
   repeatAlbum: number;
   setRepeatAlbum: any;
   credits: string;
+  isLoading: boolean;
 }
 
 export interface AlbumExplanationInterface {
@@ -50,3 +51,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const lyricsDelay = 1002; // might tweak this value a little bit
+
+export const capitalizeFirstLetter = (val: string) => String(val).charAt(0).toUpperCase() + String(val).slice(1);
