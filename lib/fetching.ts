@@ -11,13 +11,8 @@ export async function fetchAlbumSongs(id: string) {
 }
 
 export async function fetchAlbumInfo(id: string) {
-  const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/explanation/albumExplanation.mdx`);
+  const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`);
   return response.text();
-}
-
-export async function fetchAlbumCredits(id: string) {
-    const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/credits/credits.json`);
-    return response.json();
 }
 
 // testing home fetching

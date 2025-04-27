@@ -26,7 +26,6 @@ import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatePresence, motion } from "motion/react";
 import { fetchHomeInfo } from "@/lib/fetching";
 import { Switch } from "@/components/ui/switch";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
@@ -128,6 +127,27 @@ export default function Page() {
                 <div className="mt-12 h-full">
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <div className="flex gap-4 items-center">
+                            {/* <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button className="rounded-xl shadow-md">
+                                        <ArrowDownUp />
+                                        Sort by...
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56" align="start">
+                                    <DropdownMenuLabel>Year sorting</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuCheckboxItem checked={none} onCheckedChange={setNone} onChange={() => setSearchQuery('')}>
+                                        None
+                                    </DropdownMenuCheckboxItem>
+                                    <DropdownMenuCheckboxItem checked={show2025} onCheckedChange={setShow2025} onChange={() => setSearchQuery('2025')}>
+                                        2025
+                                    </DropdownMenuCheckboxItem>
+                                    <DropdownMenuCheckboxItem checked={show2024} onCheckedChange={setShow2024} onChange={() => setSearchQuery('2024')}>
+                                        2024
+                                    </DropdownMenuCheckboxItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu> */}
                             <div>
                                 <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">
                                     <Switch
@@ -176,17 +196,15 @@ export default function Page() {
 const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
     if (isGrid) {
         return (
-            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut", delay: 0.2 }}>
                 <Link href={entry.link} className="cursor-pointer">
                     <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
                 </Link>
-                <div className="flex flex-col justify-center items-center w-full gap-4">
-                    <div className="flex flex-col justify-center items-center w-full">
-                        <Link href={entry.link} className="cursor-pointer">
-                            <p className="font-semibold text-start hover:underline">{entry.text}</p>
-                        </Link>
-                        <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
-                    </div>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <Link href={entry.link} className="cursor-pointer">
+                        <p className="font-semibold text-start hover:underline">{entry.text}</p>
+                    </Link>
+                    <p className="whitespace-pre-wrap text-left text-muted-foreground">{entry.creators}</p>
                     <Description entry={entry} />
                     <div className="flex gap-1 items-center justify-center">
                         {entry.tags.map((tag: string, index: number) => (
@@ -241,16 +259,23 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
 }
 
 const Description = ({ entry }: { entry: any }) => {
+    const [showDescription, setShowDescription] = useState<boolean>(false);
+
     return (
-        <Accordion type="single" collapsible className="bg-primary-foreground/80 rounded-lg w-[90%] border border-muted mx-4">
-            <AccordionItem value="description" className="border-none">
-                <AccordionTrigger className={cn("px-2 py-1 flex items-center hover:no-underline", entry.subtext === null && "cursor-not-allowed text-primary/50 text-sm font-normal")} disabled={entry.subtext === null}>
-                    {entry.subtext != null ? "Description" : "No Description"}
-                </AccordionTrigger>
-                <AccordionContent className="px-2 py-1 text-primary/50 text-sm">
-                    {entry.subtext}
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+        <div className={cn("text-start bg-primary-foreground/80 rounded-lg w-[90%] h-full border border-muted", 'my-4')}>
+            <button className={cn("flex flex-col px-2 py-1 justify-start overflow-hidden cursor-pointer select-none w-full", entry.subtext === null && "cursor-not-allowed")} onClick={() => setShowDescription(!showDescription)}>
+                <div className="flex justify-between items-center">
+                    <p className={cn("text-base", entry.subtext === null && "text-primary/50 text-sm font-normal")}>{entry.subtext != null ? "Description" : "No Description"}</p>
+                    <Button className={cn('duration-300 p-px bg-transparent border-none m-0 w-fit h-fit hover:bg-transparent', showDescription && 'rotate-180', entry.subtext === null && "hidden")} disabled={entry.subtext === null} size='icon' variant='outline'>
+                        <ChevronDown size='16' />
+                    </Button>
+                </div>
+                {entry.subtext != null &&
+                    <p className={cn("whitespace-pre-wrap text-left text-primary/50 text-sm overflow-hidden transition-[max-height] duration-300 max-h-0", showDescription && 'max-h-40 transition-[max-height] duration-300')}>
+                        {entry.subtext}
+                    </p>
+                }
+            </button>
+        </div>
     )
 }

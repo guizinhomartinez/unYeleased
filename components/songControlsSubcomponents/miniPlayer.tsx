@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { EllipsisVertical, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
@@ -14,9 +14,6 @@ import { Marquee } from "@/components/magicui/marquee";
 import { toast } from "sonner";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
 import Lyrics from "./lyrics";
-import { motion } from "motion/react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Drawer as Drawer2 } from "vaul"
 
 interface miniPlayerInterface {
     albumCover: string;
@@ -31,17 +28,6 @@ interface miniPlayerInterface {
     repeat: number;
     setRepeat: any;
     id: string;
-}
-
-interface FullscreenButtonInterface {
-    albumCover: string;
-    isSynced: boolean;
-    setIsSynced: any;
-    showLyrics: boolean;
-    currentTimeVal: number;
-    id: string;
-    songVal: string;
-    songRef: any;
 }
 
 export const MiniPlayer = ({
@@ -62,21 +48,8 @@ export const MiniPlayer = ({
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
     const [showLyrics, setShowLyrics] = useState<boolean>(false);
-    const [isSynced, setIsSynced] = useState(true);
-    const [tutorialNumber, setTutorialNumber] = useState<Number>(0);
-    const [isLoaded, setIsLoaded] = useState(false);
 
-    useEffect(() => {
-        const storedTutorialNumber = localStorage.getItem("tutorial-number");
-        if (storedTutorialNumber !== null) {
-            setTutorialNumber(Number(storedTutorialNumber));
-        }
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        isLoaded && localStorage.setItem("tutorial-number", String(tutorialNumber));
-    }, [tutorialNumber, isLoaded]);
+    // console.log(songVal);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -106,49 +79,72 @@ export const MiniPlayer = ({
 
     return (
         <ScrollArea className="w-full h-full flex flex-col justify-center items-center">
-            <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center'>
-                <div className="flex flex-col gap-4 mt-0 rounded-2xl">
-                    <TooltipProvider>
-                        <Tooltip open={tutorialNumber === 0} defaultOpen={tutorialNumber === 0} delayDuration={5000}>
-                            <TooltipTrigger asChild>
-                                <div className="flex flex-col relative items-center rounded-2xl overflow-hidden" onClick={() => { setShowLyrics(true); setTutorialNumber(1); }}>
-                                    <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
-                                        <div className="relative w-full h-full">
-                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
-                                            <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
-                                                <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
-                                                    <X size='14' />
-                                                </div>
-                                                {/* <FullscreenButton
-                                                    albumCover={albumCover}
-                                                    isSynced={isSynced}
-                                                    setIsSynced={setIsSynced}
-                                                    showLyrics={showLyrics}
-                                                    currentTimeVal={currentTimeVal}
-                                                    id={id}
-                                                    songVal={songVal}
-                                                    songRef={songRef}
-                                                /> */}
-                                            </div>
-                                        </div>
+            <div className={`p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center`}>
+                <div className="flex flex-col gap-4 mt-0">
+                    <div className="flex flex-col relative items-center" style={{clipPath: 'inset(0 round 1em)'}} onClick={() => setShowLyrics(true)}>
+                        <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-500 absolute inset-0 overflow-hidden rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
+                            <div className="relative w-full h-full">
+                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
+                                <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
+                                    <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
+                                        <X size='14' />
                                     </div>
-                                    <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none w-full" />
+                                    <Drawer>
+                                        <DrawerTrigger asChild>
+                                            <div>
+                                                <EllipsisVertical className="rotate-90" size='16' />
+                                            </div>
+                                        </DrawerTrigger>
+                                        <DrawerContent className="max-h-[100%] rounded-xl">
+                                            <div className="p-8 w-full flex flex-col gap-2">
+                                                <Drawer>
+                                                    <DrawerTrigger asChild>
+                                                        <Button className="rounded-full" variant='secondary' disabled={!songRef.current}>
+                                                            <Maximize2Icon />
+                                                            Fullscreen
+                                                        </Button>
+                                                    </DrawerTrigger>
+                                                    <DrawerContent className="max-h-full h-full">
+                                                        <div className="bg-secondary rounded-xl relative scroll-smooth" style={{ margin: '1em', height: '100%' }}>
+                                                            <div className="relative rounded-xl overflow-hidden">
+                                                                <Image src={albumCover} alt={albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
+                                                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
+                                                            </div>
+                                                        </div>
+                                                    </DrawerContent>
+                                                </Drawer>
+                                            </div>
+                                        </DrawerContent>
+                                    </Drawer>
                                 </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom" className="rounded-full" showArrow>
-                                <p>Tap on the album cover to see the song's lyrics</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                            </div>
+                        </div>
+                        <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none w-full" />
+                    </div>
                     <div className="flex gap-2 mt-2">
                         <div className="flex flex-col overflow-hidden flex-1 gap-1">
+                            {/* <AutoMarquee text={songVal} /> */}
                             <p className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none">
                                 {songVal || "No Track Found"}
                             </p>
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                         </div>
                         <div className="items-center flex gap-2">
-                            <MoreOptionsMenu songRef={songRef} />
+                            <Drawer>
+                                <DrawerTrigger asChild>
+                                    <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
+                                        <EllipsisVertical size='24' />
+                                    </Button>
+                                </DrawerTrigger>
+                                <DrawerContent className="max-h-[100%] rounded-xl">
+                                    <div className="p-8 w-full flex flex-col gap-2">
+                                        <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
+                                            <Share />
+                                            Share
+                                        </Button>
+                                    </div>
+                                </DrawerContent>
+                            </Drawer>
                         </div>
                     </div>
                 </div>
@@ -217,81 +213,6 @@ export const MiniPlayer = ({
         </ScrollArea>
     );
 };
-
-const MoreOptionsMenu = ({ songRef }: { songRef: any }) => {
-    return (
-        <Drawer>
-            <DrawerTrigger asChild>
-                <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
-                    <EllipsisVertical size='24' />
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent className="max-h-[100%]" showGrabThing={false}>
-                <div className="p-4 w-full flex flex-col gap-2">
-                    <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
-                        <Share />
-                        Share
-                    </Button>
-                </div>
-            </DrawerContent>
-        </Drawer>
-    )
-}
-
-const FullscreenButton = ({ albumCover, isSynced, setIsSynced, showLyrics, currentTimeVal, id, songVal, songRef }: FullscreenButtonInterface) => {
-    return (
-        <Drawer>
-            <DrawerTrigger asChild>
-                <div>
-                    <EllipsisVertical className="rotate-90" size='16' />
-                </div>
-            </DrawerTrigger>
-            <DrawerContent className="max-h-[100%] rounded-xl">
-                <div className="p-8 w-full flex flex-col gap-2">
-                    <Drawer>
-                        <DrawerTrigger asChild>
-                            <Button className="rounded-full" variant='secondary' disabled={!songRef.current}>
-                                <Maximize2Icon />
-                                Fullscreen
-                            </Button>
-                        </DrawerTrigger>
-                        <DrawerContent className="h-full overflow-hidden p-4 pt-6 flex justify-center group">
-                            {/* <div className="rounded-xl relative scroll-smooth overflow-y-auto h-fit">
-                                <div className="relative rounded-xl group h-fit">
-                                    <Image src={albumCover} alt={albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                                    <div className="mt-10">
-                                        {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />}
-                                    </div>
-                                    <div className="fixed flex justify-center items-center top-12 left-1/2 -translate-x-1/2 rounded-full opacity-50 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
-                                        <div className="rounded-full flex justify-center items-center w-full relative">
-                                            <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>
-                                                Synced
-                                            </div>
-                                            <div onClick={() => setIsSynced(false)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", isSynced && "cursor-pointer")}>
-                                                Normal
-                                            </div>
-                                        </div>
-                                        <motion.span
-                                            className="absolute top-0 bg-primary mix-blend-difference w-1/2 h-full"
-                                            animate={{
-                                                left: isSynced ? "0%" : "50%",
-                                            }}
-                                            transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
-                                            style={{ borderRadius: 9999 }}
-                                        />
-                                    </div>
-                                </div>
-                            </div> */}
-                            <div className="size-full border border-muted rounded-xl scroll-smooth">
-                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />}
-                            </div>
-                        </DrawerContent>
-                    </Drawer>
-                </div>
-            </DrawerContent>
-        </Drawer>
-    )
-}
 
 const AutoMarquee = ({ text, }: { text: string }) => {
     const [isOverflowing, setIsOverflowing] = useState(false);

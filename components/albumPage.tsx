@@ -13,10 +13,6 @@ import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { useState } from "react";
-
-const snapPoints = ['300px', 1];
 
 export default function AlbumPage(
     {
@@ -98,35 +94,7 @@ export default function AlbumPage(
                         </div>
                     </div>
 
-                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50 flex flex-col gap-2'>
-                        <div className="inline-flex grow items-center text-primary/50">
-                            <p className="">
-                                Credits to{" "}
-                                {credits.map((element, index) => (
-                                    <span key={index}>
-                                        {element.name} for the {element.type}
-                                        {index === credits.length - 2 ? " & " : index < credits.length - 2 ? ", " : ""}
-                                    </span>
-                                ))}
-                            </p>
-                        </div>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="rounded-lg w-fit" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogTitle>Sources</DialogTitle>
-                                <DialogDescription>All sources used for this album</DialogDescription>
-                                {credits.map((element, index) => (
-                                    <Link href={element.originalLink} key={index} target="_blank" className="w-full rounded-xl -mb-1">
-                                        <Button variant='secondary' className="w-full rounded-xl -mb-4">
-                                            {element.name}
-                                        </Button>
-                                    </Link>
-                                ))}
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
 
                     <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
                         <div className='flex items-center relative'>
@@ -179,10 +147,8 @@ export default function AlbumPage(
 }
 
 export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, fullscreen, setFullscreen, id, variant }: AlbumExplanationInterface) {
-    const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
-
     return (
-        <Drawer2.Root direction="right" >
+        <Drawer2.Root direction="right">
             <Drawer2.Trigger asChild>
                 <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
                     <BookOpenText />
@@ -192,7 +158,7 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, f
             <Drawer2.Portal>
                 <Drawer2.Overlay className="fixed inset-0 bg-black/40" />
                 <Drawer2.Content
-                    className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out", fullscreen ? "max-w-[97.5vw]" : "max-w-[35vw]")}
+                    className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out", fullscreen ? "max-w-[97.5vw]" : "max-w-[35%]")}
                     // The gap between the edge of the screen and the drawer2 is 8px in this case.
                     style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                 >
