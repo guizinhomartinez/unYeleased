@@ -6,6 +6,12 @@ export interface Song {
   artist: string;
 }
 
+export interface Credits {
+  name: string;
+  type: string;
+  originalLink: string;
+}
+
 export interface albumPage {
   albumName: string;
   albumCreator: string;
@@ -33,7 +39,7 @@ export interface albumPage {
   handleSkipSong: any;
   repeatAlbum: number;
   setRepeatAlbum: any;
-  credits: string;
+  credits: Credits[];
 }
 
 export interface AlbumExplanationInterface {

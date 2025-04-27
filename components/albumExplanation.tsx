@@ -92,7 +92,7 @@ function fetchAlbumStuff(id: string, setDynamicHeader: React.Dispatch<React.SetS
     useEffect(() => {
         const loadMdxComponent = () => {
             const Component = React.lazy(() =>
-                import(`@/public/song-files/albumInfo/${id.toLowerCase()}/albumExplanation.mdx`)
+                import(`@/public/song-files/albumInfo/${id.toLowerCase()}/explanation/albumExplanation.mdx`)
                     .then((mod) => ({ default: mod.default }))
                     .catch(() => ({ default: () => <p>Failed to load album explanation :C</p> }))
             );
@@ -102,7 +102,7 @@ function fetchAlbumStuff(id: string, setDynamicHeader: React.Dispatch<React.SetS
 
         const fetchSource = async () => {
             try {
-                let response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/source.txt`);
+                let response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/explanation/source.txt`);
 
                 if (!response.ok) {
                     response = await fetch(`../song-files/albumInfo/source.txt`);

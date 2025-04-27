@@ -4,10 +4,11 @@ import * as React from 'react'
 import { useEffect, useState, useRef, use } from 'react';
 import '@public/CSS/song-controls.css';
 import { useQueryState } from "nuqs";
-import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
+import { fetchAlbumCredits, fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
-import { Song } from '@/lib/utils';
+import { Credits, Song } from '@/lib/utils';
+import { NextSeo } from "next-seo";
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -19,7 +20,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
-  const [credits, setCredits] = useState("");
+  const [credits, setCredits] = useState<Credits[]>([]);
   const [imageSize, setImageSize] = useState(260);
   const [appearBar, setAppearBar] = useState(true);
   const [volumeVal, setVolumeVal] = useState<number>(100);
@@ -56,7 +57,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setYear(data.config[0].year);
       setAlbumName(data.config[0].albumName);
       setAlbumCreator(data.config[0].albumCreator);
-      setCredits(data.config[0].credits);
+    }
+
+    async function loadSongCredits() {
+      const data = await fetchAlbumCredits(id);
+      setCredits(data.credits);
+      console.log(data);
     }
 
     async function loadInfo() {
@@ -66,6 +72,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
     loadSongs();
     loadInfo();
+    loadSongCredits();
   }, [id]);
 
   useEffect(() => {
@@ -203,67 +210,52 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
 
-  if (newPageLayout === 1) {
-    return (
-      <NewAlbumPage
-        albumName={albumName}
-        albumCreator={albumCreator}
-        id={id} isPlaying={isPlaying}
-        showExplanation={showExplanation}
-        setShowExplanation={setShowExplanation}
-        fullscreen={fullscreen}
-        setFullscreen={setFullscreen}
-        songs={songs}
-        searchQuery={searchQuery}
-        playAlbum={playAlbum}
-        appearBar={appearBar}
-        currentSongIndex={currentSongIndex}
-        handleClickEvent={handleClickEvent}
-        setSearchQuery={setSearchQuery}
-        setAppearBar={setAppearBar}
-        year={year}
-        songRef={songRef}
-        playingSong={playingSong}
-        setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal}
-        setVolumeVal={setVolumeVal}
-        songCreator={songCreator}
-        handleSkipSong={handleSkipSong}
-        repeatAlbum={repeatAlbum}
-        setRepeatAlbum={setRepeatAlbum}
-        credits={credits}
-      />
-    )
-  } else {
-    return (
-      <AlbumPage
-        albumName={albumName}
-        albumCreator={albumCreator}
-        id={id} isPlaying={isPlaying}
-        showExplanation={showExplanation}
-        setShowExplanation={setShowExplanation}
-        fullscreen={fullscreen}
-        setFullscreen={setFullscreen}
-        songs={songs}
-        searchQuery={searchQuery}
-        playAlbum={playAlbum}
-        appearBar={appearBar}
-        currentSongIndex={currentSongIndex}
-        handleClickEvent={handleClickEvent}
-        setSearchQuery={setSearchQuery}
-        setAppearBar={setAppearBar}
-        year={year}
-        songRef={songRef}
-        playingSong={playingSong}
-        setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal}
-        setVolumeVal={setVolumeVal}
-        songCreator={songCreator}
-        handleSkipSong={handleSkipSong}
-        repeatAlbum={repeatAlbum}
-        setRepeatAlbum={setRepeatAlbum}
-        credits={credits}
-      />
-    );
+  const albumPageProps = {
+    albumName,
+    albumCreator,
+    id,
+    isPlaying,
+    showExplanation,
+    setShowExplanation,
+    fullscreen,
+    setFullscreen,
+    songs,
+    searchQuery,
+    playAlbum,
+    appearBar,
+    currentSongIndex,
+    handleClickEvent,
+    setSearchQuery,
+    setAppearBar,
+    year,
+    songRef,
+    playingSong,
+    setIsPlaying,
+    volumeVal,
+    setVolumeVal,
+    songCreator,
+    handleSkipSong,
+    repeatAlbum,
+    setRepeatAlbum,
+    credits,
+  };
+
+  function AlbumpageComponent() {
+    if (newPageLayout === 1) {
+      return (
+        <NewAlbumPage {...albumPageProps} />
+      )
+    } else {
+      return (
+        <AlbumPage {...albumPageProps} />
+      );
+    }
   }
+
+  return (
+    <>
+      {/* <NextSeo title='album' description='Album page' /> */}
+      <AlbumpageComponent />
+    </>
+  )
 }

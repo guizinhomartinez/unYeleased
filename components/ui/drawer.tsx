@@ -6,8 +6,12 @@ import { Drawer as DrawerPrimitive } from "vaul"
 import { cn } from "@/lib/utils"
 import { DialogTitle } from "./dialog"
 
+interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {
+  showGrabThing?: boolean;
+}
+
 const Drawer = ({
-  shouldScaleBackground = true,
+  shouldScaleBackground = false,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
@@ -37,12 +41,14 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DrawerContentProps
+>(({ className, children, showGrabThing, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content ref={ref} className={cn("fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl border bg-primary-foreground", className)} {...props}>
-      <div className="mx-auto mt-4 h-1.5 w-20 rounded-full bg-muted-foreground" />
+      {showGrabThing !== false &&
+        <div className="mx-auto mt-4 h-1.5 w-20 rounded-full bg-muted-foreground" />
+      }
       <DialogTitle />
       {children}
     </DrawerPrimitive.Content>

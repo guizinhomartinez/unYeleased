@@ -1,19 +1,14 @@
-import Link from "next/link";
-import { Toaster } from "./ui/sonner";
 import { Button } from "./ui/button";
-import { BookOpenText, ChevronLeft, Maximize2, Minimize2, Pause, Play, Share } from "lucide-react";
+import { Pause, Play, } from "lucide-react";
 import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Drawer as Drawer2 } from 'vaul';
-import { Separator } from "./ui/separator";
-import { AlbumExplanation } from "./albumExplanation";
-import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { albumPage, cn, Song } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
-import { Key } from "react";
 import { SongControls } from "./songControls";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPage";
 import BasicPageStuff from "./basicPageStuff";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
+import Link from "next/link";
 
 export default function NewAlbumPage(
     {
@@ -62,10 +57,38 @@ export default function NewAlbumPage(
                                 </div>
                             </div>
                         </div>
-                        <div className="p-4 rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full flex flex-col gap-2">
-                            <div className="text-primary/50">{credits}</div>
-                            <Button className="rounded-xl" variant="secondary" disabled>Original link(s)</Button>
-                        </div>
+                        {credits !== null &&
+                            <div className="p-4 rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full mx-auto flex flex-col gap-2">
+                                <div className="inline-flex grow items-center text-primary/50">
+                                    <p className="">
+                                        Credits to{" "}
+                                        {credits.map((element, index) => (
+                                            <span key={index}>
+                                                {element.name} for the {element.type}
+                                                {index === credits.length - 2 ? " & " : index < credits.length - 2 ? ", " : ""}
+                                            </span>
+                                        ))}
+                                    </p>
+                                </div>
+
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="rounded-xl" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogTitle>Sources</DialogTitle>
+                                        <DialogDescription>All sources used for this album</DialogDescription>
+                                        {credits.map((element, index) => (
+                                            <Link href={element.originalLink} key={index} target="_blank" className="w-full rounded-full -mb-1">
+                                                <Button variant='secondary' className="w-full rounded-full -mb-4">
+                                                    {element.name}
+                                                </Button>
+                                            </Link>
+                                        ))}
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                        }
                     </div>
                 </div>
                 {useIsMobile() && <div className="my-2 h-px w-full bg-muted" />}
@@ -99,7 +122,7 @@ export default function NewAlbumPage(
                         </div>
                     </div>
                     <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', appearBar ? 'mb-20' : '-mb-4')}>
-                        {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
+                    {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                             <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
                                 <div className='flex items-center gap-3 relative justify-center'>
                                     <div className='w-12 flex items-right justify-center'>
