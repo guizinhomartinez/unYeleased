@@ -8,6 +8,7 @@ import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
 import { capitalizeFirstLetter, Song } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -218,12 +219,19 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
 
+  useEffect(() => {
+    if (imageSize === 280) {
+      setAppearBar(playingSong !== "" ? true : false);
+    }
+  })
+
   if (newPageLayout === 1) {
     return (
       <NewAlbumPage
         albumName={albumName}
         albumCreator={albumCreator}
-        id={id} isPlaying={isPlaying}
+        id={id}
+        isPlaying={isPlaying}
         showExplanation={showExplanation}
         setShowExplanation={setShowExplanation}
         fullscreen={fullscreen}
@@ -255,7 +263,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <AlbumPage
         albumName={albumName}
         albumCreator={albumCreator}
-        id={id} isPlaying={isPlaying}
+        id={id}
+        isPlaying={isPlaying}
         showExplanation={showExplanation}
         setShowExplanation={setShowExplanation}
         fullscreen={fullscreen}

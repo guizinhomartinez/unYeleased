@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
 import { EllipsisVertical, LoaderCircleIcon, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
@@ -14,10 +14,7 @@ import { Marquee } from "@/components/magicui/marquee";
 import { toast } from "sonner";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
 import Lyrics from "./lyrics";
-import { motion } from "motion/react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Drawer as Drawer2 } from "vaul"
-import { Skeleton } from "../ui/skeleton";
 
 interface miniPlayerInterface {
     albumCover: string;
@@ -108,14 +105,14 @@ export const MiniPlayer = ({
     }, [handleSkipSong]);
 
     return (
-        <ScrollArea className="w-full h-full flex flex-col justify-center items-center">
+        <ScrollArea className="w-full h-full flex flex-col justify-center items-center overflow-x-hidden">
             <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center'>
                 <div className="flex flex-col gap-4 mt-0 rounded-2xl">
                     <TooltipProvider>
                         <Tooltip open={tutorialNumber === 0} defaultOpen={tutorialNumber === 0} delayDuration={5000}>
                             <TooltipTrigger asChild>
                                 <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(1); }}>
-                                    <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 overflow-hidden rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")} style={{clipPath: "inset(0 round 1em)"}}>
+                                    <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 overflow-hidden rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="relative w-full h-full">
                                             {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
                                             <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">

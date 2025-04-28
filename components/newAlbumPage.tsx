@@ -46,16 +46,17 @@ export default function NewAlbumPage(
         year,
         isLoading
     }: albumPage) {
+    const isMobile = useIsMobile();
     return (
-        <div>
+        <>
             <BasicPageStuff />
             <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
                 <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
                     <div className="relative flex flex-col gap-2">
-                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !useIsMobile() ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
+                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !isMobile ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
                             <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none z-10" />
                             <div className="flex gap-2 flex-col items-center justify-center">
-                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!useIsMobile() ? 260 : 320} height={!useIsMobile() ? 260 : 320} priority={true} className='md:mt-4 rounded-xl z-20' />
+                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!isMobile ? 260 : 320} height={!isMobile ? 260 : 320} priority={true} className='md:mt-4 rounded-xl z-20' />
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold text-center'>{albumName}</p>
                                     <p className='text-primary/60'>{albumCreator}</p>
@@ -69,43 +70,43 @@ export default function NewAlbumPage(
                         </div>
                     </div>
                 </div>
-                {useIsMobile() && <div className="my-2 h-px w-full bg-muted" />}
-                <div className="flex flex-col gap-2 w-full h-full">
+                {isMobile && <div className="my-2 h-px w-full bg-muted" />}
+                <div className="flex flex-col gap-3 w-full h-full">
                     <div className='flex gap-4 justify-between items-center md:items-end w-full'>
                         <p className="font-semibold text-2xl">Tracklist</p>
-                        <div className="inline-flex gap-2">
-                            {!useIsMobile() ?
-                                <DesktopAlbumExplanation
-                                    setShowExplanation={setShowExplanation}
-                                    showExplanation={showExplanation}
-                                    fullscreen={fullscreen}
-                                    setFullscreen={setFullscreen}
-                                    id={id}
-                                    variant={0}
-                                />
-                                :
-                                <MobileAlbumExplanation
-                                    setShowExplanation={setShowExplanation}
-                                    showExplanation={showExplanation}
-                                    id={id}
-                                    variant={0}
-                                />
-                            }
-                            <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => playAlbum()}>
-                                {!isPlaying ? <Play /> : <Pause />}
-                                <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
-                                    {!isPlaying ? String('Play') : String('')}
-                                </div>
-                            </Button>
+                        <div className="w-full relative flex justify-end">
+                            <div className="flex gap-2">
+                                <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => playAlbum()}>
+                                    {!isPlaying ? <Play /> : <Pause />}
+                                    <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
+                                        {!isPlaying ? String('Play') : String('')}
+                                    </div>
+                                </Button>
+                                {!isMobile ?
+                                    <DesktopAlbumExplanation
+                                        setShowExplanation={setShowExplanation}
+                                        showExplanation={showExplanation}
+                                        fullscreen={fullscreen}
+                                        setFullscreen={setFullscreen}
+                                        id={id}
+                                        variant={0}
+                                    />
+                                    :
+                                    <MobileAlbumExplanation
+                                        setShowExplanation={setShowExplanation}
+                                        showExplanation={showExplanation}
+                                        id={id}
+                                        variant={0}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                     <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', appearBar ? 'mb-20' : '-mb-4')}>
-                        {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
+                        {songs.map((element, index) => (
                             <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
                                 <div className='flex items-center gap-3 relative justify-center'>
                                     <div className='w-12 flex items-right justify-center'>
-                                        {/* 
-                                        // @ts-ignore */}
                                         <p className='w-2 text-right'>{index + 1}</p>
                                     </div>
                                 </div>
@@ -138,6 +139,6 @@ export default function NewAlbumPage(
                     isLoading={isLoading}
                 />
             </div>
-        </div>
+        </>
     )
 }

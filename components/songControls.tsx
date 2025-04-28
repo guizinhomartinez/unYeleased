@@ -123,9 +123,9 @@ export const SongControls = ({
                     <Drawer>
                         <DrawerTrigger asChild>
                             <div
-                                className={cn(`fixed bottom-1 rounded-2xl w-full max-w-[92vw]
+                                className={cn(`fixed bottom-0.5 rounded-2xl w-full max-w-[92vw]
                                     left-1/2 -translate-x-1/2 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondsary
-                                    flex items-center transition-all duration-500 overflow-hidden shadow-xl`, songRef.current ? 'translate-y-0' : 'translate-y-32')}>
+                                    flex items-center transition-all duration-500 overflow-hidden shadow-xl`, appearBar ? 'translate-y-0' : 'translate-y-32')}>
                                 <SongControlsSmall
                                     songRef={songRef}
                                     songVal={songVal}
