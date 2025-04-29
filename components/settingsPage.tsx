@@ -153,13 +153,13 @@ const LyricsSection = () => {
             <div className="flex justify-between items-center border-b border-b-muted">
                 <Label className="text-base text-muted-foreground">Synced lyrics alignment</Label>
                 <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setLyricsAlignment("left")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setLyricsAlignment("left")}>
                         <AlignLeft size='18' />
                     </div>
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setLyricsAlignment("center")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setLyricsAlignment("center")}>
                         <AlignCenter size='18' />
                     </div>
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setLyricsAlignment("right")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setLyricsAlignment("right")}>
                         <AlignRight size='18' />
                     </div>
                 </div>
@@ -167,13 +167,13 @@ const LyricsSection = () => {
             <div className="flex justify-between items-center border-b border-b-muted">
                 <Label className="text-base text-muted-foreground">Normal lyrics alignment</Label>
                 <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setNormalLyricsAlignment("left")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment) === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setNormalLyricsAlignment("left")}>
                         <AlignLeft size='18' />
                     </div>
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setNormalLyricsAlignment("center")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment) === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setNormalLyricsAlignment("center")}>
                         <AlignCenter size='18' />
                     </div>
-                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setNormalLyricsAlignment("right")}>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment) === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setNormalLyricsAlignment("right")}>
                         <AlignRight size='18' />
                     </div>
                 </div>
