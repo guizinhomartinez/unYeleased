@@ -8,11 +8,13 @@ import { Drawer as Drawer2 } from 'vaul';
 import { Separator } from "./ui/separator";
 import { AlbumExplanation } from "./albumExplanation";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { AlbumExplanationInterface, albumPage, capitalizeFirstLetter, cn, Song } from "@/lib/utils";
+import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
+import { AlbumExplanationInterface, albumPage, SongInterface } from "@/lib/interfaces";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export default function AlbumPage(
     {
@@ -104,7 +106,7 @@ export default function AlbumPage(
                             </div>
                         </div>
                         <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden border-2 border-secondary', appearBar ? 'mb-24' : '-mb-4')}>
-                            {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
+                            {songs.filter((op: SongInterface) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                                 <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
                                     <div className='flex items-center gap-3 relative justify-center'>
                                         {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
@@ -151,7 +153,7 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, f
     return (
         <Drawer2.Root direction="right">
             <Drawer2.Trigger asChild>
-                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
+                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)} title="Album explanation">
                     <BookOpenText />
                     {variant === 1 && "Album Explanation"}
                 </Button>
@@ -164,7 +166,7 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, f
                     style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                 >
                     <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
-                    <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
+                    <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
                         <div className="p-4 overflow-y-auto h-full">
                             <div className='pt-2'>
                                 <div className='flex items-center justify-between mx-auto gap-2'>
@@ -189,13 +191,22 @@ export function MobileAlbumExplanation({ setShowExplanation, showExplanation, id
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
-                    <BookOpenText />
-                    {variant === 1 && "Album Explanation"}
-                </Button>
+                <TooltipProvider>
+                    <Tooltip delayDuration={1000}>
+                        <TooltipTrigger asChild>
+                            <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
+                                <BookOpenText />
+                                {variant === 1 && "Album Explanation"}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent align="end" className="rounded-2xl" showArrow secondaryColor>
+                            <p>Album explanation</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DrawerTrigger>
-            <DrawerContent className={cn('h-[93vh] items-center')}>
-                <div className='overflow-y-auto h-full w-full'>
+            <DrawerContent className={cn('h-[95vh] items-center rounded-t-3xl')}>
+                <div className='overflow-y-auto size-full'>
                     <AlbumExplanation id={id} />
                 </div>
             </DrawerContent>

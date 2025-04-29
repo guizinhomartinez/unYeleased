@@ -1,17 +1,10 @@
-import { Badge } from "@/components/ui/badge"
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { BoxIcon, Brush, HouseIcon, KeyRound, Laptop2Icon, LoaderCircleIcon, Moon, PaintbrushVertical, PanelsTopLeftIcon, Sun } from "lucide-react"
+import { Brush, KeyRound, Laptop2Icon, LoaderCircleIcon, Moon, PaintbrushVertical, Sun, AlignLeft, AlignCenter, AlignRight, RotateCcw, Settings } from "lucide-react"
 import { useRouter } from "next/navigation";
 import {
     Form,
@@ -29,18 +22,15 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { useTheme } from "next-themes";
-import { Switch } from "./ui/switch";
 import Link from "next/link";
 import { Label } from "./ui/label";
 
 export default function SettingsPage({ mobile }: { mobile: boolean }) {
-    const { setTheme, theme } = useTheme();
-
     return (
         <div className="flex flex-col gap-4">
             <p className={cn("font-semibold text-xl", mobile && "text-center mt-4 -mb-2")}>Settings</p>
@@ -50,41 +40,144 @@ export default function SettingsPage({ mobile }: { mobile: boolean }) {
                     <TabsTrigger value="appearence" title="appearence" className="py-3 inline-flex gap-2 justify-start rounded-xl">
                         <Brush size={16} aria-hidden="true" />
                     </TabsTrigger>
+                    <TabsTrigger value="tweaks" title="Tweaks" className="py-3 inline-flex gap-2 justify-start rounded-xl">
+                        <Settings size={16} aria-hidden="true" />
+                    </TabsTrigger>
                     <TabsTrigger value="password" title="Password" className="py-3 rounded-xl inline-flex gap-2 justify-start w-full">
                         <KeyRound size={16} aria-hidden="true" />
                     </TabsTrigger>
                 </TabsList>
-                <div className="grow justify-center items-center rounded-xl border border-muted text-start">
+                <div className="grow rounded-xl border border-muted text-start">
                     <TabsContent value="appearence" className="gap-2 px-4 py-3 text-xs flex flex-col justify-center">
-                        <div className="flex justify-between items-center border-b border-b-muted py-2">
-                            <Label className="text-base text-muted-foreground">Theme</Label>
-                            <div className="flex gap-0.5 items-center justify-between rounded-full border border-muted">
-                                <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "light" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setTheme("light")}>
-                                    <Sun size='18' />
-                                </div>
-                                <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "dark" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setTheme("dark")}>
-                                    <Moon size='18' />
-                                </div>
-                                <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "system" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setTheme("system")}>
-                                    <Laptop2Icon size='18' />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="items-center border-b border-b-muted py-2 flex justify-between">
-                            <Label className="text-base text-muted-foreground">Album page style</Label>
-                            <Link href="/album-page-style" className="">
-                                <Button variant='secondary' className="rounded-full">
-                                    <PaintbrushVertical />
-                                    Change style
-                                </Button>
-                            </Link>
-                        </div>
+                        <UISection />
+                        <LyricsSection />
                     </TabsContent>
                     <TabsContent value="password" className="p-4 flex justify-center items-center">
                         <Password />
                     </TabsContent>
+                    <TabsContent value="tweaks" className="gap-2 px-4 py-3 text-xs flex flex-col grow">
+                        <TutorialSection />
+                    </TabsContent>
                 </div>
             </Tabs>
+        </div>
+    )
+}
+
+const UISection = () => {
+    const { setTheme, theme } = useTheme();
+
+    return (
+        <>
+            <div className="flex flex-col gap-2">
+                <p className="text-xl font-semibold">General appearance</p>
+                <div className="flex justify-between items-center border-b border-b-muted py-2">
+                    <Label className="text-base text-muted-foreground">Theme</Label>
+                    <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
+                        <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "light" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setTheme("light")}>
+                            <Sun size='18' />
+                        </div>
+                        <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "dark" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setTheme("dark")}>
+                            <Moon size='18' />
+                        </div>
+                        <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", theme === "system" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setTheme("system")}>
+                            <Laptop2Icon size='18' />
+                        </div>
+                    </div>
+                </div>
+                <div className="items-center border-b border-b-muted flex justify-between">
+                    <Label className="text-base text-muted-foreground">Album page style</Label>
+                    <Link href="/album-page-style" className="">
+                        <Button variant='secondary' className="rounded-full" size="icon">
+                            <PaintbrushVertical />
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        </>
+    )
+}
+
+const TutorialSection = () => {
+    const [tutorialNumber, setTutorialNumber] = useState<number>(0);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const storedTutorialNumber = localStorage.getItem("tutorial-number");
+        if (storedTutorialNumber !== null) {
+            setTutorialNumber(Number(storedTutorialNumber));
+        }
+        setIsLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        isLoaded && localStorage.setItem("tutorial-number", String(tutorialNumber));
+    }, [tutorialNumber, isLoaded]);
+
+    return (
+        <div className="flex flex-col gap-2">
+            <p className="text-xl font-semibold">Tutorial</p>
+            <div className="flex justify-between items-center py-2">
+                <Label className="text-base text-muted-foreground">Reset tutorial</Label>
+                <Button size="icon" variant='destructive' className="rounded-full" onClick={() => setTutorialNumber(0)}>
+                    <RotateCcw />
+                </Button>
+            </div>
+        </div>
+    )
+}
+
+const LyricsSection = () => {
+    const [lyricsAlignment, setLyricsAlignment] = useState("center");
+    const [normalLyricsAlignment, setNormalLyricsAlignment] = useState("left");
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const storedStyle = localStorage.getItem("lyrics-alignment");
+        const storedNormalStyle = localStorage.getItem("normal-lyrics-alignment");
+        storedStyle !== null && setLyricsAlignment(lyricsAlignment);
+        storedNormalStyle !== null && setNormalLyricsAlignment(normalLyricsAlignment);
+        setIsLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (isLoaded) {
+            localStorage.setItem("lyrics-alignment", lyricsAlignment);
+            localStorage.setItem("normal-lyrics-alignment", normalLyricsAlignment);
+        }
+    }, [lyricsAlignment]);
+
+    return (
+        <div className="flex flex-col gap-2 mt-4">
+            <p className="text-xl font-semibold">Lyrics customization</p>
+            <div className="flex justify-between items-center border-b border-b-muted">
+                <Label className="text-base text-muted-foreground">Synced lyrics alignment</Label>
+                <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setLyricsAlignment("left")}>
+                        <AlignLeft size='18' />
+                    </div>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setLyricsAlignment("center")}>
+                        <AlignCenter size='18' />
+                    </div>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("lyrics-alignment") === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setLyricsAlignment("right")}>
+                        <AlignRight size='18' />
+                    </div>
+                </div>
+            </div>
+            <div className="flex justify-between items-center border-b border-b-muted">
+                <Label className="text-base text-muted-foreground">Normal lyrics alignment</Label>
+                <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setNormalLyricsAlignment("left")}>
+                        <AlignLeft size='18' />
+                    </div>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "center" && "bg-secondary hover:bg-secondary")} aria-label='dark' onClick={() => setNormalLyricsAlignment("center")}>
+                        <AlignCenter size='18' />
+                    </div>
+                    <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", localStorage.getItem("normal-lyrics-alignment") === "right" && "bg-secondary hover:bg-secondary")} aria-label='system' onClick={() => setNormalLyricsAlignment("right")}>
+                        <AlignRight size='18' />
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

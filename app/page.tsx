@@ -1,20 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown, ArrowDownUp, ChevronDown, Disc, Grid2X2, Info, List, Loader2, MoonIcon, SunIcon, X } from "lucide-react"
+import { ArrowDown, Grid2X2, Info, List, Loader2, X } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image'
 import { Separator } from "@/components/ui/separator";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -27,31 +19,16 @@ import { AnimatePresence, motion } from "motion/react";
 import { fetchHomeInfo } from "@/lib/fetching";
 import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HomepageInterface, AlbumsInterface } from "@/lib/interfaces";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
-
-interface Song {
-    link: string;
-    image: string;
-    text: string;
-    tags: string[];
-    subtext: string;
-    creators: string;
-}
-
-interface Albums {
-    entry: any;
-    isGrid: boolean;
-    setSearchQuery: any;
-    index: any;
-}
 
 export default function Page() {
     const [show2025, setShow2025] = useState(true);
     const [show2024, setShow2024] = useState(false);
     const [none, setNone] = useState(false);
     const [isGrid, setIsGrid] = useState(true);
-    const [entries, setEntries] = useState<Song[]>([]);
+    const [entries, setEntries] = useState<HomepageInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     const { resolvedTheme } = useTheme();
@@ -161,7 +138,7 @@ export default function Page() {
                         </React.Suspense>
                     </div>
                     <div className={cn(isGrid && "grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
-                        {entries.filter((op: Song) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()) || (op.tags[2] && op.tags[2].toLowerCase().includes(searchQuery.toLowerCase())))).sort((a: Song, b: Song) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
+                        {entries.filter((op: HomepageInterface) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()) || (op.tags[2] && op.tags[2].toLowerCase().includes(searchQuery.toLowerCase())))).sort((a: HomepageInterface, b: HomepageInterface) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
                             <AnimatePresence>
                                 <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
                             </AnimatePresence>
@@ -173,7 +150,7 @@ export default function Page() {
     );
 }
 
-const Albums = ({ entry, isGrid, setSearchQuery, index }: Albums) => {
+const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
     if (isGrid) {
         return (
             <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { songControlsInterface } from "../songControls";
 import Image from 'next/image'
 import { Button } from "../ui/button";
 import { ArrowBigUp, ChevronDown, Command, EllipsisVertical, KeyboardIcon, LoaderCircleIcon, MicVocal, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Repeat, Repeat1, Share, Shuffle, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeOff, VolumeX } from "lucide-react";
@@ -14,8 +13,8 @@ import VolumeSlider from "./volumeSlider";
 import '@public/CSS/song-controls.css';
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { toast } from "sonner"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { motion } from "motion/react";
+import { songControlsInterface } from "@/lib/interfaces";
 
 type KeyboardThing = {
     letter: any;

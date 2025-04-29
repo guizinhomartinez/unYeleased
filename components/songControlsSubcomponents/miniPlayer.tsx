@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { EllipsisVertical, LoaderCircleIcon, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
+import { EllipsisVertical, Info, LoaderCircleIcon, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
@@ -15,33 +15,7 @@ import { toast } from "sonner";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
 import Lyrics from "./lyrics";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-
-interface miniPlayerInterface {
-    albumCover: string;
-    songRef: any;
-    songVal: string;
-    isPlaying: boolean;
-    setIsPlaying: any;
-    volumeVal: number;
-    setVolumeVal: any;
-    songCreator: string;
-    handleSkipSong: any;
-    repeat: number;
-    setRepeat: any;
-    id: string;
-    isLoading: boolean;
-}
-
-interface FullscreenButtonInterface {
-    albumCover: string;
-    isSynced: boolean;
-    setIsSynced: any;
-    showLyrics: boolean;
-    currentTimeVal: number;
-    id: string;
-    songVal: string;
-    songRef: any;
-}
+import { FullscreenButtonInterface, MiniPlayerInterface } from "@/lib/interfaces";
 
 export const MiniPlayer = ({
     albumCover,
@@ -57,13 +31,13 @@ export const MiniPlayer = ({
     volumeVal,
     id,
     isLoading
-}: miniPlayerInterface) => {
+}: MiniPlayerInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
     const [showLyrics, setShowLyrics] = useState<boolean>(false);
     const [isSynced, setIsSynced] = useState(true);
-    const [tutorialNumber, setTutorialNumber] = useState<Number>(0);
+    const [tutorialNumber, setTutorialNumber] = useState<number>(0);
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -109,13 +83,13 @@ export const MiniPlayer = ({
             <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center'>
                 <div className="flex flex-col gap-4 mt-0 rounded-2xl">
                     <TooltipProvider>
-                        <Tooltip open={tutorialNumber === 0} defaultOpen={tutorialNumber === 0} delayDuration={5000}>
+                        <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>
-                                <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(1); }}>
-                                    <div className={cn("h-full w-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 overflow-hidden rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
-                                        <div className="relative w-full h-full">
+                                <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
+                                    <div className={cn("size-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
+                                        <div className="size-full px-2">
                                             {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
-                                            <div className="absolute top-1 right-1 inline-flex items-center gap-3 px-2 py-1 rounded-full bg-primary-foreground">
+                                            <div className="absolute top-1 right-1 inline-flex items-center gap-3 p-1 rounded-full bg-primary-foreground">
                                                 <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                                     <X size='14' />
                                                 </div>
@@ -133,14 +107,23 @@ export const MiniPlayer = ({
                                         </div>
                                     </div>
                                     <Image src={albumCover} alt="Album Cover" width={345} height={340} priority={true} className="rounded-xl shadow-lg pointer-events-none w-full" />
-                                    <div className={cn(isLoading && "h-full w-full bg-black/60 backdrop-blur-xl dark:bg-black/80 absolute inset-0 overflow-hidden rounded-2xl animate-pulse")}>
-                                        <div className="size-full relative animate-spin">
-                                            {isLoading && <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />}
+                                    {(isLoading || isLoading === null) &&
+                                        <div className={cn("size-full absolute inset-0 overflow-hidden bg-black/60 backdrop-blur-xl dark:bg-black/80", isLoading && "animate-pulse")}>
+                                            <div className={cn("size-full relative", isLoading && "animate-spin")}>
+                                                {isLoading && <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />}
+                                                {isLoading === null &&
+                                                    <div className="flex flex-col gap-1 items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-2">
+                                                        <Info className="text-red-500" size='28' />
+                                                        <p className="text-center text-white/60">An error ocurred while loading the song</p>
+                                                        <p className="text-center text-white/60">Please try again later</p>
+                                                    </div>
+                                                }
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 </div>
                             </TooltipTrigger>
-                            <TooltipContent side="bottom" className="rounded-xl" showArrow>
+                            <TooltipContent side="bottom" className="rounded-2xl" showArrow>
                                 <p>Tap on the album cover to see the song's lyrics</p>
                             </TooltipContent>
                         </Tooltip>
@@ -185,9 +168,10 @@ export const MiniPlayer = ({
                                 <SkipBack size='32' />
                             </Button>
                             <Button
-                                className={cn('p-6 rounded-full focus:bg-primary', (!songVal || songVal === "" || isLoading) && 'opacity-50 cursor-not-allowed')}
+                                className={cn('p-6 rounded-full focus:bg-primary', (!songVal || songVal === "" || isLoading || isLoading === null) && 'opacity-50 cursor-not-allowed')}
                                 size="icon"
-                                onClick={() => { !isLoading && setIsPlaying(songVal !== "" && !isPlaying) }}
+                                onClick={() => { (!isLoading || isLoading === null) && setIsPlaying(songVal !== "" && !isPlaying) }}
+                                disabled={isLoading === null}
                             >
                                 {!isLoading ? !isPlaying ? <Play size='32' /> : <Pause size='32' /> : <LoaderCircleIcon className="animate-spin" size='32' />}
                             </Button>

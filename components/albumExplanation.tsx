@@ -54,7 +54,7 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
 
 function LoadingComponent() {
     return (
-        <div className="h-full w-full bg-transparent">
+        <div className="size-full bg-transparent">
             <LoaderCircleIcon className="-ms-1 animate-spin absolute top-1/2 left-1/2" aria-hidden="true" />
         </div>
     )

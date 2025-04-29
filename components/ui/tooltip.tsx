@@ -38,10 +38,12 @@ function TooltipContent({
   className,
   sideOffset = 4,
   showArrow = false,
+  secondaryColor = false,
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content> & {
-  showArrow?: boolean
+  showArrow?: boolean,
+  secondaryColor?: boolean
 }) {
   return (
     <TooltipPrimitive.Portal>
@@ -49,14 +51,15 @@ function TooltipContent({
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         className={cn(
-          "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-w-70 rounded-md [&>div]:border px-3 py-1.5 text-sm",
+          "text-popover-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-w-70 rounded-md [&>div]:border px-3 py-1.5 text-sm",
+          !secondaryColor ? "bg-popover" : "bg-secondary",
           className
         )}
         {...props}
       >
         {children}
         {showArrow && (
-          <TooltipPrimitive.Arrow className="fill-popover" />
+          <TooltipPrimitive.Arrow className={cn(!secondaryColor ? "fill-popover" : "fill-secondary")} />
         )}
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { BookOpenText, ChevronLeft, Divide, Dot, ExternalLink, Pause, Play, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { HandleTransition } from "@/components/handleTransition";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
@@ -12,6 +11,7 @@ import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { DropdownMenuShortcut } from "./ui/dropdown-menu";
 import { ScrollArea } from "./ui/scroll-area";
+import Link from "next/link";
 
 export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem ipsum", linkToGenius = "https://genius.com/Ty-dolla-sign-wheels-fall-off-lyrics", lyrics = "banana" }: { image: string; text: string; subtext: string; songVal: string, backgroundLore: string, linkToGenius: string, lyrics: string }) {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -163,9 +163,9 @@ export function Player({ image, text, subtext, songVal, backgroundLore = "Lorem 
             <div className="flex flex-1 flex-grow">
                 <div className="flex flex-col justify-center items-center gap-0 md:gap-16 flex-1">
                     <div className="absolute top-2 left-2 inline-flex items-center">
-                        <HandleTransition href="/">
+                        <Link href="/">
                             <Button className="" size='icon' variant='ghost'><ChevronLeft /></Button>
-                        </HandleTransition>
+                        </Link>
                         <Dot className={`mr-1 ${!showKeybind && 'hidden'}`} />
                         <div className={`flex gap-2 items-center ${!showKeybind && 'hidden'}`}>
                             <div className="w-7 h-7 rounded-md border border-primary/15 bg-secondary text-sm shadow-md flex justify-center items-center">

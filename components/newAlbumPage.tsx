@@ -8,12 +8,13 @@ import { Drawer as Drawer2 } from 'vaul';
 import { Separator } from "./ui/separator";
 import { AlbumExplanation } from "./albumExplanation";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { albumPage, cn, Song } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { Key } from "react";
 import { SongControls } from "./songControls";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPage";
 import BasicPageStuff from "./basicPageStuff";
+import { albumPage } from "@/lib/interfaces";
 
 export default function NewAlbumPage(
     {
@@ -49,7 +50,7 @@ export default function NewAlbumPage(
     const isMobile = useIsMobile();
     return (
         <>
-            <BasicPageStuff />
+            <BasicPageStuff albumPageStyle={isMobile} />
             <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
                 <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
                     <div className="relative flex flex-col gap-2">
@@ -110,7 +111,7 @@ export default function NewAlbumPage(
                                         <p className='w-2 text-right'>{index + 1}</p>
                                     </div>
                                 </div>
-                                <div className='select-none whitespace-pre overflow-hidden w-3/4 shadowed-song-name'>
+                                <div className='select-none whitespace-pre overflow-hidden w-[80%] shadowed-song-name'>
                                     <div className="text-sm font-semibold max-w-52">{element.title || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
                                     <div className='text-sm text-muted-foreground'>{element.artist || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
                                 </div>

@@ -1,12 +1,7 @@
 import { VolumeOff, Volume2, Volume1, VolumeX, Volume, Repeat, Repeat1 } from "lucide-react";
 import { RefObject } from "react";
 import { LucideProps } from "lucide-react";
-
-interface AudioControls {
-    repeat?: number;
-    songRef: any;
-    volumeVal: number;
-}
+import { AudioControls } from "./interfaces";
 
 export const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);

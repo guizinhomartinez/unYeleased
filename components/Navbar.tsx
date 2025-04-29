@@ -72,7 +72,7 @@ export default function Navbar({ className }: { className?: string }) {
                                     Settings
                                 </Button>
                             </DrawerTrigger>
-                            <DrawerContent className="rounded-t-3xl max-h-full bg-background">
+                            <DrawerContent className="rounded-t-3xl mb-5 max-h-full bg-background" showGrabThing={false}>
                                 <div className="px-3 pb-4">
                                     <SettingsPage mobile={useIsMobile()} />
                                 </div>

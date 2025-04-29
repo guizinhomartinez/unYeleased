@@ -1,0 +1,122 @@
+import { Dispatch, SetStateAction } from "react";
+
+// Songs stuff (their title and artist)
+export interface SongInterface {
+    title: string;
+    artist: string;
+}
+
+// Volume value and repeat value
+export interface AudioControls {
+    repeat?: number;
+    songRef: any;
+    volumeVal: number;
+}
+
+// Related to the mini player and the song controls (basically the same stuff just different interface for more flexibility)
+export interface songControlsInterface {
+    songRef: any;
+    songVal: string;
+    isPlaying: boolean;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
+    volumeVal: number;
+    setVolumeVal: any;
+    image: string;
+    songCreator: string;
+    handleSkipSong: (back: boolean) => void;
+    repeat: number;
+    setRepeat: Dispatch<SetStateAction<number>>;
+    id: string;
+    albumName?: string;
+    appearBar: boolean;
+    setAppearBar: any;
+    isLoading: boolean | null;
+    tutorialNumber?: number;
+}
+
+export interface MiniPlayerInterface {
+    albumCover: string;
+    songRef: any;
+    songVal: string;
+    isPlaying: boolean;
+    setIsPlaying: any;
+    volumeVal: number;
+    setVolumeVal: any;
+    songCreator: string;
+    handleSkipSong: any;
+    repeat: number;
+    setRepeat: any;
+    id: string;
+    isLoading: boolean | null;
+}
+
+// Fullscreen lyrics (rn it's deprecated)
+export interface FullscreenButtonInterface {
+    albumCover: string;
+    isSynced: boolean;
+    setIsSynced: any;
+    showLyrics: boolean;
+    currentTimeVal: number;
+    id: string;
+    songVal: string;
+    songRef: any;
+}
+
+// Homepage stuff
+export interface HomepageInterface {
+    link: string;
+    image: string;
+    text: string;
+    tags: string[];
+    subtext: string;
+    creators: string;
+}
+
+export interface AlbumsInterface {
+    entry: any;
+    isGrid: boolean;
+    setSearchQuery: any;
+    index: any;
+}
+
+// Everything related to the album pages
+export interface albumPage {
+    albumName: string;
+    albumCreator: string;
+    id: any;
+    isPlaying: boolean;
+    showExplanation: boolean;
+    setShowExplanation: any;
+    fullscreen: boolean;
+    setFullscreen: any;
+    songs: SongInterface[];
+    searchQuery: string;
+    setSearchQuery: any;
+    playAlbum: any;
+    appearBar: boolean;
+    setAppearBar: any;
+    currentSongIndex: number;
+    handleClickEvent: any;
+    year: number;
+    songRef: any;
+    playingSong: any;
+    setIsPlaying: any;
+    volumeVal: number;
+    setVolumeVal: any;
+    songCreator: string;
+    handleSkipSong: any;
+    repeatAlbum: number;
+    setRepeatAlbum: any;
+    credits: string;
+    isLoading: boolean | null;
+}
+
+// Stuff related to album explanations
+export interface AlbumExplanationInterface {
+    setShowExplanation: any;
+    showExplanation: boolean;
+    fullscreen?: boolean;
+    setFullscreen?: any;
+    id: string;
+    variant: number;
+}

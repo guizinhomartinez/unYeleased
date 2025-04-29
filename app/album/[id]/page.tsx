@@ -7,11 +7,12 @@ import { useQueryState } from "nuqs";
 import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
-import { capitalizeFirstLetter, Song } from '@/lib/utils';
+import { capitalizeFirstLetter } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { SongInterface, AlbumsInterface } from '@/lib/interfaces';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [songs, setSongs] = useState<SongInterface[]>([]);
   const [year, setYear] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const { id } = use(params);
@@ -33,7 +34,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [fullscreen, setFullscreen] = useState<boolean>(false);
   const [newPageLayout, setNewPageLayout] = useState<Number>(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean | null>(false);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -84,9 +85,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
         songRef.current.loop = (repeatAlbum === 2 && true);
         songRef.current.addEventListener("canplaythrough", () => setIsLoading(false));
+        songRef.current.addEventListener("error", () => setIsLoading(null));
       } catch (e) {
         console.log(e);
-        setIsLoading(false);
+        setIsLoading(null);
       }
     }
   }, [playingSong, id]);
@@ -118,7 +120,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   })
 
-  const handleClickEvent = (element: Song, index: number) => {
+  const handleClickEvent = (element: SongInterface, index: number) => {
     setPlayingSong(element.title);
     setIsPlaying(true);
     setSongCreator(element.artist);

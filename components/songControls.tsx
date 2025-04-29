@@ -5,25 +5,7 @@ import { SongControlsSmall } from "./songControlsSubcomponents/songControlsSmall
 import { DefaultSongControls } from "./songControlsSubcomponents/DefaultSongControls";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-
-export interface songControlsInterface {
-    songRef: any;
-    songVal: string;
-    isPlaying: boolean;
-    setIsPlaying: Dispatch<SetStateAction<boolean>>;
-    volumeVal: number;
-    setVolumeVal: any;
-    image: string;
-    songCreator: string;
-    handleSkipSong: (back: boolean) => void;
-    repeat: number;
-    setRepeat: Dispatch<SetStateAction<number>>;
-    id: string;
-    albumName?: string;
-    appearBar: boolean;
-    setAppearBar: any;
-    isLoading: boolean;
-}
+import { songControlsInterface } from "@/lib/interfaces";
 
 export const SongControls = ({
     songRef,
@@ -44,6 +26,20 @@ export const SongControls = ({
     isLoading
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
+    const [tutorialNumber, setTutorialNumber] = useState<number>(0);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const storedTutorialNumber = localStorage.getItem("tutorial-number");
+        if (storedTutorialNumber !== null) {
+            setTutorialNumber(Number(storedTutorialNumber));
+        }
+        setIsLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        isLoaded && localStorage.setItem("tutorial-number", String(tutorialNumber));
+    }, [tutorialNumber, isLoaded]);
 
     useEffect(() => {
         const song = songRef.current;
@@ -123,6 +119,7 @@ export const SongControls = ({
                     <Drawer>
                         <DrawerTrigger asChild>
                             <div
+                                onClick={() => setTutorialNumber((tutorialNumber === 0 || tutorialNumber === 1) ? 1 : 2)}
                                 className={cn(`fixed bottom-0.5 rounded-2xl w-full max-w-[92vw]
                                     left-1/2 -translate-x-1/2 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondsary
                                     flex items-center transition-all duration-500 overflow-hidden shadow-xl`, appearBar ? 'translate-y-0' : 'translate-y-32')}>
@@ -142,6 +139,7 @@ export const SongControls = ({
                                     appearBar={appearBar}
                                     setAppearBar={setAppearBar}
                                     isLoading={isLoading}
+                                    tutorialNumber={tutorialNumber}
                                 />
                             </div>
                         </DrawerTrigger>

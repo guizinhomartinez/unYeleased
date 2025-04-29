@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { fetchAlbumSongs } from '@/lib/fetching';
-import { cn, Song } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { BookOpenText, ChevronLeft, Dot, PaintbrushVertical, Pause, Play, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image'
@@ -14,6 +14,7 @@ import { Key, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import BasicPageStuff from '@/components/basicPageStuff';
+import { SongInterface } from '@/lib/interfaces';
 
 export default function AlbumPageStyle() {
     return (
@@ -94,7 +95,7 @@ function ActualAlbumPageStyle() {
 
 function NormalStyle() {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [songs, setSongs] = useState<Song[]>([]);
+    const [songs, setSongs] = useState<SongInterface[]>([]);
     const [currentSongIndex, setCurrentSongIndex] = useState(-1);
     const credits = "Credits to...";
     const id = "yandhi";
@@ -155,7 +156,7 @@ function NormalStyle() {
                                 </div>
                             </div>
                             <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden border-2 border-secondary', appearBar ? 'mb-24' : '-mb-4')}>
-                                {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
+                                {songs.filter((op: SongInterface) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                                     <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => setCurrentSongIndex(index)}>
                                         <div className='flex items-center gap-3 relative justify-center'>
                                             {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
@@ -187,7 +188,7 @@ function SecondStyleWIP() {
 
 function SecondStyle() {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [songs, setSongs] = useState<Song[]>([]);
+    const [songs, setSongs] = useState<SongInterface[]>([]);
     const [currentSongIndex, setCurrentSongIndex] = useState(-1);
     const credits = "Credits to...";
     const id = "yandhi";
@@ -242,7 +243,7 @@ function SecondStyle() {
                         </div>
                     </div>
                     <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', appearBar ? 'mb-20' : '-mb-4')}>
-                        {songs.filter((op: Song) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
+                        {songs.filter((op: SongInterface) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                             <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => setCurrentSongIndex(index)}>
                                 <div className='flex items-center gap-3 relative justify-center'>
                                     <div className='w-12 flex items-right justify-center'>

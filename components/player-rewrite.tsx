@@ -517,7 +517,7 @@ const PopoverMenu = ({
                             style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                         >
                             <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
-                            <div className="bg-primary-foreground h-full w-full grow flex flex-col rounded-[16px]">
+                            <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
                                 <div className="max-w-md mx-auto overflow-y-auto">
                                     <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} shouldShowClose={false} />
                                 </div>
