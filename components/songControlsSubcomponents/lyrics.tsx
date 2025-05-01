@@ -3,8 +3,10 @@ import { fetchAlbumLyrics } from '../../lib/fetching';
 import { cn } from '@/lib/utils';
 import { Lrc, LrcLine } from 'react-lrc';
 import '@/public/CSS/lyrics.css'
+import { LyricsInterface } from '@/lib/interfaces';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { currentTimeVal: number, id: string, songVal: string, isSynced?: boolean }) {
+export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, lyricsStr, setLyricsStr }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
     const [imageSize, setImageSize] = useState(260);
     const [lrcContent, setLrcContent] = useState("");
@@ -40,8 +42,15 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
     useEffect(() => {
         const loadLyrics = async () => {
             try {
+                if (lyricsStr && setLyricsStr) {
+                    setLyricsStr("");
+                }
                 const data = await fetchAlbumLyrics(id, songVal);
-                setLrcContent(data);
+                setLrcContent(data || "Unable to fetch the lyrics :C");
+                if (lyricsStr && setLyricsStr) {
+                    setLyricsStr(lrcContent);
+                }
+
                 const formattedData = data.split('\n').filter(line => line.trim() !== "");
                 setLyricFile(formattedData);
             } catch (e) {
@@ -52,7 +61,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
     }, [songVal, id]);
 
     const lrcContainerStyle: React.CSSProperties = {
-        height: imageSize === 280 ? '100%' : '500px',
+        height: !isFullscreenMode ? (useIsMobile() ? '100%' : '500px') : '85vh',
         margin: '0.2em',
         flex: 1,
         minHeight: 0,
@@ -65,10 +74,12 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
         ({ active, line: { content } }: { active: boolean; line: LrcLine }) => (
             <p
                 className={
-                    cn('text-2xl mb-3 z-10 select-none transition-all duration-500 font-semibold',
-                        `text-${localStorage.getItem("lyrics-alignment") || lyricsAlignment}`,
-                        isLeftAlignedText(active) && "translate-x-2.5", isRightAlignedText(active) && "-translate-x-2.5",
-                        active ? 'text-white/95 scale-100' : 'text-white/10 scale-95 blur-[2px]')}
+                    cn('z-10 select-none transition-all duration-500 font-semibold',
+                        !isFullscreenMode ? "text-2xl mb-3" : "text-4xl mb-8",
+                        !isFullscreenMode ? `text-${localStorage.getItem("lyrics-alignment") || lyricsAlignment}` : 'text-left',
+                        !isFullscreenMode && (isLeftAlignedText(active) && "translate-x-2.5", isRightAlignedText(active) && "-translate-x-2.5"),
+                        active ? 'text-white/95' : 'text-white/10 blur-[2px]',
+                        active ? (!isFullscreenMode && 'scale-90') : (!isFullscreenMode && 'scale-95'))}
             >
                 {content}
             </p>
@@ -77,14 +88,14 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced }: { curr
     );
 
     return (
-        <div className={cn('rounded-lg p-2 relative', imageSize === 260 ? 'min-h-[300px] max-h-[500px]' : 'h-full')}>
+        <div className={cn('rounded-lg p-2 relative', !useIsMobile() ? 'min-h-[300px] max-h-[500px]' : 'h-full', isFullscreenMode && "")}>
             {!isSynced ?
                 <Lrc
-                    className='lrc scroll-smooth'
+                    className={cn('lrc scroll-smooth lrc-shadow', isFullscreenMode && 'pt-7')}
                     lrc={lrcContent}
                     currentMillisecond={currentTimeVal}
                     lineRenderer={lineRenderer}
-                    verticalSpace
+                    verticalSpace={!isFullscreenMode}
                     style={lrcContainerStyle}
                     recoverAutoScrollInterval={2500}
                 />

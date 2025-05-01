@@ -1,7 +1,7 @@
 import { VolumeOff, Volume2, Volume1, VolumeX, Volume, Repeat, Repeat1 } from "lucide-react";
 import { RefObject } from "react";
 import { LucideProps } from "lucide-react";
-import { AudioControls } from "./interfaces";
+import { AudioSettingsInterface } from "./interfaces";
 
 export const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
@@ -34,7 +34,7 @@ export const muteSong = (songRef: any) => {
     songRef.current && (songRef.current.muted = !songRef.current.muted);
 }
 
-export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioControls & LucideProps) => {
+export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioSettingsInterface & LucideProps) => {
     if (songRef.current?.muted) {
         return <VolumeOff {...props} />;
     }
@@ -50,6 +50,6 @@ export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioControls & Luc
     }
 };
 
-export const RepeatIcon = ({ repeat, size }: { repeat: number, size?:string }) => {
+export const RepeatIcon = ({ repeat, size }: { repeat: number, size?:string | any }) => {
     return repeat === 2 ? <Repeat1 size={size} /> : <Repeat size={size} />;
 };

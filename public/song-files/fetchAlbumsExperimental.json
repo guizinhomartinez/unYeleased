@@ -114,17 +114,6 @@
             ],
             "link": "/album/yeezus-2",
             "creators": "Kanye West"
-        },
-        {
-            "image": "donda-2",
-            "text": "Donda 2",
-            "subtext": null,
-            "tags": [
-                "2022",
-                "Album"
-            ],
-            "link": "/album/donda-2",
-            "creators": "Kanye West"
         }
     ]
 }

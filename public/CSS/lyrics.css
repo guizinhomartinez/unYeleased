@@ -1,3 +1,7 @@
+:root {
+    --spice-sidebar: 24px;
+}
+
 .lrc {
     scrollbar-width: none;
 }
@@ -5,4 +9,9 @@
 .lrc::-webkit-scrollbar {
     width: 0;
     height: 0;
+}
+
+.lrc-shadow {
+    -webkit-mask-image: linear-gradient(180deg,transparent,#000 50px,#000 calc(100% - 50px),transparent);
+    mask-image: linear-gradient(180deg,transparent,#000 50px,#000 calc(100% - 50px),transparent);
 }

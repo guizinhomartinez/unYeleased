@@ -7,7 +7,7 @@ export interface SongInterface {
 }
 
 // Volume value and repeat value
-export interface AudioControls {
+export interface AudioSettingsInterface {
     repeat?: number;
     songRef: any;
     volumeVal: number;
@@ -32,6 +32,24 @@ export interface songControlsInterface {
     setAppearBar: any;
     isLoading: boolean | null;
     tutorialNumber?: number;
+    isFullscreenMode?: boolean;
+    setIsFullscreenMode?: any;
+    showLyricsFullscreen?: boolean;
+    setShowLyricsFullscreen?: any;
+}
+
+export interface isFullscreenModeInterface {
+    image: string;
+    currentTimeVal: number;
+    id: string;
+    songVal: string;
+    songCreator: string;
+    isFullscreenMode: boolean;
+    isPlaying: boolean;
+    setIsPlaying: any;
+    showLyricsFullscreen?: boolean;
+    setShowLyricsFullscreen?: any;
+    isLoading: boolean | null;
 }
 
 export interface MiniPlayerInterface {
@@ -80,7 +98,7 @@ export interface AlbumsInterface {
 }
 
 // Everything related to the album pages
-export interface albumPage {
+export interface AlbumPageInterface {
     albumName: string;
     albumCreator: string;
     id: any;
@@ -109,6 +127,10 @@ export interface albumPage {
     setRepeatAlbum: any;
     credits: string;
     isLoading: boolean | null;
+    isFullscreenMode?: boolean;
+    setIsFullscreenMode?: any;
+    showLyricsFullscreen?: boolean;
+    setShowLyricsFullscreen?: any;
 }
 
 // Stuff related to album explanations
@@ -119,4 +141,15 @@ export interface AlbumExplanationInterface {
     setFullscreen?: any;
     id: string;
     variant: number;
+}
+
+// Lyrics
+export interface LyricsInterface {
+    currentTimeVal: number;
+    id: string;
+    songVal: string;
+    isSynced?: boolean;
+    isFullscreenMode?: boolean;
+    lyricsStr?: string;
+    setLyricsStr?: any;
 }

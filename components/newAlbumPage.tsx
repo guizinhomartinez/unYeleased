@@ -1,20 +1,13 @@
-import Link from "next/link";
-import { Toaster } from "./ui/sonner";
 import { Button } from "./ui/button";
-import { BookOpenText, ChevronLeft, Maximize2, Minimize2, Pause, Play, Share } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Drawer as Drawer2 } from 'vaul';
-import { Separator } from "./ui/separator";
-import { AlbumExplanation } from "./albumExplanation";
-import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
-import { Key } from "react";
 import { SongControls } from "./songControls";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPage";
 import BasicPageStuff from "./basicPageStuff";
-import { albumPage } from "@/lib/interfaces";
+import { AlbumPageInterface } from "@/lib/interfaces";
 
 export default function NewAlbumPage(
     {
@@ -27,7 +20,6 @@ export default function NewAlbumPage(
         fullscreen,
         setFullscreen,
         songs,
-        searchQuery,
         playAlbum,
         appearBar,
         currentSongIndex,
@@ -40,14 +32,18 @@ export default function NewAlbumPage(
         setAppearBar,
         setIsPlaying,
         setRepeatAlbum,
-        setSearchQuery,
         setVolumeVal,
         songCreator,
         volumeVal,
         year,
-        isLoading
-    }: albumPage) {
+        isLoading,
+        isFullscreenMode,
+        setIsFullscreenMode,
+        showLyricsFullscreen,
+        setShowLyricsFullscreen
+    }: AlbumPageInterface) {
     const isMobile = useIsMobile();
+
     return (
         <>
             <BasicPageStuff albumPageStyle={isMobile} />
@@ -55,9 +51,9 @@ export default function NewAlbumPage(
                 <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
                     <div className="relative flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !isMobile ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
-                            <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none z-10" />
+                            <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
-                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!isMobile ? 260 : 320} height={!isMobile ? 260 : 320} priority={true} className='md:mt-4 rounded-xl z-20' />
+                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!isMobile ? 260 : 320} height={!isMobile ? 260 : 320} priority={true} className='md:mt-4 rounded-xl' />
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold text-center'>{albumName}</p>
                                     <p className='text-primary/60'>{albumCreator}</p>
@@ -112,8 +108,8 @@ export default function NewAlbumPage(
                                     </div>
                                 </div>
                                 <div className='select-none whitespace-pre overflow-hidden w-[80%] shadowed-song-name'>
-                                    <div className="text-sm font-semibold max-w-52">{element.title || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
-                                    <div className='text-sm text-muted-foreground'>{element.artist || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
+                                    <div className="text-sm font-semibold max-w-52">{element.title ? element.title : <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
+                                    <div className='text-sm text-muted-foreground'>{element.artist ? element.title : <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
                                 </div>
                             </div>
                         ))}
@@ -138,6 +134,10 @@ export default function NewAlbumPage(
                     appearBar={appearBar}
                     setAppearBar={setAppearBar}
                     isLoading={isLoading}
+                    isFullscreenMode={isFullscreenMode}
+                    setIsFullscreenMode={setIsFullscreenMode}
+                    showLyricsFullscreen={showLyricsFullscreen}
+                    setShowLyricsFullscreen={setShowLyricsFullscreen}
                 />
             </div>
         </>

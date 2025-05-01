@@ -35,6 +35,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [fullscreen, setFullscreen] = useState<boolean>(false);
   const [newPageLayout, setNewPageLayout] = useState<Number>(0);
   const [isLoading, setIsLoading] = useState<boolean | null>(false);
+  const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
+  const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -72,7 +74,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${albumName || capitalizeFirstLetter(id)} | UnYeleased`;
+    document.title = `${albumName || id} | UnYeleased`;
   }, [albumName]);
 
   useEffect(() => {
@@ -157,7 +159,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   function endedSongFunction(newIndex: number) {
     const setupNextSong = (songIndex: number, play: boolean = true) => {
       if (songRef.current) {
-        if (Math.round(songRef.current.currentTime) >= 5 && skipDirection === true) {
+        if (skipDirection && (Math.round(songRef.current.currentTime) >= 5 || currentSongIndex === 0)) {
           songRef.current.currentTime = 0;
           return;
         }
@@ -258,6 +260,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setRepeatAlbum={setRepeatAlbum}
         credits={credits}
         isLoading={isLoading}
+        isFullscreenMode={isFullscreenMode}
+        setIsFullscreenMode={setIsFullscreenMode}
+        showLyricsFullscreen={showLyricsFullscreen}
+        setShowLyricsFullscreen={setShowLyricsFullscreen}
       />
     )
   } else {
@@ -291,6 +297,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setRepeatAlbum={setRepeatAlbum}
         credits={credits}
         isLoading={isLoading}
+        isFullscreenMode={isFullscreenMode}
+        setIsFullscreenMode={setIsFullscreenMode}
+        showLyricsFullscreen={showLyricsFullscreen}
+        setShowLyricsFullscreen={setShowLyricsFullscreen}
       />
     );
   }

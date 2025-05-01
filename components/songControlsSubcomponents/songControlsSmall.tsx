@@ -58,7 +58,7 @@ export const SongControlsSmall = ({
                                         className="rounded-lg"
                                     />
                                     <div className="overflow-hidden">
-                                        <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis w-fit" id="track-name">
+                                        <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis max-w-[80%]" id="track-name">
                                             {songVal !== "" ? songVal : "No Track Found"}
                                         </div>
                                         <div className="text-sm text-muted-foreground" id="song-creator">

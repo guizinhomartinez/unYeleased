@@ -39,6 +39,7 @@ export const MiniPlayer = ({
     const [isSynced, setIsSynced] = useState(true);
     const [tutorialNumber, setTutorialNumber] = useState<number>(0);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [lyricsStr, setLyricsStr] = useState("");
 
     useEffect(() => {
         const storedTutorialNumber = localStorage.getItem("tutorial-number");
@@ -86,9 +87,9 @@ export const MiniPlayer = ({
                         <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>
                                 <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
-                                    <div className={cn("size-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
+                                    <div className={cn("size-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute shadow-xl inset-0 rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="size-full px-2">
-                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
+                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} lyricsStr={lyricsStr} setLyricsStr={setLyricsStr} />}
                                             <div className="absolute top-1 right-1 inline-flex items-center gap-3 p-1 rounded-full bg-primary-foreground">
                                                 <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                                     <X size='14' />

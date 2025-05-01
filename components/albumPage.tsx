@@ -13,7 +13,7 @@ import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
-import { AlbumExplanationInterface, albumPage, SongInterface } from "@/lib/interfaces";
+import { AlbumExplanationInterface, AlbumPageInterface, SongInterface } from "@/lib/interfaces";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 export default function AlbumPage(
@@ -45,8 +45,12 @@ export default function AlbumPage(
         repeatAlbum,
         setRepeatAlbum,
         credits,
-        isLoading
-    }: albumPage) {
+        isLoading,
+        isFullscreenMode,
+        setIsFullscreenMode,
+        showLyricsFullscreen,
+        setShowLyricsFullscreen
+    }: AlbumPageInterface) {
     return (
         <div>
             <BasicPageStuff />
@@ -143,6 +147,10 @@ export default function AlbumPage(
                     appearBar={appearBar}
                     setAppearBar={setAppearBar}
                     isLoading={isLoading}
+                    isFullscreenMode={isFullscreenMode}
+                    setIsFullscreenMode={setIsFullscreenMode}
+                    showLyricsFullscreen={showLyricsFullscreen}
+                    setShowLyricsFullscreen={setShowLyricsFullscreen}
                 />
             </div>
         </div>
@@ -191,19 +199,10 @@ export function MobileAlbumExplanation({ setShowExplanation, showExplanation, id
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <TooltipProvider>
-                    <Tooltip delayDuration={1000}>
-                        <TooltipTrigger asChild>
-                            <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
-                                <BookOpenText />
-                                {variant === 1 && "Album Explanation"}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent align="end" className="rounded-2xl" showArrow secondaryColor>
-                            <p>Album explanation</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
+                    <BookOpenText />
+                    {variant === 1 && "Album Explanation"}
+                </Button>
             </DrawerTrigger>
             <DrawerContent className={cn('h-[95vh] items-center rounded-t-3xl')}>
                 <div className='overflow-y-auto size-full'>
