@@ -10,7 +10,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import Lyrics from "./lyrics";
 import VolumeSlider from "./volumeSlider";
 import '@public/CSS/song-controls.css';
-import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import { formattedSongTime, formatTime, handleSliderChange, muteSong, PlayIcon, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { toast } from "sonner"
 import { motion } from "motion/react";
 import { songControlsInterface } from "@/lib/interfaces";
@@ -237,13 +237,18 @@ export const DefaultSongControls = ({
 
     if (isFullscreenMode) {
         return (
-            <div className="flex flex-col w-full justify-between items-center gap-4 pb-2 h-full" onKeyDown={(e) => handleKeyDown}>
-                <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary [&>div]:transition-all [&>div]:duration-500" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
+            <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full" onKeyDown={(e) => handleKeyDown}>
+                <div className="flex items-center justify-center w-full px-6">
+                    <div className="text-sm text-muted-foreground/80 w-12">{formatTime(songRef.current ? songRef.current.currentTime : 0)}</div>
+                    <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary [&>div]:transition-all [&>div]:duration-500" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
+                    <div className="text-sm text-muted-foreground/80 select-none cursor-pointer w-12 text-right" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songRef.current ? songRef.current.duration : 0, songTimeType, currentTimeVal)}</div>
+                </div>
                 <div className="flex w-full justify-between items-center px-4">
-                    <div className="flex justify-center gap-3 ml-2 items-center absolute bottom-4 left-1/2 -translate-x-1/2">
+                    <div className="w-[34%]" />
+                    <div className="flex justify-center gap-3 ml-2 items-center">
                         <Button
                             size="icon"
-                            className={cn('p-5 rounded-full bg-transparent focus:bg-transparent', 'opacity-50 cursor-not-allowed')}
+                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', 'opacity-50 cursor-not-allowed')}
                             variant="link"
                             onClick={() => handleSkipSong(true)}
                             disabled
@@ -252,22 +257,22 @@ export const DefaultSongControls = ({
                         </Button>
                         <Button
                             size="icon"
-                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
+                            className={cn("p-6 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             variant="link"
                             onClick={() => handleSkipSong(true)}
                         >
                             <SkipBack size={36} />
                         </Button>
                         <Button
-                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
+                            className={cn("p-6 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             size="icon"
                             onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                         >
-                            {!isLoading ? !isPlaying ? <Play size={36} /> : <Pause size={36} /> : <LoaderCircleIcon className="animate-spin" size={36} />}
+                            <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} size={36} />
                         </Button>
                         <Button
                             size="icon"
-                            className={cn("p-5 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
+                            className={cn("p-6 rounded-full", (songVal === "" || isLoading || songVal === null) && "opacity-50 cursor-not-allowed")}
                             variant="link"
                             onClick={() => handleSkipSong(false)}
                         >
@@ -275,7 +280,7 @@ export const DefaultSongControls = ({
                         </Button>
                         <Button
                             size="icon"
-                            className={cn('p-5 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
+                            className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
                             variant="link"
                             onClick={() => setRepeat(repeat >= 2 ? 0 : repeat + 1)}
                         >
@@ -283,11 +288,22 @@ export const DefaultSongControls = ({
                         </Button>
                     </div>
                     <div />
-                    <div className="flex justify-center gap-3 items-center">
-                        <Button className="rounded-full" variant='link' onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
+                    <div className="flex justify-center gap-3 w-[25%] items-center">
+                        <Button className="rounded-full p-6" variant='link' onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
                             <MicVocal size='36' />
                         </Button>
-                        <Button className="rounded-full" size='icon' variant='link' onClick={() => { setIsFullscreenMode(!isFullscreenMode); setFullscreen(!isFullscreenMode || false) }}>
+                        <Button
+                            onClick={() => muteSong(songRef)}
+                            variant='link'
+                            className="rounded-full bg-transparent px-4"
+                            size='icon'
+                            disabled={!songRef.current}
+                        >
+                            <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />
+                        </Button>
+                        <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} onWheel={handleWheel} />
+                        <Label className="w-12 text-right">{volumeVal}%</Label>
+                        <Button className="rounded-full p-6" size='icon' variant='link' onClick={() => { setIsFullscreenMode(!isFullscreenMode); setFullscreen(!isFullscreenMode || false) }}>
                             {!isFullscreenMode ? <Maximize2Icon size='36' /> : <Minimize2Icon size='36' />}
                         </Button>
                     </div>
@@ -345,7 +361,7 @@ export const DefaultSongControls = ({
                                 size="icon"
                                 onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
                             >
-                                {!isLoading ? !isPlaying ? <Play /> : <Pause /> : <LoaderCircleIcon className="animate-spin" />}
+                                <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} />
                             </Button>
                             <Button
                                 size="icon"
@@ -447,9 +463,14 @@ export const DefaultSongControls = ({
                             </Popover>
                         </div>
                         <div className="h-6 w-2 border-l-2 border-primary/30 ml-4 mr-2" />
-                        <div className="w-1/2 flex gap-3 items-center h-full">
-                            <Button onClick={() => muteSong(songRef)}
-                                variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
+                        <div className="w-[55%] flex gap-3 items-center h-full">
+                            <Button
+                                onClick={() => muteSong(songRef)}
+                                variant='ghost'
+                                className="rounded-full bg-transparent px-4"
+                                size='icon'
+                                disabled={!songRef.current}
+                            >
                                 <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />
                             </Button>
                             <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} onWheel={handleWheel} />

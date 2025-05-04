@@ -15,6 +15,7 @@ import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
 import { AlbumExplanationInterface, AlbumPageInterface, SongInterface } from "@/lib/interfaces";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 export default function AlbumPage(
     {
@@ -100,7 +101,41 @@ export default function AlbumPage(
                         </div>
                     </div>
 
-                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50'>{credits || "No credits provided"}</div>
+                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50 flex flex-col gap-2'>
+                        <div className="inline-flex grow items-center text-primary/50">
+                            {credits.length > 0 ?
+                                <p className="">
+                                    Credits to{" "}
+                                    {credits.map((element, index) => (
+                                        <span key={index}>
+                                            {element.name} for the {element.type}
+                                            {index === credits.length - 2 ? " & " : index < credits.length - 2 ? ", " : ""}
+                                        </span>
+                                    ))}
+                                </p>
+                                :
+                                <p>No credits avaliable</p>
+                            }
+                        </div>
+                        {credits.length > 0 &&
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="rounded-lg w-fit" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogTitle>Sources</DialogTitle>
+                                    <DialogDescription>All sources used for this album</DialogDescription>
+                                    {credits.map((element, index) => (
+                                        <Link href={element.originalLink[index]} key={index} target="_blank" className="w-full rounded-xl -mb-1">
+                                            <Button variant='secondary' className="w-full rounded-xl -mb-4">
+                                                {element.name}
+                                            </Button>
+                                        </Link>
+                                    ))}
+                                </DialogContent>
+                            </Dialog>
+                        }
+                    </div>
 
                     <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>
                         <div className='flex items-center relative'>

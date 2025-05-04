@@ -9,7 +9,7 @@ import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
-import { formattedSongTime, formatTime, handleSliderChange, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import { formattedSongTime, formatTime, handleSliderChange, muteSong, PlayIcon, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { Marquee } from "@/components/magicui/marquee";
 import { toast } from "sonner";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
@@ -174,7 +174,7 @@ export const MiniPlayer = ({
                                 onClick={() => { (!isLoading || isLoading === null) && setIsPlaying(songVal !== "" && !isPlaying) }}
                                 disabled={isLoading === null}
                             >
-                                {!isLoading ? !isPlaying ? <Play size='32' /> : <Pause size='32' /> : <LoaderCircleIcon className="animate-spin" size='32' />}
+                                <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} size={32} />
                             </Button>
                             <Button
                                 size="icon"

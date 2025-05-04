@@ -11,7 +11,7 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
 
     return (
         <motion.div className="size-full fixed inset-0 bg-background top-0" initial={{ opacity: 0, y: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 0 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
-            <Image src={image} alt={image} width={400} height={400} className="absolute inset-0 bg-center opacity-40 blur-3xl size-full touch-none select-none pointer-events-none" />
+            <Image src={image} alt={image} width={1000} height={1000} className="absolute inset-0 bg-center opacity-40 blur-3xl size-full touch-none select-none pointer-events-none" />
             <motion.div
                 className={cn("flex size-full transition-all duration-500", showLyricsFullscreen ? "justify-start" : "justify-center")}
                 layout

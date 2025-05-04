@@ -13,6 +13,13 @@ export interface AudioSettingsInterface {
     volumeVal: number;
 }
 
+// Credits JSON file stuff
+export interface Credits {
+    name: string[];
+    type: string;
+    originalLink: string[];
+}
+
 // Related to the mini player and the song controls (basically the same stuff just different interface for more flexibility)
 export interface songControlsInterface {
     songRef: any;
@@ -125,7 +132,7 @@ export interface AlbumPageInterface {
     handleSkipSong: any;
     repeatAlbum: number;
     setRepeatAlbum: any;
-    credits: string;
+    credits: Credits[];
     isLoading: boolean | null;
     isFullscreenMode?: boolean;
     setIsFullscreenMode?: any;

@@ -60,8 +60,10 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
         loadLyrics();
     }, [songVal, id]);
 
+    const isMobile = useIsMobile();
+
     const lrcContainerStyle: React.CSSProperties = {
-        height: !isFullscreenMode ? (useIsMobile() ? '100%' : '500px') : '85vh',
+        height: !isFullscreenMode ? (isMobile ? '100%' : '500px') : '90vh',
         margin: '0.2em',
         flex: 1,
         minHeight: 0,
@@ -79,7 +81,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                         !isFullscreenMode ? `text-${localStorage.getItem("lyrics-alignment") || lyricsAlignment}` : 'text-left',
                         !isFullscreenMode && (isLeftAlignedText(active) && "translate-x-2.5", isRightAlignedText(active) && "-translate-x-2.5"),
                         active ? 'text-white/95' : 'text-white/10 blur-[2px]',
-                        active ? (!isFullscreenMode && 'scale-90') : (!isFullscreenMode && 'scale-95'))}
+                        !isFullscreenMode && (!active ? 'scale-90' : 'scale-95'))}
             >
                 {content}
             </p>
@@ -102,7 +104,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 :
                 <div className="overflow-y-auto scroll-smooth pb-16 px-5" style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (
-                        <div key={index} className={cn("whitespace-pre-wrap text-white", `text-${localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment}`, imageSize === 280 && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
+                        <div key={index} className={cn("whitespace-pre-wrap text-white", `text-${localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
                             {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
                         </div>
                     ))}

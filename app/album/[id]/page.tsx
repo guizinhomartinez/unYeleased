@@ -4,12 +4,12 @@ import * as React from 'react'
 import { useEffect, useState, useRef, use } from 'react';
 import '@public/CSS/song-controls.css';
 import { useQueryState } from "nuqs";
-import { fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
+import { fetchAlbumCredits, fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
 import { capitalizeFirstLetter } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { SongInterface, AlbumsInterface } from '@/lib/interfaces';
+import { SongInterface, AlbumsInterface, Credits } from '@/lib/interfaces';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<SongInterface[]>([]);
@@ -21,13 +21,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
-  const [credits, setCredits] = useState("");
+  const [credits, setCredits] = useState<Credits[]>([]);
   const [imageSize, setImageSize] = useState(260);
   const [appearBar, setAppearBar] = useState(true);
   const [volumeVal, setVolumeVal] = useState<number>(100);
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
-  const [albumExplanation, setAlbumExplanation] = useState("");
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
   const [repeatAlbum, setRepeatAlbum] = useState(0);
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
@@ -48,34 +47,29 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, []);
 
   useEffect(() => {
+    document.title = `${albumName || id} | UnYeleased`;
+
     const storedStyle = localStorage.getItem("album-page-style");
     if (storedStyle !== null) {
       setNewPageLayout(Number(storedStyle));
     }
-  }, []);
 
-  useEffect(() => {
     async function loadSongs() {
       const data = await fetchAlbumSongs(id);
       setSongs(data.tracks);
       setYear(data.config[0].year);
       setAlbumName(data.config[0].albumName);
       setAlbumCreator(data.config[0].albumCreator);
-      setCredits(data.config[0].credits);
     }
-
-    async function loadInfo() {
-      const data = await fetchAlbumInfo(id);
-      setAlbumExplanation(data);
+  
+    async function loadSongCredits() {
+      const data = await fetchAlbumCredits(id);
+      setCredits(data.credits);
+      console.log(data);
     }
-
+    loadSongCredits();
     loadSongs();
-    loadInfo();
-  }, [id]);
-
-  useEffect(() => {
-    document.title = `${albumName || id} | UnYeleased`;
-  }, [albumName]);
+  }, [id, albumName]);
 
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id}/`;
@@ -104,23 +98,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       song.pause();
     };
   }, [isPlaying, playingSong]);
-
-  useEffect(() => {
-    const reiszeImage = () => {
-      if (window.innerWidth < 768) {
-        setImageSize(280);
-      } else {
-        setImageSize(260);
-      }
-    }
-
-    reiszeImage();
-
-    window.addEventListener("resize", reiszeImage);
-    return () => {
-      window.removeEventListener("resize", reiszeImage);
-    }
-  })
 
   const handleClickEvent = (element: SongInterface, index: number) => {
     setPlayingSong(element.title);
@@ -223,8 +200,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [volumeVal, handleSkipSong, isPlaying]);
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
-    if (imageSize === 280) {
+    if (isMobile) {
       setAppearBar(playingSong !== "" ? true : false);
     }
   })

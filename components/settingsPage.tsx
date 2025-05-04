@@ -85,7 +85,7 @@ const UISection = () => {
                         </div>
                     </div>
                 </div>
-                <div className="items-center border-b border-b-muted flex justify-between">
+                <div className="items-center border-b border-b-muted flex justify-between pb-2">
                     <Label className="text-base text-muted-foreground">Album page style</Label>
                     <Link href="/album-page-style" className="">
                         <Button variant='secondary' className="rounded-full" size="icon">
@@ -150,7 +150,7 @@ const LyricsSection = () => {
     return (
         <div className="flex flex-col gap-2 mt-4">
             <p className="text-xl font-semibold">Lyrics customization</p>
-            <div className="flex justify-between items-center border-b border-b-muted">
+            <div className="flex justify-between items-center border-b border-b-muted pb-2">
                 <Label className="text-base text-muted-foreground">Synced lyrics alignment</Label>
                 <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
                     <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setLyricsAlignment("left")}>
@@ -164,7 +164,7 @@ const LyricsSection = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex justify-between items-center border-b border-b-muted">
+            <div className="flex justify-between items-center border-b border-b-muted pb-2">
                 <Label className="text-base text-muted-foreground">Normal lyrics alignment</Label>
                 <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
                     <div className={cn("rounded-full p-1 duration-300 cursor-pointer hover:bg-secondary/50", (localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment) === "left" && "bg-secondary hover:bg-secondary")} aria-label='light' onClick={() => setNormalLyricsAlignment("left")}>

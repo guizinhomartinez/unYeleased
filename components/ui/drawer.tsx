@@ -45,7 +45,7 @@ const DrawerContent = React.forwardRef<
 >(({ className, children, showGrabThing, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
-    <DrawerPrimitive.Content ref={ref} className={cn("fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl border bg-primary-foreground", className)} {...props}>
+    <DrawerPrimitive.Content ref={ref} className={cn("fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl outline-none bg-primary-foreground", className)} {...props}>
       {showGrabThing !== false &&
         <div className="mx-auto mt-4 h-1.5 w-20 rounded-full bg-muted-foreground" />
       }

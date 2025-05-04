@@ -1,4 +1,4 @@
-import { VolumeOff, Volume2, Volume1, VolumeX, Volume, Repeat, Repeat1 } from "lucide-react";
+import { VolumeOff, Volume2, Volume1, VolumeX, Volume, Repeat, Repeat1, LoaderCircleIcon, Play, Pause } from "lucide-react";
 import { RefObject } from "react";
 import { LucideProps } from "lucide-react";
 import { AudioSettingsInterface } from "./interfaces";
@@ -50,6 +50,20 @@ export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioSettingsInterf
     }
 };
 
-export const RepeatIcon = ({ repeat, size }: { repeat: number, size?:string | any }) => {
+export const RepeatIcon = ({ repeat, size }: { repeat: number, size?: string | any }) => {
     return repeat === 2 ? <Repeat1 size={size} /> : <Repeat size={size} />;
 };
+
+export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: any, size?: number }) => {
+    if (isLoading)
+        return <LoaderCircleIcon className="animate-spin" size={36} />
+
+    if (!songRef.current) {
+        return <Play size={size?.toString()} />
+    } else {
+        if (!isPlaying)
+            return <Play size={size?.toString()} />
+        else
+            return <Pause size={size?.toString()} />
+    }
+}

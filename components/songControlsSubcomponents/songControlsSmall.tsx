@@ -7,6 +7,7 @@ import '@public/CSS/song-controls.css';
 import { songControlsInterface } from "@/lib/interfaces";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { PlayIcon } from "@/lib/songControlsFunctions";
 
 export const SongControlsSmall = ({
     songRef,
@@ -50,18 +51,12 @@ export const SongControlsSmall = ({
                         <div className="flex flex-col w-full h-full">
                             <div className="flex items-center p-3 justify-between">
                                 <div className="flex items-center gap-2 flex-1 select-none relative">
-                                    <Image
-                                        src={image}
-                                        alt={image}
-                                        width={60}
-                                        height={60}
-                                        className="rounded-lg"
-                                    />
+                                    <Image src={image} alt={image} width={60} height={60} className="rounded-lg" />
                                     <div className="overflow-hidden">
-                                        <div className="font-semibold overflow-hidden whitespace-pre text-ellipsis max-w-[80%]" id="track-name">
+                                        <div className="font-semibold overflow-hidden" id="track-name">
                                             {songVal !== "" ? songVal : "No Track Found"}
                                         </div>
-                                        <div className="text-sm text-muted-foreground" id="song-creator">
+                                        <div className="text-sm text-muted-foreground overflow-hidden" id="song-creator">
                                             {songCreator}
                                         </div>
                                     </div>
@@ -69,7 +64,7 @@ export const SongControlsSmall = ({
 
                                 <div className="flex justify-end gap-1" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
                                     <Button className={cn('p-5 rounded-full focus:bg-primary', (!songVal || songVal === "" || isLoading || isLoading === null) && 'opacity-50 cursor-not-allowed')} size="icon" onClick={() => setIsPlaying(!isPlaying)}>
-                                        {!isLoading ? !isPlaying ? <Play /> : <Pause /> : <LoaderCircleIcon className="animate-spin" />}
+                                        <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} />
                                     </Button>
                                     <Button className={cn('p-5 rounded-full focus:bg-transparent', (!songVal || songVal === "") && 'opacity-50 cursor-not-allowed')} size="icon" variant="ghost" onClick={() => handleSkipSong(false)}>
                                         <SkipForward />
