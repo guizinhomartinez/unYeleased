@@ -88,7 +88,7 @@ function ActualAlbumPageStyle() {
                     </div>
                 </div>
             </div>
-            <BasicPageStuff albumPageStyle={true} />
+            <BasicPageStuff albumPageStyle={true} goToSettings={true} />
         </div>
     )
 }
@@ -159,7 +159,7 @@ function NormalStyle() {
                                 {songs.filter((op: SongInterface) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
                                     <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => setCurrentSongIndex(index)}>
                                         <div className='flex items-center gap-3 relative justify-center'>
-                                            {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
+                                            {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', isMobile && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
                                             <div className='w-12 flex items-right justify-center'>
                                                 <p className='w-2 text-right'>{index + 1}</p>
                                             </div>

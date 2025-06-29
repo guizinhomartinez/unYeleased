@@ -14,36 +14,27 @@ import { Separator } from "./ui/separator"
 export const AlbumExplanation = ({ id }: { id: string }) => {
     const [DynamicHeader, setDynamicHeader] = useState<React.FC<{ components?: Record<string, React.FC<any>> }> | null>(null);
     const [source, setSource] = useState<string[]>([]);
-    const [imageSize, setImageSize] = useState(260);
 
-    useEffect(() => {
-        const reiszeImage = () => setImageSize(window.innerWidth < 768 ? 280 : 260);
-        reiszeImage();
-
-        window.addEventListener("resize", reiszeImage);
-        return () => {
-            window.removeEventListener("resize", reiszeImage);
-        }
-    })
+    const isMobile = useIsMobile();
 
     fetchAlbumStuff(id, setDynamicHeader, setSource);
 
     return (
-        <div className={cn(imageSize === 280 ? "p-3" : "relative")}>
-            {imageSize === 280 &&
+        <div className={cn(isMobile ? "p-3" : "relative")}>
+            {isMobile &&
                 <div className='flex flex-col items-center justify-center mx-auto mt-4'>
                     <p className='text-3xl font-bold text-center'>Album Explanation</p>
                     <Separator orientation="horizontal" className="h-0.5 rounded-full bg-muted mt-2 mb-2" />
                 </div>
             }
-            <div className={cn(imageSize === 280 && "mx-0.5")}>
+            <div className={cn(isMobile && "mx-0.5")}>
                 <Suspense fallback={<LoadingComponent />}>
                     {DynamicHeader ? (
-                        <div className={cn("p-2 bg-secondary rounded-xl", imageSize === 260 && "text-md")}>
+                        <div className={cn("p-2 bg-secondary rounded-2xl", !isMobile && "text-md")}>
                             <DynamicHeader components={overrideComponents} />
                         </div>
                     ) : (
-                        <Loader2 className={cn(imageSize === 280 ? 'my-28 h-16 w-16 text-primary/60 animate-spin' : '-ms-1 animate-spin ml-2 size-10')} aria-hidden="true" />
+                        <Loader2 className={cn(isMobile ? 'my-28 h-16 w-16 text-primary/60 animate-spin' : '-ms-1 animate-spin ml-2 size-10')} aria-hidden="true" />
                     )}
                 </Suspense>
             </div>

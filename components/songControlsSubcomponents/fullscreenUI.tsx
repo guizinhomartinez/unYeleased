@@ -14,7 +14,7 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
             <Image src={image} alt={image} width={1000} height={1000} className="absolute inset-0 bg-center opacity-40 blur-3xl size-full touch-none select-none pointer-events-none" />
             <motion.div
                 className={cn("flex size-full transition-all duration-500", showLyricsFullscreen ? "justify-start" : "justify-center")}
-                layout
+                layout="position"
             >
                 <motion.div
                     className="size-full flex flex-col items-center justify-center py-12"
@@ -59,7 +59,7 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                     </div>
                 </motion.div>
                 <AnimatePresence>
-                    {showLyricsFullscreen &&
+                    {(showLyricsFullscreen && lyricsStr !== "Unable to fetch the lyrics :C") &&
                         <motion.div
                             className={cn("size-full h-screen flex flex-col items-start justify-start py-12 pr-12")}
                             initial={{ opacity: 0, x: 50 }}
@@ -67,15 +67,8 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                             exit={{ opacity: 0, x: 50 }}
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                         >
-                            {/* <p className="text-5xl font-bold">Lyrics</p> */}
-                            <div className="-translate-y-7">
-                                {/* <div className="pointer-events-none absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black to-transparent" /> */}
-                                {(songVal === "") ?
-                                    <p className="text-primary/50 text-4xl font-bold">No track or lyrics found</p>
-                                    :
-                                    <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} isFullscreenMode={isFullscreenMode} lyricsStr={lyricsStr} setLyricsStr={setLyricsStr} />
-                                }
-                                {/* <div className="pointer-events-none absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-black to-transparent" /> */}
+                            <div className="w-full">
+                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} isFullscreenMode={isFullscreenMode} setLyricsStr={setLyricsStr} />
                             </div>
                         </motion.div>
                     }

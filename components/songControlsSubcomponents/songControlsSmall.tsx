@@ -8,6 +8,7 @@ import { songControlsInterface } from "@/lib/interfaces";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { PlayIcon } from "@/lib/songControlsFunctions";
+import PlayerButtons from "./playerButtons";
 
 export const SongControlsSmall = ({
     songRef,
@@ -63,12 +64,17 @@ export const SongControlsSmall = ({
                                 </div>
 
                                 <div className="flex justify-end gap-1" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
-                                    <Button className={cn('p-5 rounded-full focus:bg-primary', (!songVal || songVal === "" || isLoading || isLoading === null) && 'opacity-50 cursor-not-allowed')} size="icon" onClick={() => setIsPlaying(!isPlaying)}>
-                                        <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} />
-                                    </Button>
-                                    <Button className={cn('p-5 rounded-full focus:bg-transparent', (!songVal || songVal === "") && 'opacity-50 cursor-not-allowed')} size="icon" variant="ghost" onClick={() => handleSkipSong(false)}>
-                                        <SkipForward />
-                                    </Button>
+                                    <PlayerButtons
+                                        handleSkipSong={handleSkipSong}
+                                        songVal={songVal}
+                                        isLoading={isLoading}
+                                        isPlaying={isPlaying}
+                                        setIsPlaying={setIsPlaying}
+                                        songRef={songRef}
+                                        biggerPadding={false}
+                                        buttonVariant={"link"}
+                                        extraButtons={false}
+                                    />
                                 </div>
                             </div>
                             <Progress

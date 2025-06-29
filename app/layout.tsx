@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Toaster } from "@/components/ui/sonner";
 
 const yeezy = localFont({
   src: '../public/yeezy_tstar-bold-webfont.ttf'
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
+        <Toaster position="top-center" className='toaster group' toastOptions={{ className: "group-[.toaster]:rounded-xl group-[.toaster]:bg-primary-foreground" }} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -63,7 +65,7 @@ export default function RootLayout({
             showAtBottom={false}
           />
           <NuqsAdapter>
-          {children}
+            {children}
           </NuqsAdapter>
         </ThemeProvider>
       </body>

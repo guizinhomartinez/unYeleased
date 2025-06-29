@@ -3,19 +3,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { EllipsisVertical, Info, LoaderCircleIcon, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
+import { ChevronLeft, Copy, EllipsisVertical, Info, LoaderCircleIcon, Maximize2, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, PlayIcon, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
-import { Marquee } from "@/components/magicui/marquee";
 import { toast } from "sonner";
 import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
 import Lyrics from "./lyrics";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { FullscreenButtonInterface, MiniPlayerInterface } from "@/lib/interfaces";
+import PlayerButtons from "./playerButtons";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import { motion } from "motion/react";
 
 export const MiniPlayer = ({
     albumCover,
@@ -30,7 +39,9 @@ export const MiniPlayer = ({
     setRepeat,
     volumeVal,
     id,
-    isLoading
+    isLoading,
+    shuffle,
+    setShuffle
 }: MiniPlayerInterface) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
@@ -89,21 +100,21 @@ export const MiniPlayer = ({
                                 <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
                                     <div className={cn("size-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute shadow-xl inset-0 rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="size-full px-2">
-                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} lyricsStr={lyricsStr} setLyricsStr={setLyricsStr} />}
+                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} setLyricsStr={setLyricsStr} />}
                                             <div className="absolute top-1 right-1 inline-flex items-center gap-3 p-1 rounded-full bg-primary-foreground">
                                                 <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                                     <X size='14' />
                                                 </div>
-                                                {/* <FullscreenButton
+                                                <FullscreenButton
                                                     albumCover={albumCover}
                                                     isSynced={isSynced}
                                                     setIsSynced={setIsSynced}
                                                     showLyrics={showLyrics}
-                                                    currentTimeVal={currentTimeVal}
+                                                    currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)}
                                                     id={id}
                                                     songVal={songVal}
                                                     songRef={songRef}
-                                                /> */}
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +148,7 @@ export const MiniPlayer = ({
                             <div className="text-md text-muted-foreground">{songCreator || "Unknown"}</div>
                         </div>
                         <div className="items-center flex gap-2">
-                            <MoreOptionsMenu songRef={songRef} />
+                            <MoreOptionsMenu songRef={songRef} songVal={songVal} />
                         </div>
                     </div>
                 </div>
@@ -151,47 +162,21 @@ export const MiniPlayer = ({
                     </div>
                     <div className="flex gap-1 items-center">
                         <div className="flex gap-2 items-center w-full scale-110 justify-between">
-                            <Button
-                                size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', 'opacity-50 cursor-not-allowed')}
-                                variant="ghost"
-                                onClick={() => handleSkipSong(true)}
-                                disabled
-                            >
-                                <Shuffle />
-                            </Button>
-                            <Button
-                                size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                variant="ghost"
-                                onClick={() => handleSkipSong(true)}
-                            >
-                                <SkipBack size='32' />
-                            </Button>
-                            <Button
-                                className={cn('p-6 rounded-full focus:bg-primary', (!songVal || songVal === "" || isLoading || isLoading === null) && 'opacity-50 cursor-not-allowed')}
-                                size="icon"
-                                onClick={() => { (!isLoading || isLoading === null) && setIsPlaying(songVal !== "" && !isPlaying) }}
-                                disabled={isLoading === null}
-                            >
-                                <PlayIcon isLoading={isLoading} isPlaying={isPlaying} songRef={songRef} size={32} />
-                            </Button>
-                            <Button
-                                size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
-                                variant="ghost"
-                                onClick={() => handleSkipSong(false)}
-                            >
-                                <SkipForward size='32' />
-                            </Button>
-                            <Button
-                                size="icon"
-                                className={cn('p-6 rounded-full bg-transparent focus:bg-transparent', repeat === 0 && 'opacity-50')}
-                                variant="ghost"
-                                onClick={() => setRepeat(repeat >= 2 ? 0 : repeat + 1)}
-                            >
-                                <RepeatIcon repeat={repeat} />
-                            </Button>
+                            <PlayerButtons
+                                shuffle={shuffle}
+                                setShuffle={setShuffle}
+                                handleSkipSong={handleSkipSong}
+                                songVal={songVal}
+                                isLoading={isLoading}
+                                isPlaying={isPlaying}
+                                setIsPlaying={setIsPlaying}
+                                songRef={songRef}
+                                repeat={repeat}
+                                setRepeat={setRepeat}
+                                biggerPadding={true}
+                                buttonVariant={"link"}
+                                extraButtons={true}
+                            />
                         </div>
                     </div>
                 </div>
@@ -208,72 +193,55 @@ export const MiniPlayer = ({
     );
 };
 
-const MoreOptionsMenu = ({ songRef }: { songRef: any }) => {
+const MoreOptionsMenu = (props: { songRef: any, songVal: string }) => {
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
+                <Button className="rounded-full" variant='secondary' size='icon' disabled={!props.songRef.current}>
                     <EllipsisVertical size='24' />
                 </Button>
             </DrawerTrigger>
             <DrawerContent className="max-h-[100%]" showGrabThing={false}>
                 <div className="p-4 w-full flex flex-col gap-2">
-                    <Button className="rounded-full" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
-                        <Share />
-                        Share
-                    </Button>
-                </div>
-            </DrawerContent>
-        </Drawer>
-    )
-}
-
-const FullscreenButton = ({ albumCover, isSynced, setIsSynced, showLyrics, currentTimeVal, id, songVal, songRef }: FullscreenButtonInterface) => {
-    return (
-        <Drawer>
-            <DrawerTrigger asChild>
-                <div>
-                    <EllipsisVertical className="rotate-90" size='16' />
-                </div>
-            </DrawerTrigger>
-            <DrawerContent className="max-h-[100%] rounded-xl">
-                <div className="p-8 w-full flex flex-col gap-2">
                     <Drawer>
                         <DrawerTrigger asChild>
-                            <Button className="rounded-full" variant='secondary' disabled={!songRef.current}>
-                                <Maximize2Icon />
-                                Fullscreen
+                            <Button className="rounded-full" variant='secondary' disabled={!props.songRef.current} id="share-button">
+                                <Share />
+                                Share
                             </Button>
                         </DrawerTrigger>
-                        <DrawerContent className="h-full overflow-hidden p-4 pt-6 flex justify-center group">
-                            {/* <div className="rounded-xl relative scroll-smooth overflow-y-auto h-fit">
-                                <div className="relative rounded-xl group h-fit">
-                                    <Image src={albumCover} alt={albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                                    <div className="mt-10">
-                                        {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />}
-                                    </div>
-                                    <div className="fixed flex justify-center items-center top-12 left-1/2 -translate-x-1/2 rounded-full opacity-50 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
-                                        <div className="rounded-full flex justify-center items-center w-full relative">
-                                            <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>
-                                                Synced
-                                            </div>
-                                            <div onClick={() => setIsSynced(false)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", isSynced && "cursor-pointer")}>
-                                                Normal
-                                            </div>
+                        <DrawerContent className="min-h-36 rounded-t-3xl bg-transparent" showGrabThing={false}>
+                            <div className="bg-primary-foreground w-[93%] translate-x-3.5 h-[95%] -translate-y-2 rounded-3xl border">
+                                <div className="mx-auto mt-4 h-1.5 w-20 rounded-full bg-muted-foreground" />
+                                <div className="flex items-center justify-center my-20 mx-2">
+                                    <div className="w-28 h-20 flex flex-col justify-center items-center gap-3">
+                                        <div className="rounded-full p-5 bg-secondary active:bg-primary/30" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
+                                            <Copy />
                                         </div>
-                                        <motion.span
-                                            className="absolute top-0 bg-primary mix-blend-difference w-1/2 h-full"
-                                            animate={{
-                                                left: isSynced ? "0%" : "50%",
-                                            }}
-                                            transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
-                                            style={{ borderRadius: 9999 }}
-                                        />
+                                        <p className="text-center">Copy link</p>
+                                    </div>
+                                    <div
+                                        className="w-28 h-20 flex flex-col justify-center items-center gap-3"
+                                        onClick={() => {
+                                            if (navigator.share) {
+                                                navigator
+                                                    .share({
+                                                        title: "Hello from UnYeleased",
+                                                        url: window.location.href,
+                                                    })
+                                                    .then(() => console.log("Shared successfully"))
+                                                    .catch((err) => console.error("Share failed", err));
+                                            } else {
+                                                console.log("Web Share API not supported");
+                                            }
+                                        }}
+                                    >
+                                        <div className="rounded-full p-5 bg-secondary active:bg-primary/30">
+                                            <EllipsisVertical className="rotate-90" />
+                                        </div>
+                                        <p className="text-center">Share</p>
                                     </div>
                                 </div>
-                            </div> */}
-                            <div className="size-full border border-muted rounded-xl scroll-smooth">
-                                {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} />}
                             </div>
                         </DrawerContent>
                     </Drawer>
@@ -283,34 +251,51 @@ const FullscreenButton = ({ albumCover, isSynced, setIsSynced, showLyrics, curre
     )
 }
 
-const AutoMarquee = ({ text, }: { text: string }) => {
-    const [isOverflowing, setIsOverflowing] = useState(false);
-    const textRef = useRef(null);
-    const [dummyEl, setDummyEl] = useState<boolean>(false);
+const FullscreenButton = (props: FullscreenButtonInterface) => {
+    const [lyricsStr, setLyricsStr] = useState("");
+    const [hidePill, setHidePill] = useState(false);
 
-    React.useMemo(() => {
-        const checkWrap = () => {
-            if (textRef.current && text) {
-                const { offsetWidth, scrollWidth } = textRef.current;
-                const THRESHOLD = 0;
-                // setIsOverflowing(scrollWidth > offsetWidth + THRESHOLD);
-                setIsOverflowing(dummyEl);
-            }
-        };
-
-        checkWrap();
-
-        window.addEventListener("resize", checkWrap);
-        return () => window.removeEventListener("resize", checkWrap);
-    }, [text, dummyEl]);
-
-    return isOverflowing ? (
-        <Marquee className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none [--duration:30s] shadowed-song-name-2 whitespace-nowrap animate-marquee" onClick={() => setDummyEl(!dummyEl)}>
-            {text || "No Track Found"}
-        </Marquee>
-    ) : (
-        <span ref={textRef} className="text-2xl font-semibold max-w-[70vw] relative select-none leading-none whitespace-nowrap" onClick={() => setDummyEl(!dummyEl)}>
-            {text || "No Track Found"}
-        </span>
-    );
-};
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <Maximize2 className="rotate-90" size='12' />
+            </SheetTrigger>
+            <SheetContent className="w-[95%] h-[96%] -translate-x-2 my-3 rounded-3xl border overflow-auto p-1.5">
+                <div className={cn("relative rounded-3xl size-full overflow-hidden border border-muted/50", !props.isSynced && "pt-12")}>
+                    <Image src={props.albumCover} alt={props.albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
+                    <Lyrics currentTimeVal={props.currentTimeVal} id={props.id} songVal={props.songVal} isSynced={!props.isSynced} isFullscreenMode={false} setLyricsStr={setLyricsStr} />
+                    <div className="absolute left-1 top-1.5">
+                        <Button size='icon' variant='link' className="bg-secondary/50 hover:bg-secondary p-1.5 rounded-full opacity-75 z-[1000]" onClick={() => setHidePill(!hidePill)}>
+                            <ChevronLeft className={cn("transition-all duration-500", !hidePill ? "rotate-0" : "rotate-180")} />
+                        </Button>
+                    </div>
+                    <motion.div
+                        className="absolute flex justify-center items-center top-2 left-1/2 -translate-x-1/2 rounded-full opacity-75 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2"
+                        animate={{
+                            left: !hidePill ? "-200px" : "50%",
+                            opacity: !hidePill ? 0 : "75%"
+                        }}
+                        transition={{ type: "spring", duration: 1 }}
+                    >
+                        <div className="rounded-full flex justify-center items-center w-full relative">
+                            <div onClick={() => props.setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !props.isSynced && "cursor-pointer")}>
+                                Synced
+                            </div>
+                            <div onClick={() => props.setIsSynced(false)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", props.isSynced && "cursor-pointer")}>
+                                Normal
+                            </div>
+                        </div>
+                        <motion.span
+                            className="absolute top-0 bg-primary mix-blend-difference w-1/2 h-full"
+                            animate={{
+                                left: props.isSynced ? "0%" : "50%",
+                            }}
+                            transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
+                            style={{ borderRadius: 9999 }}
+                        />
+                    </motion.div>
+                </div>
+            </SheetContent>
+        </Sheet>
+    )
+}

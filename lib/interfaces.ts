@@ -43,6 +43,8 @@ export interface songControlsInterface {
     setIsFullscreenMode?: any;
     showLyricsFullscreen?: boolean;
     setShowLyricsFullscreen?: any;
+    shuffle: boolean;
+    setShuffle: any;
 }
 
 export interface isFullscreenModeInterface {
@@ -73,6 +75,8 @@ export interface MiniPlayerInterface {
     setRepeat: any;
     id: string;
     isLoading: boolean | null;
+    shuffle: boolean;
+    setShuffle: any;
 }
 
 // Fullscreen lyrics (rn it's deprecated)
@@ -138,6 +142,8 @@ export interface AlbumPageInterface {
     setIsFullscreenMode?: any;
     showLyricsFullscreen?: boolean;
     setShowLyricsFullscreen?: any;
+    shuffle: boolean;
+    setShuffle: any;
 }
 
 // Stuff related to album explanations
@@ -157,6 +163,32 @@ export interface LyricsInterface {
     songVal: string;
     isSynced?: boolean;
     isFullscreenMode?: boolean;
-    lyricsStr?: string;
     setLyricsStr?: any;
+}
+
+//Album page tracklist subcompoennt
+export interface AlbumPageTracklistInterface {
+    songs: SongInterface[];
+    appearBar: boolean;
+    currentSongIndex: number;
+    handleClickEvent: any;
+    newStyle: boolean;
+    playingSong: string;
+}
+
+// Song player interface
+export interface SongPlayerButtonsInterface {
+    shuffle?: boolean | false;
+    setShuffle?: any | undefined;
+    handleSkipSong: any;
+    songVal: string;
+    isLoading: boolean | null;
+    isPlaying: boolean;
+    setIsPlaying: any;
+    songRef: any;
+    repeat?: number | 0;
+    setRepeat?: any | undefined;
+    biggerPadding: boolean;
+    buttonVariant: any;
+    extraButtons: boolean;
 }

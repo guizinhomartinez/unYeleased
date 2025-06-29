@@ -137,7 +137,7 @@ export default function Page() {
                             </div>
                         </React.Suspense>
                     </div>
-                    <div className={cn(isGrid && "grid gap-10 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
+                    <div className={cn(isGrid && "grid gap-10 md:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
                         {entries.filter((op: HomepageInterface) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()) || (op.tags[2] && op.tags[2].toLowerCase().includes(searchQuery.toLowerCase())))).sort((a: HomepageInterface, b: HomepageInterface) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
                             <AnimatePresence>
                                 <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
@@ -153,7 +153,7 @@ export default function Page() {
 const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
     if (isGrid) {
         return (
-            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                 <Link href={entry.link} className="cursor-pointer">
                     <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
                 </Link>
@@ -185,7 +185,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
         )
     } else {
         return (
-            <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+            <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                 <Link href={entry.link} className="cursor-pointer max-w-24">
                     <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={120} height={120} className="rounded-xl shadow-md" priority={true} />
                 </Link>

@@ -29,7 +29,9 @@ export const SongControls = ({
     isFullscreenMode,
     setIsFullscreenMode,
     showLyricsFullscreen,
-    setShowLyricsFullscreen
+    setShowLyricsFullscreen,
+    shuffle,
+    setShuffle
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [tutorialNumber, setTutorialNumber] = useState<number>(0);
@@ -129,6 +131,8 @@ export const SongControls = ({
                             setIsFullscreenMode={setIsFullscreenMode}
                             showLyricsFullscreen={showLyricsFullscreen}
                             setShowLyricsFullscreen={setShowLyricsFullscreen}
+                            shuffle={shuffle}
+                            setShuffle={setShuffle}
                         />
                     </div>
                 </div>
@@ -158,6 +162,8 @@ export const SongControls = ({
                                     setAppearBar={setAppearBar}
                                     isLoading={isLoading}
                                     tutorialNumber={tutorialNumber}
+                                    shuffle={shuffle}
+                                    setShuffle={setShuffle}
                                 />
                             </div>
                         </DrawerTrigger>
@@ -176,6 +182,8 @@ export const SongControls = ({
                                 setVolumeVal={setVolumeVal}
                                 id={id}
                                 isLoading={isLoading}
+                                shuffle={shuffle}
+                                setShuffle={setShuffle}
                             />
                         </DrawerContent>
                     </Drawer>

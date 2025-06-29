@@ -22,7 +22,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumName, setAlbumName] = useState("");
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState<Credits[]>([]);
-  const [imageSize, setImageSize] = useState(260);
   const [appearBar, setAppearBar] = useState(true);
   const [volumeVal, setVolumeVal] = useState<number>(100);
   const [songCreator, setSongCreator] = useState("");
@@ -36,6 +35,34 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isLoading, setIsLoading] = useState<boolean | null>(false);
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
+  const [shuffle, setShuffle] = useState(false);
+
+  useEffect(() => {
+    document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
+
+    const storedStyle = localStorage.getItem("album-page-style");
+    if (storedStyle !== null) {
+      setNewPageLayout(Number(storedStyle));
+    }
+
+    async function loadSongs() {
+      const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
+      if (data === "NOT FOUND") {
+        window.location.replace("/page-not-found");
+      }
+      setSongs(data.tracks);
+      setYear(data.config[0].year);
+      setAlbumName(data.config[0].albumName);
+      setAlbumCreator(data.config[0].albumCreator);
+    }
+
+    async function loadSongCredits() {
+      const data = await fetchAlbumCredits(id.toLowerCase().replace(" ", "-"));
+      setCredits(data.credits);
+    }
+    loadSongCredits();
+    loadSongs();
+  }, [id, albumName]);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -47,32 +74,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, []);
 
   useEffect(() => {
-    document.title = `${albumName || id} | UnYeleased`;
-
-    const storedStyle = localStorage.getItem("album-page-style");
-    if (storedStyle !== null) {
-      setNewPageLayout(Number(storedStyle));
-    }
-
-    async function loadSongs() {
-      const data = await fetchAlbumSongs(id);
-      setSongs(data.tracks);
-      setYear(data.config[0].year);
-      setAlbumName(data.config[0].albumName);
-      setAlbumCreator(data.config[0].albumCreator);
-    }
-  
-    async function loadSongCredits() {
-      const data = await fetchAlbumCredits(id);
-      setCredits(data.credits);
-      console.log(data);
-    }
-    loadSongCredits();
-    loadSongs();
-  }, [id, albumName]);
-
-  useEffect(() => {
-    const audioPrefix = `/song-files/songs/${id}/`;
+    const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;
     const audioFileType = '.m4a';
 
     if (playingSong) {
@@ -141,6 +143,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           return;
         }
       }
+
       setCurrentSongIndex(songIndex);
       setPlayingSong(songs[songIndex].title);
       setSongCreator(songs[songIndex].artist);
@@ -161,14 +164,15 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     if (newIndex !== songs.length)
       return setupNextSong(newIndex);
 
-    setupNextSong(0, repeatAlbum !== 0);
+    if (!shuffle)
+      setupNextSong(0, repeatAlbum !== 0);
   }
 
   const handleSkipSong = (back: boolean) => setSkipDirection(back);
 
   useEffect(() => {
     if (skipDirection !== null) {
-      endedSongFunction(skipDirection ? currentSongIndex - 1 : currentSongIndex + 1);
+      endedSongFunction(skipDirection ? currentSongIndex - 1 : (shuffle ? Math.floor(Math.random() * songs.length) : currentSongIndex + 1));
       setSkipDirection(null);
     }
   }, [skipDirection, currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
@@ -213,7 +217,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <NewAlbumPage
         albumName={albumName}
         albumCreator={albumCreator}
-        id={id}
+        id={id.toLowerCase().replace(" ", "-")}
         isPlaying={isPlaying}
         showExplanation={showExplanation}
         setShowExplanation={setShowExplanation}
@@ -243,6 +247,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setIsFullscreenMode={setIsFullscreenMode}
         showLyricsFullscreen={showLyricsFullscreen}
         setShowLyricsFullscreen={setShowLyricsFullscreen}
+        shuffle={shuffle}
+        setShuffle={setShuffle}
       />
     )
   } else {
@@ -250,7 +256,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <AlbumPage
         albumName={albumName}
         albumCreator={albumCreator}
-        id={id}
+        id={id.toLowerCase().replace(" ", "-")}
         isPlaying={isPlaying}
         showExplanation={showExplanation}
         setShowExplanation={setShowExplanation}
@@ -280,6 +286,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setIsFullscreenMode={setIsFullscreenMode}
         showLyricsFullscreen={showLyricsFullscreen}
         setShowLyricsFullscreen={setShowLyricsFullscreen}
+        shuffle={shuffle}
+        setShuffle={setShuffle}
       />
     );
   }

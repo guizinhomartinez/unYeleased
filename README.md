@@ -38,6 +38,6 @@ This repo is for the source code of UnYeleased. The purpose of it is for you to 
 - [x] Search bar
 - [x] Sort albums by latest or oldest
 - [x] Backend for explanation of albums
-- [ ] Full interface for creating custom albums
 - [x] Better white theme
 - [ ] Scrolling text when song name or credits are too long
+- [ ] ~~Full interface for creating custom albums~~

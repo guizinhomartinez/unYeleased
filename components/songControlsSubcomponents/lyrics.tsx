@@ -6,23 +6,12 @@ import '@/public/CSS/lyrics.css'
 import { LyricsInterface } from '@/lib/interfaces';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, lyricsStr, setLyricsStr }: LyricsInterface) {
+export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, setLyricsStr }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
-    const [imageSize, setImageSize] = useState(260);
     const [lrcContent, setLrcContent] = useState("");
     const [lyricsAlignment, setLyricsAlignment] = useState("center");
     const [normalLyricsAlignment, setNormalLyricsAlignment] = useState("left");
     const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const reiszeImage = () => setImageSize(window.innerWidth < 768 ? 280 : 260);
-        reiszeImage();
-
-        window.addEventListener("resize", reiszeImage);
-        return () => {
-            window.removeEventListener("resize", reiszeImage);
-        }
-    })
 
     useEffect(() => {
         const storedStyle = localStorage.getItem("lyrics-alignment");
@@ -42,14 +31,9 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
     useEffect(() => {
         const loadLyrics = async () => {
             try {
-                if (lyricsStr && setLyricsStr) {
-                    setLyricsStr("");
-                }
                 const data = await fetchAlbumLyrics(id, songVal);
                 setLrcContent(data || "Unable to fetch the lyrics :C");
-                if (lyricsStr && setLyricsStr) {
-                    setLyricsStr(lrcContent);
-                }
+                setLyricsStr(data || "Unable to fetch the lyrics :C");
 
                 const formattedData = data.split('\n').filter(line => line.trim() !== "");
                 setLyricFile(formattedData);
@@ -92,15 +76,22 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
     return (
         <div className={cn('rounded-lg p-2 relative', !useIsMobile() ? 'min-h-[300px] max-h-[500px]' : 'h-full', isFullscreenMode && "")}>
             {!isSynced ?
-                <Lrc
-                    className={cn('lrc scroll-smooth lrc-shadow', isFullscreenMode && 'pt-7')}
-                    lrc={lrcContent}
-                    currentMillisecond={currentTimeVal}
-                    lineRenderer={lineRenderer}
-                    verticalSpace={!isFullscreenMode}
-                    style={lrcContainerStyle}
-                    recoverAutoScrollInterval={2500}
-                />
+                (LyricFile?.includes("Unable to fetch the lyrics :C") ?
+                    <div className='absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-full'>
+                        <p className='text-center text-lg text-white/50'>Unable to fetch the lyrics :C</p>
+                    </div>
+                    :
+                    <Lrc
+                        className={cn('lrc scroll-smooth lrc-shadow', isFullscreenMode && 'pt-7')}
+                        lrc={lrcContent}
+                        currentMillisecond={currentTimeVal}
+                        lineRenderer={lineRenderer}
+                        verticalSpace={!isFullscreenMode}
+                        style={lrcContainerStyle}
+                        recoverAutoScrollInterval={2500}
+                    />
+                )
+
                 :
                 <div className="overflow-y-auto scroll-smooth pb-16 px-5" style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (

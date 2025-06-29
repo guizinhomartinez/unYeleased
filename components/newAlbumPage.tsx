@@ -1,16 +1,17 @@
 import { Button } from "./ui/button";
-import { Pause, Play } from "lucide-react";
 import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { SongControls } from "./songControls";
-import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPage";
 import BasicPageStuff from "./basicPageStuff";
 import { AlbumPageInterface } from "@/lib/interfaces";
-import { Suspense } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Link from "next/link";
+import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumPageAlbumExplanation";
+import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
+import PlayButton from "./albumPageSubcomponents/ui/playButton";
+import { SongCover } from "./albumPage";
 
 export default function NewAlbumPage(
     {
@@ -43,26 +44,26 @@ export default function NewAlbumPage(
         isFullscreenMode,
         setIsFullscreenMode,
         showLyricsFullscreen,
-        setShowLyricsFullscreen
+        setShowLyricsFullscreen,
+        shuffle,
+        setShuffle
     }: AlbumPageInterface) {
     const isMobile = useIsMobile();
-
-    console.log(credits);
 
     return (
         <>
             <BasicPageStuff albumPageStyle={isMobile} />
             <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
-                <div className={'flex gap-y-2 flex-col items-center justify-start md:w-96'}>
+                <div className={'flex gap-y-2 flex-col items-center justify-start md:w-[425px]'}>
                     <div className="relative flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !isMobile ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
                             <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
-                                <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!isMobile ? 260 : 320} height={!isMobile ? 260 : 320} priority={true} className='md:mt-4 rounded-xl' />
+                                <SongCover id={id} newAlbumPage={true} />
                                 <div className='flex flex-col mt-2 justify-center items-center'>
-                                    <div className='text-3xl font-semibold text-center'>{albumName}</div>
-                                    <div className='text-primary/60'>{albumCreator || <Skeleton className='w-24 h-5' />}</div>
-                                    <div className='text-primary/40'>{year || <Skeleton className='w-16 h-6 translate-y-0.5' />} • {songs.length} songs</div>
+                                    <p className='text-3xl font-semibold text-center'>{albumName}</p>
+                                    <p className='text-primary/60 text-center'>{albumCreator || <Skeleton className='w-24 h-5' />}</p>
+                                    <p className='text-primary/40'>{year || <Skeleton className='w-16 h-6 translate-y-0.5' />} • {songs.length} songs</p>
                                 </div>
                             </div>
                         </div>
@@ -110,12 +111,7 @@ export default function NewAlbumPage(
                         <div className="font-semibold text-2xl">Tracklist</div>
                         <div className="w-full relative flex justify-end">
                             <div className="flex gap-2">
-                                <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => playAlbum()}>
-                                    {!isPlaying ? <Play /> : <Pause />}
-                                    <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
-                                        {!isPlaying ? String('Play') : String('')}
-                                    </div>
-                                </Button>
+                                <PlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
                                 {!isMobile ?
                                     <DesktopAlbumExplanation
                                         setShowExplanation={setShowExplanation}
@@ -136,23 +132,14 @@ export default function NewAlbumPage(
                             </div>
                         </div>
                     </div>
-                    <Suspense fallback={<LoadingComponent />}>
-                        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', appearBar ? 'mb-20' : '-mb-4')}>
-                            {songs.map((element, index) => (
-                                <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
-                                    <div className='flex items-center gap-3 relative justify-center'>
-                                        <div className='w-12 flex items-right justify-center'>
-                                            <div className='w-2 text-right'>{index + 1}</div>
-                                        </div>
-                                    </div>
-                                    <div className='select-none whitespace-pre overflow-hidden w-[80%] shadowed-song-name'>
-                                        <div className="text-sm font-semibold max-w-52">{element.title ? element.title : <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
-                                        <div className='text-sm text-muted-foreground'>{element.artist ? element.artist : <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </Suspense>
+                    <AlbumPageTracklist
+                        appearBar={appearBar}
+                        currentSongIndex={currentSongIndex}
+                        handleClickEvent={handleClickEvent}
+                        songs={songs}
+                        newStyle={true}
+                        playingSong={playingSong}
+                    />
                 </div>
             </div>
             <div>
@@ -177,40 +164,10 @@ export default function NewAlbumPage(
                     setIsFullscreenMode={setIsFullscreenMode}
                     showLyricsFullscreen={showLyricsFullscreen}
                     setShowLyricsFullscreen={setShowLyricsFullscreen}
+                    shuffle={shuffle}
+                    setShuffle={setShuffle}
                 />
             </div>
         </>
-    )
-}
-
-function LoadingComponent() {
-    function TrackItem({ index }: { index: number }) {
-        return (
-            <div className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full cursor-not-allowed")}>
-                <div key={index} className='flex items-center gap-3 relative justify-center'>
-                    <div className='w-12 flex items-right justify-center'>
-                        <div className='w-2 text-right'>{index + 1}</div>
-                    </div>
-                </div>
-                <div className='select-none whitespace-pre overflow-hidden w-[80%] shadowed-song-name'>
-                    <div className="text-sm font-semibold max-w-52"><Skeleton className='w-28 h-6 translate-y-0.5' /></div>
-                    <div className='text-sm text-muted-foreground'><Skeleton className='w-28 h-6 translate-y-0.5' /></div>
-                </div>
-            </div>
-        )
-    }
-
-    function LoopedTrackItem() {
-        const items = [];
-        for (let i = 0; i < 11; i++) {
-            items.push(<TrackItem key={i} index={i} />);
-        }
-        return <>{items}</>;
-    }
-
-    return (
-        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted -mb-4')}>
-            <LoopedTrackItem />
-        </div>
     )
 }

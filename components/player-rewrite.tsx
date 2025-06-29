@@ -88,7 +88,6 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
     const songRef = useRef<HTMLAudioElement | null>(null);
     const [volumeVal, setVolumeVal] = useState(100);
     const [sliderValue, setSliderValue] = useState(0);
-    const [imageSize, setImageSize] = useState(250);
     const [repeat, setRepeat] = useState(false);
 
     useEffect(() => {
@@ -247,16 +246,6 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
             setCurrentTimeVal(newTime);
         }
     }
-
-    useEffect(() => {
-        const reiszeImage = () => setImageSize(window.innerWidth < 768 ? 280 : 260);
-        reiszeImage();
-
-        window.addEventListener("resize", reiszeImage);
-        return () => {
-            window.removeEventListener("resize", reiszeImage);
-        }
-    })
 
     useEffect(() => {
         if (songVal) {

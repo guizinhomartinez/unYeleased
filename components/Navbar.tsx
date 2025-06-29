@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { useIsMobile } from "@/hooks/use-mobile"
-import SettingsPage from "./settingsPage"
+import SettingsComponent from "./settings/settingsComponent"
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer"
 
 const navigationStuff = [
@@ -37,51 +37,30 @@ const navigationStuff = [
 
 export default function Navbar({ className }: { className?: string }) {
     const pathName = usePathname();
+    const isMobile = useIsMobile();
 
     return (
         <>
-            <div className={cn('flex place-content-between w-full py-1 pb-3 bg-background transition-all', className)}>
+            <div className={cn('flex place-content-between w-full py-1 pb-3 bg-background transition-all sticky', className)}>
                 <div className="items-center flex gap-2">
                     {navigationStuff.map((item, index) => (
                         <Link href={item.link} key={index}>
-                            <Button variant='outline' size={`${!useIsMobile() ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link && 'active-button')}>
+                            <Button variant='ghost' size={`${!isMobile ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link ? 'bg-secondary hover:bg-secondary' : "hover:bg-primary-foreground")}>
                                 {item.component}
-                                {!useIsMobile() ? String(item.name) : String('')}
+                                {!isMobile ? String(item.name) : String('')}
                             </Button>
                         </Link>
                     ))}
                 </div>
                 <div className="flex gap-2">
-                    {!useIsMobile() ?
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="rounded-full" variant='outline'>
-                                    <Settings />
-                                    Settings
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="h-max gap-0 m-0">
-                                <SettingsPage mobile={useIsMobile()} />
-                            </DialogContent>
-                        </Dialog>
-                        :
-                        <Drawer>
-                            <DrawerTrigger asChild>
-                                <Button className="rounded-full" variant='outline'>
-                                    <Settings />
-                                    Settings
-                                </Button>
-                            </DrawerTrigger>
-                            <DrawerContent className="rounded-t-3xl mb-5 max-h-full bg-background" showGrabThing={false}>
-                                <div className="px-3 pb-4">
-                                    <SettingsPage mobile={useIsMobile()} />
-                                </div>
-                            </DrawerContent>
-                        </Drawer>
-                    }
+                    <Link href="/settings">
+                        <Button className="rounded-full" variant='ghost' size="icon">
+                            <Settings />
+                        </Button>
+                    </Link>
                     <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank">
-                        <Button variant='outline' className="rounded-full">
-                            <Github />
+                        <Button variant='default' className="rounded-full">
+                            <Github className="-translate-x-1" />
                             Source
                         </Button>
                     </a>

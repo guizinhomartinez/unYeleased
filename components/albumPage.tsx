@@ -1,21 +1,19 @@
 import Link from "next/link";
-import { Toaster } from "./ui/sonner";
 import { Button } from "./ui/button";
-import { BookOpenText, ChevronLeft, Dot, Maximize2, Minimize2, Pause, Play, Search } from "lucide-react";
+import { Dot, Search } from "lucide-react";
 import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Drawer as Drawer2 } from 'vaul';
-import { Separator } from "./ui/separator";
-import { AlbumExplanation } from "./albumExplanation";
-import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
-import { AlbumExplanationInterface, AlbumPageInterface, SongInterface } from "@/lib/interfaces";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { AlbumPageInterface, SongInterface } from "@/lib/interfaces";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumPageAlbumExplanation";
+import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
+import PlayButton from "./albumPageSubcomponents/ui/playButton";
+import { useState } from "react";
 
 export default function AlbumPage(
     {
@@ -50,7 +48,9 @@ export default function AlbumPage(
         isFullscreenMode,
         setIsFullscreenMode,
         showLyricsFullscreen,
-        setShowLyricsFullscreen
+        setShowLyricsFullscreen,
+        shuffle,
+        setShuffle
     }: AlbumPageInterface) {
     return (
         <div>
@@ -59,7 +59,7 @@ export default function AlbumPage(
                 <div className='flex-1'>
                     <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
                         <div className='flex flex-col md:flex-row items-center gap-5'>
-                            <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={id} width={!useIsMobile() ? 260 : 280} height={!useIsMobile() ? 260 : 280} priority={true} className='md:mt-4 rounded-xl outline outline-primary/10' />
+                            <SongCover id={id} newAlbumPage={false} />
                             <div className='flex flex-col gap-2'>
                                 <div className='text-4xl font-semibold text-center md:text-left'>{albumName || capitalizeFirstLetter(id.replace("-", " "))}</div>
                                 <div className='flex flex-col justify-center'>
@@ -73,12 +73,7 @@ export default function AlbumPage(
                                     </div>
                                 </div>
                                 <div className='flex gap-2 justify-center md:justify-normal mt-2'>
-                                    <Button className={`rounded-full h-12 transition-all duration-300 justify-normal  ${isPlaying ? 'w-12' : 'w-24'}`} onClick={() => playAlbum()}>
-                                        {!isPlaying ? <Play /> : <Pause />}
-                                        <div className={`transition-all text-center ml-1 duration-300 ${isPlaying ? 'opacity-0' : ''}`}>
-                                            {!isPlaying ? String('Play') : String('')}
-                                        </div>
-                                    </Button>
+                                    <PlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
                                     {!useIsMobile() ?
                                         <DesktopAlbumExplanation
                                             setShowExplanation={setShowExplanation}
@@ -101,7 +96,7 @@ export default function AlbumPage(
                         </div>
                     </div>
 
-                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-lg mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50 flex flex-col gap-2'>
+                    <div className='p-2 bg-primary-foreground/25 mt-6 rounded-xl mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50 flex flex-col gap-2'>
                         <div className="inline-flex grow items-center text-primary/50">
                             {credits.length > 0 ?
                                 <p className="">
@@ -120,7 +115,7 @@ export default function AlbumPage(
                         {credits.length > 0 &&
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button className="rounded-lg w-fit" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
+                                    <Button className="rounded-xl w-fit" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogTitle>Sources</DialogTitle>
@@ -144,23 +139,14 @@ export default function AlbumPage(
                                 <Search size={16} strokeWidth={2} className=' text-muted-foreground/80' />
                             </div>
                         </div>
-                        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden border-2 border-secondary', appearBar ? 'mb-24' : '-mb-4')}>
-                            {songs.filter((op: SongInterface) => (op.title.toLowerCase().includes(searchQuery.toLowerCase()))).map((element, index) => (
-                                <div key={index} className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full", currentSongIndex === index ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')} onClick={() => handleClickEvent(element, index)}>
-                                    <div className='flex items-center gap-3 relative justify-center'>
-                                        {/* <div className={cn('cursor-default rounded-full w-12 items-center flex justify-center', imageSize === 280 && 'absolute top-0.5 left-0.5 mask-circle bg-background/50 backdrop-blur-md rounded-full text-sm')}>{index + 1}</div> */}
-                                        <div className='w-12 flex items-right justify-center'>
-                                            <p className='w-2 text-right'>{index + 1}</p>
-                                        </div>
-                                        {/* <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt="" width={60} height={60} className='rounded-lg shadow-sm' /> */}
-                                    </div>
-                                    <div className='select-none whitespace-pre overflow-hidden w-3/4 shadowed-song-name'>
-                                        <div className="text-sm font-semibold max-w-52">{element.title || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
-                                        <div className='text-sm text-muted-foreground'>{element.artist || <Skeleton className='w-28 h-6 translate-y-0.5' />}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <AlbumPageTracklist
+                            appearBar={appearBar}
+                            currentSongIndex={currentSongIndex}
+                            handleClickEvent={handleClickEvent}
+                            songs={songs}
+                            newStyle={false}
+                            playingSong={playingSong}
+                        />
                     </div>
                 </div>
             </div>
@@ -186,64 +172,36 @@ export default function AlbumPage(
                     setIsFullscreenMode={setIsFullscreenMode}
                     showLyricsFullscreen={showLyricsFullscreen}
                     setShowLyricsFullscreen={setShowLyricsFullscreen}
+                    shuffle={shuffle}
+                    setShuffle={setShuffle}
                 />
             </div>
         </div>
     )
 }
 
-export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, fullscreen, setFullscreen, id, variant }: AlbumExplanationInterface) {
-    return (
-        <Drawer2.Root direction="right">
-            <Drawer2.Trigger asChild>
-                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)} title="Album explanation">
-                    <BookOpenText />
-                    {variant === 1 && "Album Explanation"}
-                </Button>
-            </Drawer2.Trigger>
-            <Drawer2.Portal>
-                <Drawer2.Overlay className="fixed inset-0 bg-black/40" />
-                <Drawer2.Content
-                    className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out", fullscreen ? "max-w-[97.5vw]" : "max-w-[35%]")}
-                    // The gap between the edge of the screen and the drawer2 is 8px in this case.
-                    style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
-                >
-                    <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
-                    <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
-                        <div className="p-4 overflow-y-auto h-full">
-                            <div className='pt-2'>
-                                <div className='flex items-center justify-between mx-auto gap-2'>
-                                    <div className='w-2' />
-                                    <p className='text-3xl font-bold text-center'>Album Explanation</p>
-                                    <div className='cursor-pointer mr-2' onClick={(e) => setFullscreen(!fullscreen)}>
-                                        {!fullscreen ? <Maximize2 /> : <Minimize2 />}
-                                    </div>
-                                </div>
-                                <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
-                            </div>
-                            <AlbumExplanation id={id} />
-                        </div>
-                    </div>
-                </Drawer2.Content>
-            </Drawer2.Portal>
-        </Drawer2.Root>
-    )
-}
+export function SongCover({ id, newAlbumPage }: { id: string, newAlbumPage: boolean }) {
+    const [loaded, setLoaded] = useState(false);
+    const isMobile = useIsMobile();
+    const size = !newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260);
 
-export function MobileAlbumExplanation({ setShowExplanation, showExplanation, id, variant }: AlbumExplanationInterface) {
     return (
-        <Drawer>
-            <DrawerTrigger asChild>
-                <Button variant='outline' className={cn('rounded-full h-12', variant === 1 && "w-48")} size={variant === 1 ? 'icon' : 'default'} onClick={() => setShowExplanation(!showExplanation)}>
-                    <BookOpenText />
-                    {variant === 1 && "Album Explanation"}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent className={cn('h-[95vh] items-center rounded-t-3xl')}>
-                <div className='overflow-y-auto size-full'>
-                    <AlbumExplanation id={id} />
-                </div>
-            </DrawerContent>
-        </Drawer>
+        <div className="relative">
+            {!loaded && (
+                <Skeleton
+                    className="absolute top-0 left-0 rounded-xl"
+                    style={{ width: size, height: size }}
+                />
+            )}
+            <Image
+                src={`/song-files/covers/${id.toLowerCase()}.jpg`}
+                alt={id}
+                width={size}
+                height={size}
+                priority={true}
+                className={cn('rounded-xl transition-opacity duration-300', !newAlbumPage && "outline outline-primary/10", loaded ? 'opacity-100 md:mt-4' : 'opacity-0')}
+                onLoad={() => setLoaded(true)}
+            />
+        </div>
     )
 }

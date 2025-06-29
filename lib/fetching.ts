@@ -6,13 +6,19 @@ export async function fetchHomeSongs() {
 
 // album fetching
 export async function fetchAlbumSongs(id: string) {
-  const response = await fetch(`../song-files/songLists/${id.toLowerCase()}.json`);
-  return response.json();
+    let response;
+    try {
+        const res = await fetch(`../song-files/songLists/${id.toLowerCase()}.json`);
+        res.ok ? response = await res.json() : response = "NOT FOUND";
+    } catch (e) {
+        response = "Network Error";
+    }
+    return response;
 }
 
 export async function fetchAlbumInfo(id: string) {
-  const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/explanation/albumExplanation.mdx`);
-  return response.text();
+    const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/explanation/albumExplanation.mdx`);
+    return response.text();
 }
 
 // testing home fetching
@@ -28,12 +34,12 @@ export async function fetchSinglesInfo(id: string) {
     return response.json();
 }
 
-export async function fetchSinglesLyrics(id:string) {
+export async function fetchSinglesLyrics(id: string) {
     const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/lyrics.txt`);
     return response.text();
 }
 
-export async function fetchSinglesExplanation(id:string) {
+export async function fetchSinglesExplanation(id: string) {
     const response = await fetch(`../song-files/singlesInfo/${id.toLowerCase()}/explanation/explanation.txt`);
     return response.text();
 }
