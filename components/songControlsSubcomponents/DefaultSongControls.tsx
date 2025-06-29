@@ -398,7 +398,7 @@ export const DefaultSongControls = ({
                             </Popover>
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button className={cn("rounded-full", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} size='icon' variant='secondary' disabled={!songRef.current || fullscreenLyricsStr !== "Unable to fetch the lyrics :C"} id="lyrics-button">
+                                    <Button className={cn("rounded-full", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} size='icon' variant='secondary' disabled={!songRef.current || fullscreenLyricsStr === "Unable to fetch the lyrics :C"} id="lyrics-button">
                                         <MicVocal />
                                     </Button>
                                 </PopoverTrigger>
