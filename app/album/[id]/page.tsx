@@ -36,6 +36,25 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
   const [shuffle, setShuffle] = useState(false);
+  const [shuffleOrder, setShuffleOrder] = useState(0);
+  const [randomArray, setRandomArray] = useState<number[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (songs.length > 0) {
+      const array = Array(songs.length).fill(undefined).map(() => Math.floor(Math.random() * songs.length));
+      setRandomArray(array);
+
+    }
+  }, [songs.length]);
+
+  if (randomArray !== undefined) {
+    // console.log(songs[randomArray[shuffleOrder]].title);
+  }
+
+  // console.log(shuffleOrder);
+
+  console.log(randomArray);
+
 
   useEffect(() => {
     document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
@@ -137,17 +156,19 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   function endedSongFunction(newIndex: number) {
     const setupNextSong = (songIndex: number, play: boolean = true) => {
-      if (songRef.current) {
-        if (skipDirection && (Math.round(songRef.current.currentTime) >= 5 || currentSongIndex === 0)) {
-          songRef.current.currentTime = 0;
-          return;
-        }
+      if (songRef.current && (skipDirection && (Math.round(songRef.current.currentTime) >= 5 || currentSongIndex === 0))) {
+        songRef.current.currentTime = 0;
+        return;
       }
 
       setCurrentSongIndex(songIndex);
       setPlayingSong(songs[songIndex].title);
       setSongCreator(songs[songIndex].artist);
+      setShuffleOrder(randomArray !== undefined ? currentSongIndex : 0);
       setIsPlaying(play);
+
+      console.log(shuffleOrder);
+      // console.log(randomArray[shuffleOrder]);
     }
 
     const repeatSong = () => {
@@ -172,7 +193,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     if (skipDirection !== null) {
-      endedSongFunction(skipDirection ? currentSongIndex - 1 : (shuffle ? Math.floor(Math.random() * songs.length) : currentSongIndex + 1));
+      endedSongFunction(skipDirection ? currentSongIndex - 1 : (shuffle ? (randomArray !== undefined ? randomArray[shuffleOrder] : currentSongIndex + 1) : currentSongIndex + 1));
       setSkipDirection(null);
     }
   }, [skipDirection, currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
