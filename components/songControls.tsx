@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
-import { SongControlsSmall } from "./songControlsSubcomponents/songControlsSmall";
-import { DefaultSongControls } from "./songControlsSubcomponents/DefaultSongControls";
+import { MobileSongControls } from "./songControlsSubcomponents/MobileSongControls";
+import { DesktopSongControls } from "./songControlsSubcomponents/DesktopSongControls";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { songControlsInterface } from "@/lib/interfaces";
@@ -104,14 +104,13 @@ export const SongControls = ({
                         {isFullscreenMode && <FullscreenUI image={image} currentTimeVal={currentTimeVal} id={id} songVal={songVal} songCreator={songCreator} isFullscreenMode={isFullscreenMode} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showLyricsFullscreen={showLyricsFullscreen} setShowLyricsFullscreen={setShowLyricsFullscreen} isLoading={isLoading} />}
                     </AnimatePresence>
                     <div
-                        className={cn(`fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full
-                        flex items-center transition-all shadow-lg duration-500`,
+                        className={cn(`fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
                             isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-primary-foreground to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
                             isFullscreenMode && (isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"),
                             !isFullscreenMode && (appearBar ? 'translate-y-0' : 'translate-y-32'))}
                         id="default-song-controls"
                     >
-                        <DefaultSongControls
+                        <DesktopSongControls
                             songRef={songRef}
                             songVal={songVal}
                             isPlaying={isPlaying}
@@ -145,7 +144,7 @@ export const SongControls = ({
                                 className={cn(`fixed bottom-0.5 rounded-2xl w-full max-w-[92vw]
                                     left-1/2 -translate-x-1/2 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondsary
                                     flex items-center transition-all duration-500 overflow-hidden shadow-xl`, appearBar ? 'translate-y-0' : 'translate-y-32')}>
-                                <SongControlsSmall
+                                <MobileSongControls
                                     songRef={songRef}
                                     songVal={songVal}
                                     isPlaying={isPlaying}

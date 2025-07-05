@@ -221,12 +221,12 @@ const MoreOptionsMenu = (props: { songRef: any, songVal: string }) => {
                                         <p className="text-center">Copy link</p>
                                     </div>
                                     <div
-                                        className="w-28 h-20 flex flex-col justify-center items-center gap-3"
+                                        className="w-20 h-20 flex flex-col justify-center items-center gap-3"
                                         onClick={() => {
                                             if (navigator.share) {
                                                 navigator
                                                     .share({
-                                                        title: "Hello from UnYeleased",
+                                                        title: `Listen to ${props.songVal} in UnYeleased`,
                                                         url: window.location.href,
                                                     })
                                                     .then(() => console.log("Shared successfully"))
@@ -239,7 +239,7 @@ const MoreOptionsMenu = (props: { songRef: any, songVal: string }) => {
                                         <div className="rounded-full p-5 bg-secondary active:bg-primary/30">
                                             <EllipsisVertical className="rotate-90" />
                                         </div>
-                                        <p className="text-center">Share</p>
+                                        <p className="text-center">More</p>
                                     </div>
                                 </div>
                             </div>

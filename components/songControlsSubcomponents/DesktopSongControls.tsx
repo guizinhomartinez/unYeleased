@@ -24,7 +24,7 @@ type KeyboardThing = {
     description: string;
 }[];
 
-export const DefaultSongControls = ({
+export const DesktopSongControls = ({
     songRef,
     songVal,
     isPlaying,
@@ -95,6 +95,10 @@ export const DefaultSongControls = ({
                     setIsFullscreenMode(!isFullscreenMode);
                     setFullscreen(!isFullscreenMode || false);
                     break;
+                case "Escape":
+                    setIsFullscreenMode(false);
+                    setFullscreen(false);
+                    break;
                 case "s":
                     setShuffle(!shuffle);
                     break;
@@ -125,15 +129,6 @@ export const DefaultSongControls = ({
                 } else if (e.key === "ArrowDown") {
                     e.preventDefault();
                     setVolumeVal(volumeVal - 5);
-                }
-            }
-
-            if (e.key === "Escape") {
-                e.preventDefault();
-                e.stopPropagation();
-                if (isFullscreenMode) {
-                    setIsFullscreenMode(false);
-                    setFullscreen(false);
                 }
             }
         };
@@ -253,7 +248,7 @@ export const DefaultSongControls = ({
 
     if (isFullscreenMode) {
         return (
-            <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full" onKeyDown={(e) => handleKeyDown}>
+            <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full relative before:absolute before:-top-5 before:-left-10 before:size-[150%] before:blur-md before:bg-[rgba(30,30,30,0.3)] before:-z-10" onKeyDown={(e) => handleKeyDown}>
                 <div className="flex items-center justify-center w-full px-6">
                     <div className="text-sm text-muted-foreground/80 w-12">{formatTime(songRef.current ? songRef.current.currentTime : 0)}</div>
                     <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary [&>div]:transition-all [&>div]:duration-500" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />

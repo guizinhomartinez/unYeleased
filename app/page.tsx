@@ -20,6 +20,7 @@ import { fetchHomeInfo } from "@/lib/fetching";
 import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HomepageInterface, AlbumsInterface } from "@/lib/interfaces";
+import { Label } from "@/components/ui/label";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
@@ -77,7 +78,7 @@ export default function Page() {
             </div>
 
             <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
-                <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
+                <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
@@ -123,7 +124,7 @@ export default function Page() {
                         </div>
                         <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
                             <div className="flex w-full max-w-sm items-center relative">
-                                <Input placeholder="Search..." className="transition-all h-10 shadow-md" type="search" value={searchQuery} onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
+                                <Input placeholder="Search..." className="transition-all h-10 rounded-xl shadow-md" type="search" value={searchQuery} onChange={((e) => setSearchQuery(e.target.value))} onKeyDown={(e) => handleKeyDown} id="search" />
                                 <div className="justify-center items-center absolute right-3 inline-flex gap-2">
                                     <div className="text-muted-foreground/80 pointer-events-none ml-auto flex items-center justify-center">
                                         <kbd className="text-muted-foreground font-[inherit] text-xs font-medium ">
@@ -153,7 +154,7 @@ export default function Page() {
 const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
     if (isGrid) {
         return (
-            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+            <motion.div className="h-full flex flex-col gap-3 rounded-2xl p-4 items-center border border-muted w-full shadow-md hover:bg-primary-foreground/50 duration-300" key={index} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                 <Link href={entry.link} className="cursor-pointer">
                     <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={250} height={250} className="rounded-xl shadow-md" priority={true} />
                 </Link>
@@ -171,6 +172,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
                                 key={index}
                                 className="mt-2 rounded-full cursor-pointer select-none whitespace-nowrap overflow-auto"
                                 variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
+                                tabIndex={0}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSearchQuery(tag);
@@ -185,7 +187,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
         )
     } else {
         return (
-            <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
+            <motion.div className="flex gap-4 items-center p-3 rounded-xl border border-muted w-full shadow-md overflow-hidden" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
                 <Link href={entry.link} className="cursor-pointer max-w-24">
                     <Image src={`/song-files/covers/${entry.image}.jpg`} alt="Album cover" width={120} height={120} className="rounded-xl shadow-md" priority={true} />
                 </Link>
@@ -202,6 +204,7 @@ const Albums = ({ entry, isGrid, setSearchQuery, index }: AlbumsInterface) => {
                                 key={index}
                                 className={cn("mt-2 rounded-full cursor-pointer select-none", index === 2 && "hidden")}
                                 variant={index === 0 ? undefined : index === 1 ? "secondary" : "outline"}
+                                tabIndex={0}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSearchQuery(tag);

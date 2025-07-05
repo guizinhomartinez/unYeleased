@@ -68,40 +68,85 @@ export default function NewAlbumPage(
                             </div>
                         </div>
 
-                        <div className={cn("rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full mx-auto flex flex-col gap-2", credits.length > 0 ? "p-4" : "px-4 py-2 opacity-80")}>
-                            {credits.length > 0 ?
+                        <div className={cn(
+                            "rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full mx-auto flex flex-col gap-2",
+                            credits.length > 0 ? "p-4" : "px-4 py-2 opacity-80"
+                        )}>
+                            {credits.length > 0 ? (
                                 <>
                                     <div className="inline-flex grow items-center text-primary/50">
-                                        <div className="">
+                                        <div>
                                             Credits to{" "}
-                                            {credits.map((element, index) => (
-                                                <div key={index}>
-                                                    {element.name} for the {element.type}
-                                                    {index === credits.length - 2 ? " & " : index < credits.length - 2 ? ", " : ""}
-                                                </div>
+                                            {Object.entries(
+                                                credits.reduce((acc, credit) => {
+                                                    const type = credit.type;
+                                                    const names = Array.isArray(credit.name) ? credit.name : [credit.name];
+                                                    const links = Array.isArray(credit.originalLink) ? credit.originalLink : [credit.originalLink];
+
+                                                    if (!acc[type]) acc[type] = [];
+                                                    names.forEach((name, i) => {
+                                                        acc[type].push({ name, link: links[i] ?? "#" });
+                                                    });
+
+                                                    return acc;
+                                                }, {} as Record<string, { name: string; link: string }[]>)
+                                            ).map(([type, entries], index, array) => (
+                                                <span key={type}>
+                                                    {entries.map((entry, i) => (
+                                                        <span key={i}>
+                                                            {entry.name}
+                                                            {i === entries.length - 2
+                                                                ? " & "
+                                                                : i < entries.length - 2
+                                                                    ? ", "
+                                                                    : ""}
+                                                        </span>
+                                                    ))}{" "}
+                                                    for the {type}
+                                                    {index < array.length - 1 ? ", " : ""}
+                                                </span>
                                             ))}
                                         </div>
                                     </div>
+
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button className="rounded-xl" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
+                                            <Button className="rounded-xl" variant="secondary">
+                                                Original link{credits.length > 1 ? "s" : ""}
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogTitle>Sources</DialogTitle>
                                             <DialogDescription>All sources used for this album</DialogDescription>
-                                            {credits.map((element, index) => (
-                                                <Link href={element.originalLink[index]} key={index} target="_blank" className="w-full rounded-full -mb-1">
+                                            {Object.entries(
+                                                credits.reduce((acc, credit) => {
+                                                    const names = Array.isArray(credit.name) ? credit.name : [credit.name];
+                                                    const links = Array.isArray(credit.originalLink) ? credit.originalLink : [credit.originalLink];
+
+                                                    names.forEach((name, i) => {
+                                                        acc.push({ name, link: links[i] ?? "#" });
+                                                    });
+
+                                                    return acc;
+                                                }, [] as { name: string; link: string }[])
+                                            ).map(([_, entry], i) => (
+                                                <Link
+                                                    key={i}
+                                                    href={entry.link}
+                                                    target="_blank"
+                                                    className="w-full rounded-full -mb-1"
+                                                >
                                                     <Button variant='secondary' className="w-full rounded-full -mb-4">
-                                                        {element.name}
+                                                        {entry.name}
                                                     </Button>
                                                 </Link>
                                             ))}
                                         </DialogContent>
                                     </Dialog>
                                 </>
-                                :
-                                <p className="text-primary/50">No credits avaliable</p>
-                            }
+                            ) : (
+                                <p className="text-primary/50">No credits available</p>
+                            )}
                         </div>
                     </div>
                 </div>

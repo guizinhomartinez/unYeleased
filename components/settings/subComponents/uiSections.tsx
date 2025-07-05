@@ -14,8 +14,8 @@ export const UISection = () => {
         return (
             <>
                 <div className={cn("cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl", props.option === theme && "bg-secondary")} onClick={() => setTheme(props.option)} tabIndex={0}>
-                    <div className="size-16 mx-auto relative">
-                        <div className={cn("size-16 rounded-full", props.option === "system" && "outline-[2px] outline-primary/30")} style={{ background: props.option !== "system" ? props.colorPrimary : "#262626" }} />
+                    <div className="size-16 mx-auto relative shadow-lg rounded-full">
+                        <div className={cn("size-16 rounded-full", props.option === "system" && "outline-[2px] outline-primary/30")} style={{ background: props.option !== "system" ? props.colorPrimary : "#161616" }} />
                         <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
                             {props.option !== "system" ? (props.option !== "dark" ? <Sun className="text-black" /> : <Moon className="text-white" />) : <Laptop2Icon className="text-white" />}
                         </div>

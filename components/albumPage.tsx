@@ -95,41 +95,80 @@ export default function AlbumPage(
                             </div>
                         </div>
                     </div>
-
                     <div className='p-2 bg-primary-foreground/25 mt-6 rounded-xl mx-4 md:mx-8 border-2 border-secondary/50 text-sm text-primary/50 flex flex-col gap-2'>
                         <div className="inline-flex grow items-center text-primary/50">
-                            {credits.length > 0 ?
-                                <p className="">
+                            {credits.length > 0 ? (
+                                <p>
                                     Credits to{" "}
-                                    {credits.map((element, index) => (
-                                        <span key={index}>
-                                            {element.name} for the {element.type}
-                                            {index === credits.length - 2 ? " & " : index < credits.length - 2 ? ", " : ""}
+                                    {Object.entries(
+                                        credits.reduce((acc, credit) => {
+                                            const type = credit.type;
+                                            const names = Array.isArray(credit.name) ? credit.name : [credit.name];
+                                            const links = Array.isArray(credit.originalLink) ? credit.originalLink : [credit.originalLink];
+
+                                            if (!acc[type]) acc[type] = [];
+                                            names.forEach((name, i) => {
+                                                acc[type].push({ name, link: links[i] ?? "#" });
+                                            });
+
+                                            return acc;
+                                        }, {} as Record<string, { name: string; link: string }[]>)
+                                    ).map(([type, contributors], index, array) => (
+                                        <span key={type}>
+                                            {contributors.map((entry, i) => (
+                                                <span key={`${type}-${i}`}>
+                                                    {entry.name}
+                                                    {i === contributors.length - 2
+                                                        ? " & "
+                                                        : i < contributors.length - 2
+                                                            ? ", "
+                                                            : ""}
+                                                </span>
+                                            ))}{" "}
+                                            for the {type}
+                                            {index < array.length - 1 ? ", " : ""}
                                         </span>
                                     ))}
                                 </p>
-                                :
-                                <p>No credits avaliable</p>
-                            }
+                            ) : (
+                                <p>No credits available</p>
+                            )}
                         </div>
-                        {credits.length > 0 &&
+
+                        {credits.length > 0 && (
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button className="rounded-xl w-fit" variant="secondary">Original link{credits.length > 1 && "s"}</Button>
+                                    <Button className="rounded-xl w-fit" variant="secondary">
+                                        Original link{credits.some(c => Array.isArray(c.name) && c.name.length > 1) ? "s" : ""}
+                                    </Button>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogTitle>Sources</DialogTitle>
                                     <DialogDescription>All sources used for this album</DialogDescription>
-                                    {credits.map((element, index) => (
-                                        <Link href={element.originalLink[index]} key={index} target="_blank" className="w-full rounded-xl -mb-1">
-                                            <Button variant='secondary' className="w-full rounded-xl -mb-4">
-                                                {element.name}
-                                            </Button>
-                                        </Link>
-                                    ))}
+                                    {credits
+                                        .flatMap((credit) => {
+                                            const names = Array.isArray(credit.name) ? credit.name : [credit.name];
+                                            const links = Array.isArray(credit.originalLink) ? credit.originalLink : [credit.originalLink];
+                                            return names.map((name, i) => ({
+                                                name,
+                                                link: links[i] ?? "#",
+                                            }));
+                                        })
+                                        .map((entry, i) => (
+                                            <Link
+                                                href={entry.link}
+                                                key={i}
+                                                target="_blank"
+                                                className="w-full rounded-xl -mb-1"
+                                            >
+                                                <Button variant='secondary' className="w-full rounded-xl -mb-4">
+                                                    {entry.name}
+                                                </Button>
+                                            </Link>
+                                        ))}
                                 </DialogContent>
                             </Dialog>
-                        }
+                        )}
                     </div>
 
                     <div className='m-4 md:m-8 md:mt-4 flex flex-col gap-4'>

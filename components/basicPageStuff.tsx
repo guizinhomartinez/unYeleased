@@ -20,7 +20,7 @@ export default function BasicPageStuff({ albumPageStyle, settingsPage, goToSetti
                 </div>
                 :
                 <div className={cn('absolute left-4 md:left-5', settingsPage ? (!useIsMobile() ? 'top-[1.4em]' : 'top-[1.4em] left-6') : 'top-2 md:top-4')}>
-                    <Link href={`/${goToSettings && 'settings'}`}>
+                    <Link href={"/" + goToSettings ? "settings" : ""}>
                         <Button className="rounded-full" size='icon' variant='ghost'>
                             <ChevronLeft />
                         </Button>

@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export default function SettingsPage() {
     const isMobile = useIsMobile();
     return (
-        <div className="m-4">
+        <div className="m-2 md:m-4">
             <SettingsComponent mobile={isMobile} />
         </div>
     )

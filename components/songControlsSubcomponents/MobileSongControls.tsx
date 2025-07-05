@@ -10,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { PlayIcon } from "@/lib/songControlsFunctions";
 import PlayerButtons from "./playerButtons";
 
-export const SongControlsSmall = ({
+export const MobileSongControls = ({
     songRef,
     songVal,
     isPlaying,
