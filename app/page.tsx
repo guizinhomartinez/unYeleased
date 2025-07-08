@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowDown, Grid2X2, Info, List, Loader2, X } from "lucide-react"
+import { ArrowDown, Filter, Grid2X2, Info, List, Loader2, X } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -21,16 +21,17 @@ import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HomepageInterface, AlbumsInterface } from "@/lib/interfaces";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 export default function Page() {
-    const [show2025, setShow2025] = useState(true);
-    const [show2024, setShow2024] = useState(false);
-    const [none, setNone] = useState(false);
     const [isGrid, setIsGrid] = useState(true);
     const [entries, setEntries] = useState<HomepageInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [sortingType, setSortingType] = useState("");
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -71,6 +72,8 @@ export default function Page() {
         };
     })
 
+    const isMobile = useIsMobile();
+
     return (
         <>
             <div className="m-4 md:md-8 mb-0">
@@ -101,12 +104,12 @@ export default function Page() {
                     </BlurFade>
                 </div>
 
-                <Separator orientation="horizontal" className="w-full translate-y-6" />
+                {/* <Separator orientation="horizontal" className="w-full translate-y-6" /> */}
 
-                <div className="mt-12 h-full">
+                <div className="mt-8 h-full">
                     <div className="flex justify-between gap-2 items-center" id="albums">
                         <div className="flex gap-4 items-center">
-                            <div>
+                            <div className="flex gap-1.5 items-center">
                                 <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">
                                     <Switch
                                         checked={isGrid}
@@ -120,6 +123,30 @@ export default function Page() {
                                         <Grid2X2 size={16} aria-hidden="true" />
                                     </span>
                                 </div>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className={cn("rounded-full border-input dark:bg-[#181818]", isMobile && "size-9")}>
+                                            <Filter size={16} />
+                                            {!isMobile && "Filter"}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent align="center" className="bg-primary-foreground rounded-xl p-2 max-w-48">
+                                        <RadioGroup defaultValue="all" value={sortingType} onValueChange={(val) => setSortingType(val)} className="w-full gap-1 *:w-full *:rounded-xl *:transition-all *:duration-300">
+                                            <div className="flex gap-2 items-center space-x-2 hover:bg-secondary p-3 cursor-pointer" onClick={() => setSortingType("all")}>
+                                                <RadioGroupItem value="all" id="all" />
+                                                <Label className="cursor-pointer" htmlFor="all">All</Label>
+                                            </div>
+                                            <div className="flex gap-2 items-center space-x-2 hover:bg-secondary p-3 cursor-pointer" onClick={() => setSortingType("album")}>
+                                                <RadioGroupItem value="album" id="album" />
+                                                <Label className="cursor-pointer" htmlFor="album">Albums</Label>
+                                            </div>
+                                            <div className="flex gap-2 items-center space-x-2 hover:bg-secondary p-3 cursor-pointer" onClick={() => setSortingType("single")}>
+                                                <RadioGroupItem value="single" id="single" />
+                                                <Label className="cursor-pointer" htmlFor="single">Singles</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
                         <React.Suspense fallback={<Loader2 className={cn('my-28 h-16 w-16 text-primary/60 animate-spin')} />}>
@@ -139,11 +166,27 @@ export default function Page() {
                         </React.Suspense>
                     </div>
                     <div className={cn(isGrid && "grid gap-10 md:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 overflow-hidden", "mt-4 gap-2 grid")}>
-                        {entries.filter((op: HomepageInterface) => !searchQuery || (op.text.toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[0].toLowerCase().includes(searchQuery.toLowerCase()) || op.tags[1].toLowerCase().includes(searchQuery.toLowerCase()) || (op.tags[2] && op.tags[2].toLowerCase().includes(searchQuery.toLowerCase())))).sort((a: HomepageInterface, b: HomepageInterface) => Number(a.tags[0]) - Number(b.tags[0])).map((entry, index) => (
-                            <AnimatePresence>
-                                <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
-                            </AnimatePresence>
-                        ))}
+                        {entries
+                            .filter((op: HomepageInterface) => {
+                                const matchesSearch =
+                                    !searchQuery ||
+                                    op.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                    op.tags.some(tag => tag?.toLowerCase().includes(searchQuery.toLowerCase()));
+
+                                const matchesSorting =
+                                    sortingType === "all" || sortingType === "" ||
+                                    op.tags[1]?.toLowerCase() === sortingType.toLowerCase();
+
+                                return matchesSearch && matchesSorting;
+                            })
+                            .sort((a: HomepageInterface, b: HomepageInterface) =>
+                                Number(a.tags[0]) - Number(b.tags[0])
+                            )
+                            .map((entry, index) => (
+                                <AnimatePresence>
+                                    <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
+                                </AnimatePresence>
+                            ))}
                     </div>
                 </div>
             </div>
