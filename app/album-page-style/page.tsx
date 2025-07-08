@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import BasicPageStuff from '@/components/basicPageStuff';
 import { SongInterface } from '@/lib/interfaces';
+import { useLocalStorage } from 'react-use';
 
 export default function AlbumPageStyle() {
     return (
@@ -25,25 +26,12 @@ export default function AlbumPageStyle() {
 }
 
 function ActualAlbumPageStyle() {
-    const [styleOption, setStyleOption] = useState<Number>(0);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [styleOption, setStyleOption] = useLocalStorage("album-page-style", 1);
     const [hidePane, setHidePane] = useState<Boolean>(false);
 
     useEffect(() => {
         document.title = `Choose your style | UnYeleased`;
     }, []);
-
-    useEffect(() => {
-        const storedStyle = localStorage.getItem("album-page-style");
-        if (storedStyle !== null) {
-            setStyleOption(Number(storedStyle));
-        }
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        isLoaded && localStorage.setItem("album-page-style", String(styleOption));
-    }, [styleOption]);
 
     return (
         <div className="flex flex-col md:flex-row w-full h-full overflow-hidden">

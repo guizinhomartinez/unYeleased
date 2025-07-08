@@ -21,6 +21,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 import BasicPageStuff from "./basicPageStuff";
+import { useLocalStorage } from "react-use";
 
 type KeyboardThing = {
     letter: any;
@@ -86,14 +87,9 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
     const [songTime, setSongtime] = useState(0);
     const [showExplanation, setShowExplanation] = useState(false);
     const songRef = useRef<HTMLAudioElement | null>(null);
-    const [volumeVal, setVolumeVal] = useState(100);
+    const [volumeVal, setVolumeVal] = useLocalStorage("volume", 100);
     const [sliderValue, setSliderValue] = useState(0);
     const [repeat, setRepeat] = useState(false);
-
-    useEffect(() => {
-        const storedVolume = localStorage.getItem("volume") || 100;
-        setVolumeVal(Number(storedVolume));
-    }, []);
 
     useEffect(() => {
         if (!songRef.current) return;
@@ -110,19 +106,9 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
     }, [isPlaying]);
 
     useEffect(() => {
-        const song = songRef.current;
-        if (!song) return;
-
-        localStorage.setItem("volume", volumeVal.toString());
-
-        const localVolume = localStorage.getItem("volume");
-
-        if (localVolume === null) {
-            song.volume = volumeVal / 100;
-        } else {
-            song.volume = Number(localVolume) / 100;
-        }
-    }, [volumeVal, isPlaying]);
+        if (songRef.current)
+            songRef.current.volume = (volumeVal || 100) / 100;
+    }, [volumeVal]);
 
     const useEffectConst = () => {
         const song = songRef.current;
@@ -220,11 +206,11 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
                     e.preventDefault();
                     break;
                 case "ArrowUp":
-                    setVolumeVal(volumeVal + 10);
+                    setVolumeVal((volumeVal || 100) + 10);
                     e.preventDefault();
                     break;
                 case "ArrowDown":
-                    setVolumeVal(volumeVal - 10);
+                    setVolumeVal((volumeVal || 100) - 10);
                     e.preventDefault();
                     break;
             }
@@ -357,7 +343,7 @@ export function PlayerRewrite({ image, text, subtext, songVal, backgroundLore, l
                         <div className="flex gap-4 w-full items-center">
                             <Button onClick={() => { songRef.current && muteSong(songRef) }}
                                 variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
-                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} />
+                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal || 100} />
                             </Button>
                             <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
                             <Label className="-translate-y-0.5">{volumeVal}%</Label>

@@ -31,7 +31,7 @@ export default function Page() {
     const [isGrid, setIsGrid] = useState(true);
     const [entries, setEntries] = useState<HomepageInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [sortingType, setSortingType] = useState("");
+    const [sortingType, setSortingType] = useState("all");
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -174,7 +174,7 @@ export default function Page() {
                                     op.tags.some(tag => tag?.toLowerCase().includes(searchQuery.toLowerCase()));
 
                                 const matchesSorting =
-                                    sortingType === "all" || sortingType === "" ||
+                                    sortingType === "all" ||
                                     op.tags[1]?.toLowerCase() === sortingType.toLowerCase();
 
                                 return matchesSearch && matchesSorting;

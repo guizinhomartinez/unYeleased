@@ -7,7 +7,7 @@ import { Separator } from '../ui/separator';
 import { AlbumExplanation } from '../albumExplanation';
 import { Drawer, DrawerContent, DrawerTrigger } from '../ui/drawer';
 
-export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, fullscreen, setFullscreen, id, variant }: AlbumExplanationInterface) {
+export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, id, variant }: AlbumExplanationInterface) {
     return (
         <Drawer2.Root direction="right">
             <Drawer2.Trigger asChild>
@@ -19,7 +19,7 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, f
             <Drawer2.Portal>
                 <Drawer2.Overlay className="fixed inset-0 bg-black/40" />
                 <Drawer2.Content
-                    className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out", fullscreen ? "max-w-[97.5vw]" : "max-w-[35%]")}
+                    className={cn("fixed right-4 top-4 bottom-4 outline-none transition-all duration-300 ease-in-out max-w-[35%]")}
                     // The gap between the edge of the screen and the drawer2 is 8px in this case.
                     style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                 >
@@ -27,14 +27,10 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, f
                     <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
                         <div className="p-4 overflow-y-auto h-full">
                             <div className='pt-2'>
-                                <div className='flex items-center justify-between mx-auto gap-2'>
-                                    <div className='w-2' />
+                                <div className='flex items-center justify-center mx-auto gap-2'>
                                     <p className='text-3xl font-bold text-center'>Album Explanation</p>
-                                    <div className='cursor-pointer mr-2' onClick={(e) => setFullscreen(!fullscreen)}>
-                                        {!fullscreen ? <Maximize2 /> : <Minimize2 />}
-                                    </div>
                                 </div>
-                                <Separator orientation="horizontal" className="h-1 rounded-full bg-muted mt-1 mb-2" />
+                                <Separator orientation="horizontal" className="h-[3px] rounded-full bg-muted mt-1 mb-2" />
                             </div>
                             <AlbumExplanation id={id} />
                         </div>

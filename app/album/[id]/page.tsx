@@ -7,9 +7,9 @@ import { useQueryState } from "nuqs";
 import { fetchAlbumCredits, fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
-import { capitalizeFirstLetter } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { SongInterface, AlbumsInterface, Credits } from '@/lib/interfaces';
+import { SongInterface, Credits } from '@/lib/interfaces';
+import { useLocalStorage } from 'react-use';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<SongInterface[]>([]);
@@ -23,7 +23,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState<Credits[]>([]);
   const [appearBar, setAppearBar] = useState(true);
-  const [volumeVal, setVolumeVal] = useState<number>(100);
+  const [volumeVal, setVolumeVal] = useLocalStorage("volume", 100);
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
@@ -31,7 +31,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [fullscreen, setFullscreen] = useState<boolean>(false);
-  const [newPageLayout, setNewPageLayout] = useState<Number>(0);
+  const [newPageLayout, setNewPageLayout] = useLocalStorage("album-page-style", 1);
   const [isLoading, setIsLoading] = useState<boolean | null>(false);
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
@@ -39,11 +39,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
-
-    const storedStyle = localStorage.getItem("album-page-style");
-    if (storedStyle !== null) {
-      setNewPageLayout(Number(storedStyle));
-    }
 
     async function loadSongs() {
       const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
@@ -63,15 +58,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     loadSongCredits();
     loadSongs();
   }, [id, albumName]);
-
-  useEffect(() => {
-    const storedVolume = localStorage.getItem("volume") || 100;
-    try {
-      setVolumeVal(Number(storedVolume));
-    } catch (e: any) {
-      throw new Error(e.message);
-    }
-  }, []);
 
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;
@@ -190,19 +176,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
 
   useEffect(() => {
-    const song = songRef.current;
-    if (!song) return;
-
-    localStorage.setItem("volume", volumeVal.toString());
-
-    const localVolume = localStorage.getItem("volume");
-
-    if (localVolume === null || localVolume === "NaN" || isNaN(Number(localVolume))) {
-      song.volume = 0.5;
-    } else {
-      song.volume = Number(localVolume) / 100;
-    }
-  }, [volumeVal, handleSkipSong, isPlaying]);
+    if (songRef.current)
+      songRef.current.volume = (volumeVal || 100) / 100;
+  }, [volumeVal]);
 
   const isMobile = useIsMobile();
 
@@ -235,7 +211,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         songRef={songRef}
         playingSong={playingSong}
         setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal}
+        volumeVal={volumeVal || 100}
         setVolumeVal={setVolumeVal}
         songCreator={songCreator}
         handleSkipSong={handleSkipSong}
@@ -274,7 +250,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         songRef={songRef}
         playingSong={playingSong}
         setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal}
+        volumeVal={volumeVal || 100}
         setVolumeVal={setVolumeVal}
         songCreator={songCreator}
         handleSkipSong={handleSkipSong}

@@ -2,6 +2,8 @@ import { cn } from "@/lib/utils"
 import { Skeleton } from "../ui/skeleton"
 import { AlbumPageTracklistInterface } from "@/lib/interfaces"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee"
+import { Button } from "../ui/button"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return !props.songs.length ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />
@@ -21,13 +23,13 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                     tabIndex={0}
                 >
                     <div className='flex items-center gap-3 relative justify-center'>
-                        <div className='w-12 flex items-start justify-center overflow-hidden'>
+                        <div className='w-12 flex items-start justify-center'>
                             <div className='w-2'>{index + 1}</div>
                         </div>
                     </div>
-                    <div className='select-none whitespace-pre overflow-hidden w-[80%] shadowed-song-name'>
-                        <div className="text-sm font-semibold max-w-52">{element.title ? element.title : ""}</div>
-                        <div className='text-sm text-muted-foreground'>{element.artist ? element.artist : ""}</div>
+                    <div className='max-w-full w-full'>
+                        <AutoMarquee text={element.title ? element.title : ""} className="text-sm font-semibold" number={index} />
+                        <AutoMarquee text={element.artist ? element.artist : ""} className="text-sm text-muted-foreground" number={index + 2} />
                     </div>
                 </div>
             ))}
@@ -47,7 +49,7 @@ function LoadingComponent() {
                     </div>
                 </div>
                 <div className='select-none whitespace-pre overflow-hidden shadowed-song-name'>
-                    <div className="text-sm font-semibold max-w-52"><Skeleton className={cn('rounded-full h-5', `w-${randomNumber1}`)}  /></div>
+                    <div className="text-sm font-semibold max-w-52"><Skeleton className={cn('rounded-full h-5', `w-${randomNumber1}`)} /></div>
                     <div className='text-sm text-muted-foreground'><Skeleton className={cn('rounded-full h-5 translate-y-0.5', `w-${randomNumber2}`)} /></div>
                 </div>
             </div>

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { PlayIcon } from "@/lib/songControlsFunctions";
 import PlayerButtons from "./playerButtons";
+import { AutoMarquee } from "./autoMarquee";
 
 export const MobileSongControls = ({
     songRef,
@@ -53,13 +54,9 @@ export const MobileSongControls = ({
                             <div className="flex items-center p-3 justify-between">
                                 <div className="flex items-center gap-2 flex-1 select-none relative">
                                     <Image src={image} alt={image} width={60} height={60} className="rounded-lg" />
-                                    <div className="overflow-hidden">
-                                        <div className="font-semibold overflow-hidden" id="track-name">
-                                            {songVal !== "" ? songVal : "No Track Found"}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground overflow-hidden" id="song-creator">
-                                            {songCreator}
-                                        </div>
+                                    <div className="overflow-hidden flex flex-col gap-2 max-w-[73%] w-[73%]">
+                                        <AutoMarquee text={songVal || "No Track Found"} className={"font-semibold"} number={0} />
+                                        <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={2} />
                                     </div>
                                 </div>
 

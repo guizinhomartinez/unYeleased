@@ -5,28 +5,14 @@ import { Lrc, LrcLine } from 'react-lrc';
 import '@/public/CSS/lyrics.css'
 import { LyricsInterface } from '@/lib/interfaces';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLocalStorage } from 'react-use';
 
 export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, setLyricsStr }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
     const [lrcContent, setLrcContent] = useState("");
-    const [lyricsAlignment, setLyricsAlignment] = useState("center");
-    const [normalLyricsAlignment, setNormalLyricsAlignment] = useState("left");
+    const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center");
+    const [normalLyricsAlignment, setNormalLyricsAlignment] = useLocalStorage("normal-lyrics-alignment", "left");
     const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const storedStyle = localStorage.getItem("lyrics-alignment");
-        const storedNormalStyle = localStorage.getItem("normal-lyrics-alignment");
-        storedStyle !== null && setLyricsAlignment(lyricsAlignment);
-        storedNormalStyle !== null && setNormalLyricsAlignment(normalLyricsAlignment);
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("lyrics-alignment", lyricsAlignment);
-            localStorage.setItem("normal-lyrics-alignment", normalLyricsAlignment);
-        }
-    }, [lyricsAlignment]);
 
     useEffect(() => {
         const loadLyrics = async () => {
@@ -53,8 +39,8 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
         minHeight: 0,
     };
 
-    const isLeftAlignedText = (active: boolean) => ((localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "left") && active;
-    const isRightAlignedText = (active: boolean) => ((localStorage.getItem("lyrics-alignment") || lyricsAlignment) === "right") && active;
+    const isLeftAlignedText = (active: boolean) => (lyricsAlignment === "left") && active;
+    const isRightAlignedText = (active: boolean) => (lyricsAlignment === "right") && active;
 
     const lineRenderer = useCallback(
         ({ active, line: { content } }: { active: boolean; line: LrcLine }) => (
@@ -62,7 +48,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 className={
                     cn('z-10 select-none transition-all duration-500 font-semibold',
                         !isFullscreenMode ? "text-2xl mb-3" : "text-4xl mb-8",
-                        !isFullscreenMode ? `text-${localStorage.getItem("lyrics-alignment") || lyricsAlignment}` : 'text-left',
+                        !isFullscreenMode ? `text-${lyricsAlignment}` : 'text-left',
                         !isFullscreenMode && (isLeftAlignedText(active) && "translate-x-2.5", isRightAlignedText(active) && "-translate-x-2.5"),
                         active ? 'text-white/95' : 'text-white/10 blur-[2px]',
                         !isFullscreenMode && (!active ? 'scale-90' : 'scale-95'))}
@@ -95,7 +81,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 :
                 <div className="overflow-y-auto scroll-smooth pb-16 px-5" style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (
-                        <div key={index} className={cn("whitespace-pre-wrap text-white", `text-${localStorage.getItem("normal-lyrics-alignment") || normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
+                        <div key={index} className={cn("whitespace-pre-wrap text-white", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
                             {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
                         </div>
                     ))}

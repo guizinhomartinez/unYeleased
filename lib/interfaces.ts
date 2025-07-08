@@ -150,8 +150,6 @@ export interface AlbumPageInterface {
 export interface AlbumExplanationInterface {
     setShowExplanation: any;
     showExplanation: boolean;
-    fullscreen?: boolean;
-    setFullscreen?: any;
     id: string;
     variant: number;
 }

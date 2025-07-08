@@ -1,33 +1,22 @@
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { AlignCenter, AlignLeft, AlignRight, LucideIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useLocalStorage } from "react-use";
 
 export const LyricsSection = () => {
-    const [lyricsAlignment, setLyricsAlignment] = useState("center");
-    const [normalLyricsAlignment, setNormalLyricsAlignment] = useState("left");
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center");
+    const [normalLyricsAlignment, setNormalLyricsAlignment] = useLocalStorage("normal-lyrics-alignment", "left");
 
-    useEffect(() => {
-        const storedStyle = localStorage.getItem("lyrics-alignment");
-        const storedNormalStyle = localStorage.getItem("normal-lyrics-alignment");
-        storedStyle !== null && setLyricsAlignment(lyricsAlignment);
-        storedNormalStyle !== null && setNormalLyricsAlignment(normalLyricsAlignment);
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("lyrics-alignment", lyricsAlignment);
-            localStorage.setItem("normal-lyrics-alignment", normalLyricsAlignment);
-        }
-    }, [lyricsAlignment]);
-
-    const SyncedLyricsAlignment = (props: { alignment: string, icon:LucideIcon, syncedLyrics:boolean }) => {
-        const syncedLyricsOps = lyricsAlignment || localStorage.getItem("lyrics-alignment");
-        const normalLyricsOps = normalLyricsAlignment || localStorage.getItem("normal-lyrics-alignment");
+    const SyncedLyricsAlignment = (props: { alignment: string, icon: LucideIcon, syncedLyrics: boolean }) => {
         return (
-            <div className={cn("rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50", (((props.syncedLyrics ? syncedLyricsOps : normalLyricsOps) === props.alignment) && isLoaded) && "bg-secondary hover:bg-secondary")} aria-label={props.alignment} onClick={() => (props.syncedLyrics ? setLyricsAlignment(props.alignment) : setNormalLyricsAlignment(props.alignment))}>
+            <div
+                className="rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50"
+                style={{
+                    backgroundColor: (props.syncedLyrics ? lyricsAlignment : normalLyricsAlignment) === props.alignment ? "hsl(var(--secondary))" : ""
+                }}
+                suppressHydrationWarning
+                aria-label={props.alignment}
+                onClick={() => (props.syncedLyrics ? setLyricsAlignment(props.alignment) : setNormalLyricsAlignment(props.alignment))}
+            >
                 <props.icon size='18' />
             </div>
         )

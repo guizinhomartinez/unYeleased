@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
-import { MobileSongControls } from "./songControlsSubcomponents/MobileSongControls";
-import { DesktopSongControls } from "./songControlsSubcomponents/DesktopSongControls";
+import { MobileSongControls } from "./songControlsSubcomponents/mobileSongControls";
+import { DesktopSongControls } from "./songControlsSubcomponents/desktopSongControls";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { songControlsInterface } from "@/lib/interfaces";
 import { AnimatePresence } from "motion/react";
 import { FullscreenUI } from "./songControlsSubcomponents/fullscreenUI";
+import { useLocalStorage } from "react-use";
 
 export const SongControls = ({
     songRef,
@@ -34,20 +35,7 @@ export const SongControls = ({
     setShuffle
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
-    const [tutorialNumber, setTutorialNumber] = useState<number>(0);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const storedTutorialNumber = localStorage.getItem("tutorial-number");
-        if (storedTutorialNumber !== null) {
-            setTutorialNumber(Number(storedTutorialNumber));
-        }
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        isLoaded && localStorage.setItem("tutorial-number", String(tutorialNumber));
-    }, [tutorialNumber, isLoaded]);
+    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0);
 
     useEffect(() => {
         const song = songRef.current;

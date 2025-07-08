@@ -1,4 +1,5 @@
-.scrolling-text::after, .scrolling-text::before {
+.scrolling-text::after,
+.scrolling-text::before {
     content: "";
     position: absolute;
     top: 0;
@@ -17,14 +18,14 @@
 }
 
 .shadowed-text::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: -10px;
-  /* background: linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground) / 40) 65%); */
-  width: 2.5em;
-  height: 2em;
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -10px;
+    /* background: linear-gradient(90deg, transparent 0%, hsl(var(--primary-foreground) / 40) 65%); */
+    width: 2.5em;
+    height: 2em;
 }
 
 /* .gradient-thing {
@@ -48,9 +49,10 @@
 } */
 
 .shadowed-song-name {
-    mask-image: linear-gradient(to right,transparent 0%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 0%, #000 95%, transparent 100%);
+
 }
 
 .shadowed-song-name-2 {
-    mask-image: linear-gradient(to right,transparent 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);
 }

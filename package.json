@@ -54,6 +54,7 @@
     "react-icons": "^5.5.0",
     "react-lrc": "^3.2.1",
     "react-resizable-panels": "^2.1.7",
+    "react-use": "^17.6.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-pretty-code": "^0.14.0",
     "rehype-slug": "^6.0.0",

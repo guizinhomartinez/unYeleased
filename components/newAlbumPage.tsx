@@ -12,6 +12,7 @@ import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubc
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
 import PlayButton from "./albumPageSubcomponents/ui/playButton";
 import { SongCover } from "./albumPage";
+import { ChevronLeft } from "lucide-react";
 
 export default function NewAlbumPage(
     {
@@ -21,8 +22,6 @@ export default function NewAlbumPage(
         isPlaying,
         showExplanation,
         setShowExplanation,
-        fullscreen,
-        setFullscreen,
         songs,
         playAlbum,
         appearBar,
@@ -52,7 +51,13 @@ export default function NewAlbumPage(
 
     return (
         <>
-            <BasicPageStuff albumPageStyle={isMobile} />
+            <div className='absolute left-4 md:left-5 top-2 md:top-4'>
+                <Link href="/">
+                    <Button className="rounded-full" size='icon' variant='ghost'>
+                        <ChevronLeft />
+                    </Button>
+                </Link>
+            </div>
             <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
                 <div className={'flex gap-y-2 flex-col items-center justify-start md:w-[425px]'}>
                     <div className="relative flex flex-col gap-2">
@@ -161,8 +166,6 @@ export default function NewAlbumPage(
                                     <DesktopAlbumExplanation
                                         setShowExplanation={setShowExplanation}
                                         showExplanation={showExplanation}
-                                        fullscreen={fullscreen}
-                                        setFullscreen={setFullscreen}
                                         id={id}
                                         variant={0}
                                     />

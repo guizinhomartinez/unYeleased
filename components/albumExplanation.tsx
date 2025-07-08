@@ -24,13 +24,13 @@ export const AlbumExplanation = ({ id }: { id: string }) => {
             {isMobile &&
                 <div className='flex flex-col items-center justify-center mx-auto mt-4'>
                     <p className='text-3xl font-bold text-center'>Album Explanation</p>
-                    <Separator orientation="horizontal" className="h-0.5 rounded-full bg-muted mt-2 mb-2" />
+                    <Separator orientation="horizontal" className="h-px rounded-full bg-muted mt-2 mb-2" />
                 </div>
             }
             <div className={cn(isMobile && "mx-0.5")}>
                 <Suspense fallback={<LoadingComponent />}>
                     {DynamicHeader ? (
-                        <div className={cn("p-2 bg-secondary rounded-2xl", !isMobile && "text-md")}>
+                        <div className={cn("px-3 py-2 bg-secondary rounded-2xl", !isMobile && "text-md")}>
                             <DynamicHeader components={overrideComponents} />
                         </div>
                     ) : (

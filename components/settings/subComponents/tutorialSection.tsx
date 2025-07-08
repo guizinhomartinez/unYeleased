@@ -2,22 +2,10 @@ import { useEffect, useState } from "react";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
 import { RotateCcw } from "lucide-react";
+import { useLocalStorage } from "react-use";
 
 export const TutorialSection = () => {
-    const [tutorialNumber, setTutorialNumber] = useState<number>(0);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const storedTutorialNumber = localStorage.getItem("tutorial-number");
-        if (storedTutorialNumber !== null) {
-            setTutorialNumber(Number(storedTutorialNumber));
-        }
-        setIsLoaded(true);
-    }, []);
-
-    useEffect(() => {
-        isLoaded && localStorage.setItem("tutorial-number", String(tutorialNumber));
-    }, [tutorialNumber, isLoaded]);
+    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0);
 
     return (
         <div className="flex flex-col gap-2">

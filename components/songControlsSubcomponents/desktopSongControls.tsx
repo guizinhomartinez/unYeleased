@@ -16,6 +16,7 @@ import { motion } from "motion/react";
 import { songControlsInterface } from "@/lib/interfaces";
 import PlayerButtons from "./playerButtons";
 import { fetchAlbumLyrics } from "@/lib/fetching";
+import { AutoMarquee } from "./autoMarquee";
 
 type KeyboardThing = {
     letter: any;
@@ -143,7 +144,7 @@ export const DesktopSongControls = ({
     // got this function from the beautiful lyrics spicetify extension
     // shoutout to the goat who made it
     const setFullscreen = (shouldBeFullscreen: boolean) => {
-        const notFullscreen = (document.fullscreenElement === null)
+        const notFullscreen = (document.fullscreenElement === null);
         if (shouldBeFullscreen === notFullscreen) {
             if (shouldBeFullscreen) {
                 document.documentElement.requestFullscreen();
@@ -313,13 +314,9 @@ export const DesktopSongControls = ({
                     }
                     <div className="flex items-center gap-3 select-none w-full">
                         <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
-                        <div>
-                            <p className="font-semibold text-md" title={songVal || "No Track Found"}>
-                                {songVal || "No Track Found"}
-                            </p>
-                            <p className="text-sm text-muted-foreground" title={songCreator || "Unknown"}>
-                                {songCreator || "Unknown"}
-                            </p>
+                        <div className="max-w-[70%] w-full flex flex-col gap-1">
+                            <AutoMarquee text={songVal || "No Track Found"} className="font-semibold text-md" number={0} />
+                            <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={0} />
                         </div>
                     </div>
 
