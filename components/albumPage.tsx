@@ -78,8 +78,6 @@ export default function AlbumPage(
                                         <DesktopAlbumExplanation
                                             setShowExplanation={setShowExplanation}
                                             showExplanation={showExplanation}
-                                            fullscreen={fullscreen}
-                                            setFullscreen={setFullscreen}
                                             id={id}
                                             variant={1}
                                         />
