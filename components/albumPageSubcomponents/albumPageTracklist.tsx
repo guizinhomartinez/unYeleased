@@ -4,6 +4,9 @@ import { AlbumPageTracklistInterface } from "@/lib/interfaces"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee"
 import { Button } from "../ui/button"
+import { EllipsisVertical } from "lucide-react"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return !props.songs.length ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />
@@ -22,14 +25,30 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                     onClick={() => props.handleClickEvent(element, index)}
                     tabIndex={0}
                 >
-                    <div className='flex items-center gap-3 relative justify-center'>
-                        <div className='w-12 flex items-start justify-center'>
-                            <div className='w-2'>{index + 1}</div>
+                    <div className="flex gap-2 w-full justify-between">
+                        <div
+                            className="flex gap-2 w-full h-full"
+                        >
+                            <div className='flex items-center gap-3 relative justify-center'>
+                                <div className='w-10 md:w-12 flex items-start justify-center'>
+                                    <p>{index + 1}</p>
+                                </div>
+                            </div>
+                            <div className='flex flex-col max-w-full w-full h-full pr-4 md:pr-0'>
+                                <AutoMarquee text={element.title ? element.title : ""} className="text-sm font-semibold" number={index} />
+                                <AutoMarquee text={element.artist ? element.artist : ""} className="text-sm text-muted-foreground" number={index + 2} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='max-w-full w-full'>
-                        <AutoMarquee text={element.title ? element.title : ""} className="text-sm font-semibold" number={index} />
-                        <AutoMarquee text={element.artist ? element.artist : ""} className="text-sm text-muted-foreground" number={index + 2} />
+                        <Popover>
+                            <PopoverTrigger onClick={(e) => e.stopPropagation()}>
+                                <Button className="rounded-full bg-transparent" variant="outline" size="icon">
+                                    <EllipsisVertical />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent align="end" className="rounded-2xl p-2">
+                                <DownloadMenu id={props.id} songVal={element.title} className="rounded-xl w-full" />
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 </div>
             ))}

@@ -35,7 +35,7 @@ export const SongControls = ({
     setShuffle
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
-    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0);
+    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
 
     useEffect(() => {
         const song = songRef.current;
@@ -154,7 +154,7 @@ export const SongControls = ({
                                 />
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent className="max-h-full h-full rounded-t-3xl">
+                        <DrawerContent className="max-h-full h-full rounded-t-none">
                             <MiniPlayer
                                 albumCover={image}
                                 songRef={songRef}

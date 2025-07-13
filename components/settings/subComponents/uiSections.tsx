@@ -12,6 +12,27 @@ import { useLocalStorage } from 'react-use';
 
 export const UISection = () => {
     const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
+    const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage("fullscreen-lyrics-right", false);
+    const [scrollOnOverflowLocalStorage, setScrollOnOverflowLocalStorage] = useState("true");
+    const [fullscreenLyricsRightLocalStorage, setFullscreenLyricsRightLocalStorage] = useState("false");
+
+    useEffect(() => {
+        const val = localStorage.getItem("text-scroll-overflow");
+
+        if (val !== null || val !== "") {
+            setScrollOnOverflowLocalStorage(val || "true");
+        }
+    }, [scrollOnOverflow]);
+
+    useEffect(() => {
+        const val = localStorage.getItem("fullscreen-lyrics-right");
+
+        if (val !== null || val !== "") {
+            setFullscreenLyricsRightLocalStorage(val || "true");
+        }
+    }, [fullscreenLyricsRight]);
+
+    console.log(scrollOnOverflow + " | " + scrollOnOverflowLocalStorage);
 
     function ThemeSelection(props: { colorPrimary?: string, option: string }) {
         const { setTheme, theme } = useTheme();
@@ -19,8 +40,8 @@ export const UISection = () => {
         return (
             <>
                 <div className="cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl" style={{ backgroundColor: props.option === theme ? "hsl(var(--secondary))" : "" }} onClick={() => setTheme(props.option)} tabIndex={0} suppressHydrationWarning>
-                    <div className="size-16 mx-auto relative shadow-lg rounded-full">
-                        <div className={cn("size-16 rounded-full", props.option === "system" && "outline-[2px] outline-primary/30")} style={{ background: props.option !== "system" ? props.colorPrimary : "#161616" }} />
+                    <div className="size-12 mx-auto relative shadow-lg rounded-full">
+                        <div className={cn("size-12 rounded-full", props.option === "system" && "outline-[2px] outline-primary/30")} style={{ background: props.option !== "system" ? props.colorPrimary : "#161616" }} />
                         <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
                             {props.option !== "system" ? (props.option !== "dark" ? <Sun className="text-black" /> : <Moon className="text-white" />) : <Laptop2Icon className="text-white" />}
                         </div>
@@ -42,12 +63,10 @@ export const UISection = () => {
         )
     }
 
-    console.log(scrollOnOverflow);
-
     return (
         <>
             <div className="flex flex-col gap-2">
-                <div className="flex flex-col mb-2 text-center">
+                <div className="flex flex-col mb-3 text-center">
                     <p className="text-3xl font-semibold">Appearence</p>
                     <p className="text-sm text-primary/50">Change how some aspects of the UI look.</p>
                 </div>
@@ -76,7 +95,12 @@ export const UISection = () => {
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Scrolling text on overflow</Label>
-                    <Switch checked={scrollOnOverflow} onCheckedChange={setScrollOnOverflow} />
+                    <Switch checked={scrollOnOverflow || scrollOnOverflowLocalStorage === "true"} onCheckedChange={setScrollOnOverflow} />
+                </div>
+
+                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                    <Label className="text-base text-muted-foreground">Fullscreen lyrics on the right</Label>
+                    <Switch checked={fullscreenLyricsRight || fullscreenLyricsRightLocalStorage === "true"} onCheckedChange={setFullscreenLyricsRight} />
                 </div>
 
                 <LyricsSection />

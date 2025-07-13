@@ -4,15 +4,17 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { SongControls } from "./songControls";
-import BasicPageStuff from "./basicPageStuff";
 import { AlbumPageInterface } from "@/lib/interfaces";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Link from "next/link";
-import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumPageAlbumExplanation";
+import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
-import PlayButton from "./albumPageSubcomponents/ui/playButton";
+import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
 import { SongCover } from "./albumPage";
-import { ChevronLeft } from "lucide-react";
+import { ArrowRightIcon, ChevronLeft, EllipsisVertical } from "lucide-react";
+import DownloadAlbumButton from "./albumPageSubcomponents/ui/downloadAlbumButton";
+import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
+import { useState } from "react";
 
 export default function NewAlbumPage(
     {
@@ -48,6 +50,7 @@ export default function NewAlbumPage(
         setShuffle
     }: AlbumPageInterface) {
     const isMobile = useIsMobile();
+    const [open, setOpen] = useState(false);
 
     return (
         <>
@@ -67,8 +70,19 @@ export default function NewAlbumPage(
                                 <SongCover id={id} newAlbumPage={true} />
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold text-center'>{albumName}</p>
-                                    <p className='text-primary/60 text-center'>{albumCreator || <Skeleton className='w-24 h-5' />}</p>
-                                    <p className='text-primary/40'>{year || <Skeleton className='w-16 h-6 translate-y-0.5' />} • {songs.length} songs</p>
+                                    {(albumCreator && songs.length) ? (
+                                        <>
+                                            <p className='text-primary/60 text-center'>{albumCreator}</p>
+                                            <p className='text-primary/40'>{year} • {songs.length} songs</p>
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            <Skeleton className='w-24 h-5' />
+                                            <Skeleton className='w-16 h-6 translate-y-0.5' />
+                                        </>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
@@ -120,9 +134,8 @@ export default function NewAlbumPage(
                                                 Original link{credits.length > 1 ? "s" : ""}
                                             </Button>
                                         </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogTitle>Sources</DialogTitle>
-                                            <DialogDescription>All sources used for this album</DialogDescription>
+                                        <DialogContent className="max-w-[95vw] md:max-w-lg rounded-2xl">
+                                            <DialogTitle className="mb-2">Sources</DialogTitle>
                                             {Object.entries(
                                                 credits.reduce((acc, credit) => {
                                                     const names = Array.isArray(credit.name) ? credit.name : [credit.name];
@@ -139,10 +152,11 @@ export default function NewAlbumPage(
                                                     key={i}
                                                     href={entry.link}
                                                     target="_blank"
-                                                    className="w-full rounded-full -mb-1"
+                                                    className="w-full rounded-full group"
                                                 >
-                                                    <Button variant='secondary' className="w-full rounded-full -mb-4">
+                                                    <Button variant='link' className="-mb-6 p-0 rounded-xl w-full justify-between">
                                                         {entry.name}
+                                                        <ArrowRightIcon size="24" className="opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
                                                     </Button>
                                                 </Link>
                                             ))}
@@ -161,22 +175,38 @@ export default function NewAlbumPage(
                         <div className="font-semibold text-2xl">Tracklist</div>
                         <div className="w-full relative flex justify-end">
                             <div className="flex gap-2">
-                                <PlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
+                                <AlbumPlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
                                 {!isMobile ?
-                                    <DesktopAlbumExplanation
-                                        setShowExplanation={setShowExplanation}
-                                        showExplanation={showExplanation}
-                                        id={id}
-                                        variant={0}
-                                    />
+                                    <>
+                                        <DownloadAlbumButton songs={songs} id={id} variant={0} />
+                                        <DesktopAlbumExplanation
+                                            setShowExplanation={setShowExplanation}
+                                            showExplanation={showExplanation}
+                                            id={id}
+                                            variant={0}
+                                        />
+                                    </>
                                     :
-                                    <MobileAlbumExplanation
-                                        setShowExplanation={setShowExplanation}
-                                        showExplanation={showExplanation}
-                                        id={id}
-                                        variant={0}
-                                    />
+                                    <Drawer open={open} onOpenChange={setOpen}>
+                                        <DrawerTrigger asChild>
+                                            <Button className="rounded-full size-12" variant='outline' size='icon' onClick={() => setOpen(true)}>
+                                                <EllipsisVertical size='24' />
+                                            </Button>
+                                        </DrawerTrigger>
+                                        <DrawerContent>
+                                            <div className="w-full flex flex-col gap-2 *:w-full p-5" onClick={() => setOpen(false)}>
+                                                <DownloadAlbumButton songs={songs} id={id} variant={1} />
+                                                <MobileAlbumExplanation
+                                                    setShowExplanation={setShowExplanation}
+                                                    showExplanation={showExplanation}
+                                                    id={id}
+                                                    variant={1}
+                                                />
+                                            </div>
+                                        </DrawerContent>
+                                    </Drawer>
                                 }
+
                             </div>
                         </div>
                     </div>
@@ -187,6 +217,7 @@ export default function NewAlbumPage(
                         songs={songs}
                         newStyle={true}
                         playingSong={playingSong}
+                        id={id}
                     />
                 </div>
             </div>

@@ -162,6 +162,7 @@ export interface LyricsInterface {
     isSynced?: boolean;
     isFullscreenMode?: boolean;
     setLyricsStr?: any;
+    syncedLyricsClassName?: string;
 }
 
 //Album page tracklist subcompoennt
@@ -172,6 +173,7 @@ export interface AlbumPageTracklistInterface {
     handleClickEvent: any;
     newStyle: boolean;
     playingSong: string;
+    id: string;
 }
 
 // Song player interface

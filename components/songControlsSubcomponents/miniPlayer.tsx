@@ -3,15 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { ChevronLeft, Copy, EllipsisVertical, Info, LoaderCircleIcon, Maximize2, Maximize2Icon, Pause, Play, Share, Shuffle, SkipBack, SkipForward, X } from "lucide-react";
+import { ChevronLeft, Info, LoaderCircleIcon, Maximize2, X } from "lucide-react";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
 import VolumeSlider from '@/components/songControlsSubcomponents/volumeSlider'
-import { formattedSongTime, formatTime, handleSliderChange, muteSong, PlayIcon, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
-import { toast } from "sonner";
-import { Drawer, DrawerTrigger, DrawerContent } from "../ui/drawer";
+import { formattedSongTime, formatTime, handleSliderChange, muteSong, VolumeIcon } from "@/lib/songControlsFunctions";
 import Lyrics from "./lyrics";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { FullscreenButtonInterface, MiniPlayerInterface } from "@/lib/interfaces";
@@ -19,13 +17,9 @@ import PlayerButtons from "./playerButtons";
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { motion } from "motion/react";
-import Marquee from "react-fast-marquee";
 import { AutoMarquee } from "./autoMarquee";
 import { MoreOptionsMenu } from "./moreOptionsMenu";
 import { useLocalStorage } from "react-use";
@@ -52,7 +46,7 @@ export const MiniPlayer = ({
     const [songTimeType, setSongTimeType] = useState(0);
     const [showLyrics, setShowLyrics] = useState<boolean>(false);
     const [isSynced, setIsSynced] = useState(true);
-    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0);
+    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
     const [lyricsStr, setLyricsStr] = useState("");
 
     const useEffectConst = () => {
@@ -137,7 +131,7 @@ export const MiniPlayer = ({
                             <AutoMarquee text={songCreator || "Unknown"} className="text-md text-muted-foreground" number={2} />
                         </div>
                         <div className="items-center flex gap-2">
-                            <MoreOptionsMenu songRef={songRef} songVal={songVal} />
+                            <MoreOptionsMenu songRef={songRef} songVal={songVal} id={id} />
                         </div>
                     </div>
                 </div>

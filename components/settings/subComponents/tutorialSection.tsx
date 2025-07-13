@@ -5,11 +5,11 @@ import { RotateCcw } from "lucide-react";
 import { useLocalStorage } from "react-use";
 
 export const TutorialSection = () => {
-    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0);
+    const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
 
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-col mb-2 text-center">
+            <div className="flex flex-col mb-3 text-center">
                 <p className="text-3xl font-semibold">Tweaks</p>
                 <p className="text-sm text-primary/50">Change more advanced stuff.</p>
             </div>

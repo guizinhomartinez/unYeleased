@@ -45,7 +45,7 @@ export function MobileAlbumExplanation(props: AlbumExplanationInterface) {
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant='outline' className={cn('rounded-full h-12', props.variant === 1 && "w-48")} size={props.variant === 1 ? 'icon' : 'default'} onClick={() => props.setShowExplanation(!props.showExplanation)}>
+                <Button variant={props.variant === 1 ? "secondary" : "outline"} className={cn('rounded-full h-12', props.variant === 1 && "w-48")} size={props.variant === 1 ? 'icon' : 'default'} onClick={() => props.setShowExplanation(!props.showExplanation)}>
                     <BookOpenText />
                     {props.variant === 1 && "Album Explanation"}
                 </Button>

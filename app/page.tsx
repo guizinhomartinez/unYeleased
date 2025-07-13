@@ -6,9 +6,7 @@ import { Input } from "@/components/ui/input";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image'
-import { Separator } from "@/components/ui/separator";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Particles } from "@/components/magicui/particles";
@@ -24,14 +22,14 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-type Checked = DropdownMenuCheckboxItemProps["checked"]
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export default function Page() {
     const [isGrid, setIsGrid] = useState(true);
     const [entries, setEntries] = useState<HomepageInterface[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortingType, setSortingType] = useState("all");
+    const albumRef = useRef<HTMLDivElement>(null);
 
     const { resolvedTheme } = useTheme();
     const [color, setColor] = useState("#ffffff");
@@ -81,20 +79,43 @@ export default function Page() {
             </div>
 
             <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
-                <div className="relative flex h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
-                    <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
+                <div className="relative flex h-[80vh] p-2 w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
+                    <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-2xl md:text-5xl lg:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
-                    <BlurFade className="text-muted-foreground/50 text-center whitespace-pre-wrap w-[90%]" direction="up" delay={0.3}>A compilation of all of Ye's unreleased projects</BlurFade>
+                    <div className="flex gap-1 items-center justify-center">
+                        <BlurFade
+                            className="text-muted-foreground/50 text-center whitespace-pre-wrap w-full"
+                            direction="up"
+                            delay={0.3}
+                        >
+                            A compilation of all of Ye's unreleased projects
+                        </BlurFade>
+                        <AlertDialog>
+                            <AlertDialogTrigger className="text-muted-foreground/50 hover:text-muted-foreground">*</AlertDialogTrigger>
+                            <AlertDialogContent className="sm:rounded-xl">
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-center text-2xl">Important notice</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This project currently only has only 4 albums, way less than the various projects Ye has worked on in his entire carreer.<br /><br />
+                                        This project is maintained by me as only a hobby, so it is only maintained on my free time. I'm also very early into learning JS, React, NextJS and stuff like that, so don't expect some crazy stuff
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogAction className="rounded-xl w-full">Acknowledge</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
-                        <Button onClick={() => document.getElementById("albums")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-xl group">
+                        <Button onClick={() => albumRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-2xl group">
                             <div className="flex gap-2 items-center justify-center">
                                 <ArrowDown className="transition-transform animate-bounce" /> See more
                             </div>
                         </Button>
                         <Link href="/about">
-                            <Button className="py-6 rounded-xl" variant='outline'>
+                            <Button className="py-6 rounded-2xl" variant='outline'>
                                 <div className="flex gap-2 items-center justify-center">
                                     <Info />
                                     About project
@@ -107,7 +128,7 @@ export default function Page() {
                 {/* <Separator orientation="horizontal" className="w-full translate-y-6" /> */}
 
                 <div className="mt-8 h-full">
-                    <div className="flex justify-between gap-2 items-center" id="albums">
+                    <div className="flex justify-between gap-2 items-center" ref={albumRef}>
                         <div className="flex gap-4 items-center">
                             <div className="flex gap-1.5 items-center">
                                 <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">

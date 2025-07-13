@@ -5,9 +5,12 @@ import Lyrics from "./lyrics";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Info, LoaderCircleIcon } from "lucide-react";
+import { AutoMarquee } from "./autoMarquee";
+import { useLocalStorage } from "react-use";
 
 export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, setShowLyricsFullscreen, isLoading }: isFullscreenModeInterface) => {
     const [lyricsStr, setLyricsStr] = useState("");
+    const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage("fullscreen-lyrics-right", false);
 
     return (
         <motion.div className="size-full fixed inset-0 bg-background top-0" initial={{ opacity: 0, y: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 0 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
@@ -17,7 +20,7 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                 layout="position"
             >
                 <motion.div
-                    className="size-full flex flex-col items-center justify-center py-12"
+                    className={cn("size-full flex flex-col items-center justify-center py-12", fullscreenLyricsRight && "order-2")}
                     initial={{ opacity: 0, x: 0 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 0 }}
@@ -52,24 +55,22 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                                 }}
                             />
                         </div>
-                        <div className="flex flex-col gap-1 justify-center items-center">
-                            <p className="text-4xl font-bold text-center">{songVal}</p>
-                            <p className="text-xl font-medium text-primary/30 text-center px-5">{songCreator}</p>
+                        <div className="flex flex-col gap-1 max-w-[90%]">
+                            <AutoMarquee text={songVal} className="text-3xl font-bold text-center mx-auto" number={0} />
+                            <AutoMarquee text={songCreator} className="text-xl font-medium text-primary/30 text-center px-5" marqueeClassName="gap-10" number={2} />
                         </div>
                     </div>
                 </motion.div>
                 <AnimatePresence>
                     {(showLyricsFullscreen && lyricsStr !== "Unable to fetch the lyrics :C") &&
                         <motion.div
-                            className={cn("size-full h-screen flex flex-col items-start justify-start py-12 pr-12")}
+                            className={cn("size-full h-screen flex flex-col items-start justify-start py-12", `p${fullscreenLyricsRight ? "l" : "r"}-12`)}
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 50 }}
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                         >
-                            <div className="w-full">
-                                <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} isFullscreenMode={isFullscreenMode} setLyricsStr={setLyricsStr} />
-                            </div>
+                            <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} isFullscreenMode={isFullscreenMode} setLyricsStr={setLyricsStr} syncedLyricsClassName="pb-24" />
                         </motion.div>
                     }
                 </AnimatePresence>

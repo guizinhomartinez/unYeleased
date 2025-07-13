@@ -2,7 +2,6 @@
 
 import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/lib/fetching";
 import { Player } from "@/components/player";
-import { PlayerRewrite } from "@/components/player-rewrite";
 import { use, useEffect, useState } from "react";
 import { capitalizeFirstLetter } from "@/lib/utils";
 
@@ -15,10 +14,6 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
     const [link, setLink] = useState("");
     const [lyrics, setLyrics] = useState("");
     const [explanation, setExplanation] = useState("");
-
-    useEffect(() => {
-        document.title = `${text || capitalizeFirstLetter(id)} | UnYeleased`;
-    }, [text]);
 
     useEffect(() => {
         async function loadSongs() {
@@ -45,7 +40,11 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
         loadExplanation();
     }, [id]);
 
+    useEffect(() => {
+        document.title = `${text || capitalizeFirstLetter(id)} | UnYeleased`;
+    }, [text]);
+
     return (
-        <PlayerRewrite image={image} text={text} subtext={subtext} songVal={songVal} backgroundLore={explanation} linkToGenius={link} lyrics={lyrics} />
+        <Player image={image} text={text} subtext={subtext} songVal={songVal} backgroundLore={explanation} linkToGenius={link} lyrics={lyrics} id={id} />
     )
 }

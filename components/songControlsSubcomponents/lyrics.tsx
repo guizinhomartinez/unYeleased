@@ -7,12 +7,11 @@ import { LyricsInterface } from '@/lib/interfaces';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLocalStorage } from 'react-use';
 
-export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, setLyricsStr }: LyricsInterface) {
+export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, setLyricsStr, syncedLyricsClassName }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
     const [lrcContent, setLrcContent] = useState("");
-    const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center");
-    const [normalLyricsAlignment, setNormalLyricsAlignment] = useLocalStorage("normal-lyrics-alignment", "left");
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [lyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
+    const [normalLyricsAlignment] = useLocalStorage("normal-lyrics-alignment", "left", { raw: true });
 
     useEffect(() => {
         const loadLyrics = async () => {
@@ -68,7 +67,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                     </div>
                     :
                     <Lrc
-                        className={cn('lrc scroll-smooth lrc-shadow', isFullscreenMode && 'pt-7')}
+                        className={cn('lrc scroll-smooth lrc-shadow', syncedLyricsClassName, isFullscreenMode && 'pt-7')}
                         lrc={lrcContent}
                         currentMillisecond={currentTimeVal}
                         lineRenderer={lineRenderer}
@@ -79,9 +78,9 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 )
 
                 :
-                <div className="overflow-y-auto scroll-smooth pb-16 px-5" style={lrcContainerStyle}>
+                <div className="overflow-y-auto scroll-smooth pb-16 px-6" style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (
-                        <div key={index} className={cn("whitespace-pre-wrap text-white", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
+                        <div key={index} className={cn("whitespace-pre-wrap text-white text-lg [&:not(:last-child)]:mb-3", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("Unable to fetch the lyrics :C") && "text-left text-md")}>
                             {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
                         </div>
                     ))}

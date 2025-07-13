@@ -35,18 +35,22 @@ export const muteSong = (songRef: any) => {
 }
 
 export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioSettingsInterface & LucideProps) => {
-    if (songRef.current?.muted) {
-        return <VolumeOff {...props} />;
-    }
+    if (volumeVal !== undefined && songRef.current) {
+        if (songRef.current.muted) {
+            return <VolumeOff {...props} />;
+        }
 
-    if (volumeVal > 60) {
-        return <Volume2 {...props} />;
-    } else if (volumeVal > 30) {
-        return <Volume1 {...props} />;
-    } else if (volumeVal === 0) {
-        return <VolumeX {...props} />;
+        if (volumeVal > 60) {
+            return <Volume2 {...props} />;
+        } else if (volumeVal > 30) {
+            return <Volume1 {...props} />;
+        } else if (volumeVal === 0) {
+            return <VolumeX {...props} />;
+        } else {
+            return <Volume {...props} />;
+        }
     } else {
-        return <Volume {...props} />;
+        <LoaderCircleIcon className="animate-spin" />
     }
 };
 

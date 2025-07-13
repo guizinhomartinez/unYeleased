@@ -54,7 +54,7 @@ export const MobileSongControls = ({
                             <div className="flex items-center p-3 justify-between">
                                 <div className="flex items-center gap-2 flex-1 select-none relative">
                                     <Image src={image} alt={image} width={60} height={60} className="rounded-lg" />
-                                    <div className="overflow-hidden flex flex-col gap-2 max-w-[73%] w-[73%]">
+                                    <div className="overflow-hidden max-w-[60%]">
                                         <AutoMarquee text={songVal || "No Track Found"} className={"font-semibold"} number={0} />
                                         <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={2} />
                                     </div>

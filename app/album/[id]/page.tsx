@@ -9,7 +9,7 @@ import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { SongInterface, Credits } from '@/lib/interfaces';
-import { useLocalStorage } from 'react-use';
+import { useEffectOnce, useLocalStorage } from 'react-use';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<SongInterface[]>([]);
@@ -23,19 +23,28 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumCreator, setAlbumCreator] = useState("Kanye West");
   const [credits, setCredits] = useState<Credits[]>([]);
   const [appearBar, setAppearBar] = useState(true);
-  const [volumeVal, setVolumeVal] = useLocalStorage("volume", 100);
+  const [volumeVal, setVolumeVal] = useState<number>(100);
   const [songCreator, setSongCreator] = useState("");
   const [clickedAmmount, setClickedAmmount] = useState(0);
   const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
-  const [repeatAlbum, setRepeatAlbum] = useState(0);
+  const [repeatAlbum, setRepeatAlbum] = useState(0); // 0 is off, 1 is repeat the album and 2 is repeat the current song
   const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [fullscreen, setFullscreen] = useState<boolean>(false);
-  const [newPageLayout, setNewPageLayout] = useLocalStorage("album-page-style", 1);
+  const [newPageLayout] = useLocalStorage("album-page-style", 1);
   const [isLoading, setIsLoading] = useState<boolean | null>(false);
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
   const [shuffle, setShuffle] = useState(false);
+
+  useEffect(() => {
+    const storedVolume = localStorage.getItem("volume") || 100;
+    try {
+      setVolumeVal(Number(storedVolume));
+    } catch (e: any) {
+      throw new Error(e.message);
+    }
+  }, []);
 
   useEffect(() => {
     document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
@@ -176,13 +185,23 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [currentSongIndex, songs, playingSong, repeatAlbum, endedSongFunction]);
 
   useEffect(() => {
-    if (songRef.current)
-      songRef.current.volume = (volumeVal || 100) / 100;
-  }, [volumeVal]);
+    const song = songRef.current;
+    if (!song) return;
+
+    localStorage.setItem("volume", volumeVal.toString());
+
+    const localVolume = localStorage.getItem("volume");
+
+    if (localVolume === null || localVolume === "NaN" || isNaN(Number(localVolume)) || (Number(localVolume) < 0 || Number(localVolume) > 100)) {
+      song.volume = 0.5;
+    } else {
+      song.volume = Number(localVolume) / 100;
+    }
+  }, [volumeVal, handleSkipSong, isPlaying]);
 
   const isMobile = useIsMobile();
 
-  useEffect(() => {
+  useEffectOnce(() => {
     if (isMobile) {
       setAppearBar(playingSong !== "" ? true : false);
     }
@@ -211,7 +230,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         songRef={songRef}
         playingSong={playingSong}
         setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal || 100}
+        volumeVal={volumeVal}
         setVolumeVal={setVolumeVal}
         songCreator={songCreator}
         handleSkipSong={handleSkipSong}
@@ -250,7 +269,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         songRef={songRef}
         playingSong={playingSong}
         setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal || 100}
+        volumeVal={volumeVal}
         setVolumeVal={setVolumeVal}
         songCreator={songCreator}
         handleSkipSong={handleSkipSong}

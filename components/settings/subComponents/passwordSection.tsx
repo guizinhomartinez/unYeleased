@@ -15,7 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LoaderCircleIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,13 @@ import { cn } from "@/lib/utils";
 export const Password = () => {
     const router = useRouter();
     const [loadingNextPage, setLoadingNextPage] = useState(false);
+    const [randomNumber, setRandomNumber] = useState<number | null>(null);
+
+    useEffect(() => {
+        setRandomNumber(Math.floor(Math.random() * 5));
+    }, []);
+
+    console.log(randomNumber);
 
     const FormSchema = z.object({
         pin: z.string().min(4, {
@@ -48,7 +55,7 @@ export const Password = () => {
 
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-col mb-2 text-center">
+            <div className="flex flex-col mb-3 text-center">
                 <p className="text-3xl font-semibold">Password</p>
                 <p className="text-sm text-primary/50">Here you can type a secret code to access a hidden song.</p>
             </div>
@@ -76,13 +83,16 @@ export const Password = () => {
                             )}
                         />
 
-                        <Button type="submit" className={cn("flex justify-center items-center", loadingNextPage && "cursor-progress")} disabled={loadingNextPage}>
-                            {loadingNextPage && <LoaderCircleIcon className="-ms-1 animate-spin" size={16} aria-hidden="true" />}
+                        <Button type="submit" className={cn("flex justify-center items-center rounded-xl", loadingNextPage && "cursor-progress")} disabled={loadingNextPage}>
+                            {loadingNextPage && <LoaderCircleIcon className="animate-spin" size={16} aria-hidden="true" />}
                             {!loadingNextPage && "Submit"}
                         </Button>
                     </form>
                 </Form>
             </div>
+            {(randomNumber !== null && randomNumber === 0) &&
+                <p className="text-center mt-4 text-muted-foreground opacity-75">The passcode is 2424 btw</p>
+            }
         </div>
     )
 }

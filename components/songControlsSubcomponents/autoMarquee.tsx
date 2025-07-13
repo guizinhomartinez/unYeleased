@@ -3,13 +3,14 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import Marquee from "react-fast-marquee";
-import { useLocalStorage } from "react-use";
+import { useEffectOnce, useLocalStorage } from "react-use";
+import "@public/CSS/song-controls.css";
 
-export const AutoMarquee = (props: { text: string, className: string, number: number }) => {
+export const AutoMarquee = (props: { text: string, className: string, marqueeClassName?: string, number: number }) => {
     const [isOverflowing, setIsOverflowing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
-    const [addSecondClass, setAddSecondClass] = useState(false);
+    const [scrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
+    const [shouldPlay, setShouldPlay] = useState(false);
 
     useEffect(() => {
         const checkOverflow = () => {
@@ -25,24 +26,32 @@ export const AutoMarquee = (props: { text: string, className: string, number: nu
     }, [props.text]);
 
     useEffect(() => {
-        setAddSecondClass(false);
-        setTimeout(() => setAddSecondClass(true), 5000);
-    }, [props.text])
+        setShouldPlay(false);
+        if (isOverflowing) setTimeout(() => setShouldPlay(true), 5000);
+    }, [isOverflowing])
 
     return (
         <div
             ref={containerRef}
             className={cn(
-                "max-w-full w-full overflow-hidden",
+                "max-w-full w-full overflow-hidden h-full",
                 props.className
             )}
         >
             {isOverflowing && scrollOnOverflow ? (
-                <Marquee className={cn("select-none leading-none block w-36 gap-2", isOverflowing && (addSecondClass ? "shadowed-song-name-2" : "shadowed-song-name"))} delay={5} speed={30}>
+                <Marquee
+                    className={cn("select-none w-36 z-0 gap-2", props.marqueeClassName, `shadowed-song-name-${shouldPlay ? "2" : "1"}`)}
+                    play={shouldPlay}
+                    speed={30}
+                    onCycleComplete={() => {
+                        setShouldPlay(false);
+                        setTimeout(() => setShouldPlay(true), 5000);
+                    }}
+                >
                     {props.text}
                 </Marquee>
             ) : (
-                <span className="select-none leading-none block w-36 whitespace-nowrap">
+                <span className="select-none w-36 whitespace-nowrap">
                     {props.text}
                 </span>
             )}

@@ -48,9 +48,8 @@
     height: 2.5em;
 } */
 
-.shadowed-song-name {
+.shadowed-song-name-1 {
     mask-image: linear-gradient(to right, transparent 0%, #000 0%, #000 95%, transparent 100%);
-
 }
 
 .shadowed-song-name-2 {

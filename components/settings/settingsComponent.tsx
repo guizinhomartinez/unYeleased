@@ -6,18 +6,17 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { Laptop2Icon, LoaderCircleIcon, Moon, PaintbrushVertical, Sun, AlignLeft, AlignCenter, AlignRight, ChevronLeft } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { useTheme } from "next-themes";
 import Link from "next/link";
-import { Label } from "../ui/label";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { TutorialSection } from "./subComponents/tutorialSection";
 import { UISection } from "./subComponents/uiSections";
 import { Password } from "./subComponents/passwordSection";
+import { useQueryState } from "nuqs";
 
-export default function SettingsComponent({ mobile }: { mobile: boolean }) {
+export default function SettingsComponent() {
+    const [currentTab, setCurrentTab] = useQueryState("tab", { defaultValue: "appearence" });
+
     return (
         <div>
             <div className="flex items-center justify-between rounded-full mb-4 relative">
@@ -29,28 +28,31 @@ export default function SettingsComponent({ mobile }: { mobile: boolean }) {
                 <p className="text-2xl font-bold absolute top-1 left-1/2 -translate-x-1/2">Settings</p>
                 <div />
             </div>
-            <Tabs defaultValue="appearence" className="w-full gap-4 overflow-hidden">
+            <Tabs defaultValue={currentTab} className="w-full gap-4 overflow-hidden">
                 <TabsList className="w-full gap-1 rounded-lg *:rounded-lg *:w-full bg-primary-foreground/50 py-1 overflow-x-auto">
                     <TabsTrigger
                         value="appearence"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
+                        onClick={() => setCurrentTab("appearence")}
                     >
                         Appearence
                     </TabsTrigger>
                     <TabsTrigger
                         value="tweaks"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
+                        onClick={() => setCurrentTab("tweaks")}
                     >
                         Tweaks
                     </TabsTrigger>
                     <TabsTrigger
                         value="password"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
+                        onClick={() => setCurrentTab("password")}
                     >
                         Password
                     </TabsTrigger>
                 </TabsList>
-                <div className="rounded-2xl bg-primary-foreground/50 p-4">
+                <div className="rounded-2xl border bg-primary-foreground/50 p-4">
                     <TabsContent value="appearence"><UISection /></TabsContent>
                     <TabsContent value="tweaks"><TutorialSection /></TabsContent>
                     <TabsContent value="password"><Password /></TabsContent>

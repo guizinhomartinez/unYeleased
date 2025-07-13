@@ -10,9 +10,9 @@ import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
 import { AlbumPageInterface, SongInterface } from "@/lib/interfaces";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumPageAlbumExplanation";
+import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
-import PlayButton from "./albumPageSubcomponents/ui/playButton";
+import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
 import { useState } from "react";
 
 export default function AlbumPage(
@@ -73,7 +73,7 @@ export default function AlbumPage(
                                     </div>
                                 </div>
                                 <div className='flex gap-2 justify-center md:justify-normal mt-2'>
-                                    <PlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
+                                    <AlbumPlayButton isPlaying={isPlaying} playAlbum={playAlbum} />
                                     {!useIsMobile() ?
                                         <DesktopAlbumExplanation
                                             setShowExplanation={setShowExplanation}
@@ -183,6 +183,7 @@ export default function AlbumPage(
                             songs={songs}
                             newStyle={false}
                             playingSong={playingSong}
+                            id={id}
                         />
                     </div>
                 </div>
@@ -226,7 +227,7 @@ export function SongCover({ id, newAlbumPage }: { id: string, newAlbumPage: bool
         <div className="relative">
             {!loaded && (
                 <Skeleton
-                    className="absolute top-0 left-0 rounded-xl"
+                    className="absolute top-0 left-0 rounded-xl aspect-square"
                     style={{ width: size, height: size }}
                 />
             )}
@@ -236,7 +237,7 @@ export function SongCover({ id, newAlbumPage }: { id: string, newAlbumPage: bool
                 width={size}
                 height={size}
                 priority={true}
-                className={cn('rounded-xl transition-opacity duration-300', !newAlbumPage && "outline outline-primary/10", loaded ? 'opacity-100 md:mt-4' : 'opacity-0')}
+                className={cn('rounded-xl transition-opacity duration-300 aspect-square', !newAlbumPage && "outline outline-primary/10", loaded ? 'opacity-100 md:mt-4' : 'opacity-0')}
                 onLoad={() => setLoaded(true)}
             />
         </div>

@@ -17,6 +17,8 @@ import { songControlsInterface } from "@/lib/interfaces";
 import PlayerButtons from "./playerButtons";
 import { fetchAlbumLyrics } from "@/lib/fetching";
 import { AutoMarquee } from "./autoMarquee";
+import useAlbumAverageColor from "../getAverageColor";
+import { DownloadMenu } from "./moreOptionsMenu";
 
 type KeyboardThing = {
     letter: any;
@@ -247,6 +249,8 @@ export const DesktopSongControls = ({
         },
     ]
 
+    const averageColors: string[] = useAlbumAverageColor(image);
+
     if (isFullscreenMode) {
         return (
             <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full relative before:absolute before:-top-5 before:-left-10 before:size-[150%] before:blur-md before:bg-[rgba(30,30,30,0.3)] before:-z-10" onKeyDown={(e) => handleKeyDown}>
@@ -276,7 +280,7 @@ export const DesktopSongControls = ({
                     </div>
                     <div />
                     <div className="flex justify-center gap-3 w-[25%] items-center">
-                        <Button className={cn("rounded-full p-6", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} variant='link' disabled={fullscreenLyricsStr !== "Unable to fetch the lyrics :C"} onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
+                        <Button className={cn("rounded-full p-6", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} variant='link' disabled={fullscreenLyricsStr === "Unable to fetch the lyrics :C"} onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
                             <MicVocal size='36' />
                         </Button>
                         <Button
@@ -300,10 +304,16 @@ export const DesktopSongControls = ({
     } else {
         return (
             <>
-                <div className="flex w-full justify-between items-center" onKeyDown={(e) => handleKeyDown}>
+                <div
+                    className="absolute top-0 left-0 w-full h-full opacity-15 z-10 rounded-l-xl"
+                    style={{
+                        background: `linear-gradient(90deg, rgb(${averageColors[0]}, ${averageColors[1]}, ${averageColors[2]}), transparent 75%)`
+                    }}
+                />
+                <div className="flex w-full justify-between items-center z-20" onKeyDown={(e) => handleKeyDown}>
                     {!isFullscreenMode &&
                         <Button className={cn(
-                            'absolute -top-4 right-0 bg-primary-foreground rounded-full duration-500 border-2 border-secondary',
+                            'absolute -top-4 right-0 bg-primary-foreground rounded-full duration-500 border-2 border-secondary z-50',
                             !appearBar && 'rotate-180 -top-14')}
                             size='icon'
                             variant='outline'
@@ -314,7 +324,7 @@ export const DesktopSongControls = ({
                     }
                     <div className="flex items-center gap-3 select-none w-full">
                         <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
-                        <div className="max-w-[70%] w-full flex flex-col gap-1">
+                        <div className="max-w-[70%] w-full">
                             <AutoMarquee text={songVal || "No Track Found"} className="font-semibold text-md" number={0} />
                             <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={0} />
                         </div>
@@ -356,36 +366,10 @@ export const DesktopSongControls = ({
                                 <PopoverContent className="min-w-[200px] h-full bg-background rounded-xl p-2 flex flex-col w-full gap-2" side='top'>
                                     <Button className="w-full rounded-xl" variant='secondary' disabled={!songRef.current} id="share-button" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                                         <Share />
-                                        Share
+                                        Share song
                                     </Button>
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button className="w-full rounded-xl" variant='secondary' disabled={!songRef.current} id="share-button">
-                                                <KeyboardIcon />
-                                                Shortcuts
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>Keyboard shortcuts</DialogTitle>
-                                            </DialogHeader>
-                                            <div className="flex flex-col gap-2">
-                                                {keyboardThing.map((thing, index) => (
-                                                    <div className="flex gap-2 items-center" key={index}>
-                                                        <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
-                                                            <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
-                                                                {thing.letter}
-                                                            </p>
-                                                            <p>
-                                                                {thing.letter2}
-                                                            </p>
-                                                        </kbd>
-                                                        {thing.description}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </DialogContent>
-                                    </Dialog>
+                                    <DownloadMenu id={id} songVal={songVal} className="rounded-xl w-full h-9" />
+                                    <ShortcutsMenu keyboardThing={keyboardThing} songRef={songRef} />
                                 </PopoverContent>
                             </Popover>
                             <Popover>
@@ -429,7 +413,7 @@ export const DesktopSongControls = ({
                                 size='icon'
                                 disabled={!songRef.current}
                             >
-                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal} repeat={repeat} />
+                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal || 100} repeat={repeat} />
                             </Button>
                             <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[volumeVal]} onValueChange={setVolumeVal} onWheel={handleWheel} />
                             <Label className="w-12 text-right">{volumeVal}%</Label>
@@ -450,3 +434,36 @@ export const DesktopSongControls = ({
         )
     }
 };
+
+const ShortcutsMenu = (props: { keyboardThing: KeyboardThing, songRef: any }) => {
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button className="w-full rounded-xl" variant='secondary' disabled={!props.songRef.current} id="share-button">
+                    <KeyboardIcon />
+                    Shortcuts
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Keyboard shortcuts</DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col gap-2">
+                    {props.keyboardThing.map((thing, index) => (
+                        <div className="flex gap-2 items-center" key={index}>
+                            <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
+                                <p className={cn(thing.type === "text" && "text-base flex justify-center items-center text-center ml-2")}>
+                                    {thing.letter}
+                                </p>
+                                <p>
+                                    {thing.letter2}
+                                </p>
+                            </kbd>
+                            {thing.description}
+                        </div>
+                    ))}
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
