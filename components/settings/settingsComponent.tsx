@@ -12,10 +12,8 @@ import Link from "next/link";
 import { TutorialSection } from "./subComponents/tutorialSection";
 import { UISection } from "./subComponents/uiSections";
 import { Password } from "./subComponents/passwordSection";
-import { useQueryState } from "nuqs";
 
 export default function SettingsComponent() {
-    const [currentTab, setCurrentTab] = useQueryState("tab", { defaultValue: "appearence" });
 
     return (
         <div>
@@ -28,26 +26,23 @@ export default function SettingsComponent() {
                 <p className="text-2xl font-bold absolute top-1 left-1/2 -translate-x-1/2">Settings</p>
                 <div />
             </div>
-            <Tabs defaultValue={currentTab} className="w-full gap-4 overflow-hidden">
+            <Tabs className="w-full gap-4 overflow-hidden">
                 <TabsList className="w-full gap-1 rounded-lg *:rounded-lg *:w-full bg-primary-foreground/50 py-1 overflow-x-auto">
                     <TabsTrigger
                         value="appearence"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                        onClick={() => setCurrentTab("appearence")}
                     >
                         Appearence
                     </TabsTrigger>
                     <TabsTrigger
                         value="tweaks"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                        onClick={() => setCurrentTab("tweaks")}
                     >
                         Tweaks
                     </TabsTrigger>
                     <TabsTrigger
                         value="password"
                         className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                        onClick={() => setCurrentTab("password")}
                     >
                         Password
                     </TabsTrigger>
