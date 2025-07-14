@@ -64,13 +64,20 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                 <AnimatePresence>
                     {(showLyricsFullscreen && lyricsStr !== "Unable to fetch the lyrics :C") &&
                         <motion.div
-                            className={cn("size-full h-screen flex flex-col items-start justify-start py-12", `p${fullscreenLyricsRight ? "l" : "r"}-12`)}
+                            className={cn("size-full h-screen flex flex-col items-start justify-start py-12")}
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 50 }}
                             transition={{ duration: 0.6, ease: "easeInOut" }}
                         >
-                            <Lyrics currentTimeVal={currentTimeVal} id={id} songVal={songVal} isFullscreenMode={isFullscreenMode} setLyricsStr={setLyricsStr} syncedLyricsClassName="pb-24" />
+                            <Lyrics
+                                currentTimeVal={currentTimeVal}
+                                id={id}
+                                songVal={songVal}
+                                isFullscreenMode={isFullscreenMode}
+                                setLyricsStr={setLyricsStr}
+                                syncedLyricsClassName={cn("pb-24", fullscreenLyricsRight !== undefined && (!fullscreenLyricsRight ? "pr-12" : "pl-12"))}
+                            />
                         </motion.div>
                     }
                 </AnimatePresence>

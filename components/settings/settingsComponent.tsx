@@ -26,7 +26,7 @@ export default function SettingsComponent() {
                 <p className="text-2xl font-bold absolute top-1 left-1/2 -translate-x-1/2">Settings</p>
                 <div />
             </div>
-            <Tabs className="w-full gap-4 overflow-hidden">
+            <Tabs defaultValue="appearence" className="w-full gap-4 overflow-hidden">
                 <TabsList className="w-full gap-1 rounded-lg *:rounded-lg *:w-full bg-primary-foreground/50 py-1 overflow-x-auto">
                     <TabsTrigger
                         value="appearence"

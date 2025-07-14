@@ -100,7 +100,7 @@ export const UISection = () => {
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Fullscreen lyrics on the right</Label>
-                    <Switch checked={fullscreenLyricsRight || fullscreenLyricsRightLocalStorage === "true"} onCheckedChange={setFullscreenLyricsRight} />
+                    <Switch checked={(fullscreenLyricsRight || fullscreenLyricsRightLocalStorage === "true") || (fullscreenLyricsRight === undefined && false)} onCheckedChange={setFullscreenLyricsRight} />
                 </div>
 
                 <LyricsSection />
