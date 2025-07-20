@@ -80,7 +80,7 @@ export default function Page() {
 
             <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
                 <div className="relative flex h-[80vh] p-2 w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
-                    <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-2xl md:text-5xl lg:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
+                    <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-7xl lg:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
                     <div className="flex gap-1 items-center justify-center">
@@ -93,7 +93,7 @@ export default function Page() {
                         </BlurFade>
                         <AlertDialog>
                             <AlertDialogTrigger className="text-muted-foreground/50 hover:text-muted-foreground">*</AlertDialogTrigger>
-                            <AlertDialogContent className="sm:rounded-xl">
+                            <AlertDialogContent className="!rounded-xl">
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-center text-2xl">Important notice</AlertDialogTitle>
                                     <AlertDialogDescription>
@@ -109,7 +109,7 @@ export default function Page() {
                     </div>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
-                        <Button onClick={() => albumRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="py-6 rounded-2xl group">
+                        <Button onClick={() => scrollTo({ behavior: "smooth", top: (albumRef.current?.getBoundingClientRect().top ?? 0) + pageYOffset - 20 })} className="py-6 rounded-2xl group">
                             <div className="flex gap-2 items-center justify-center">
                                 <ArrowDown className="transition-transform animate-bounce" /> See more
                             </div>

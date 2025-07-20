@@ -224,11 +224,11 @@ export function SongCover({ id, newAlbumPage }: { id: string, newAlbumPage: bool
     const size = !newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260);
 
     return (
-        <div className="relative">
+        <div className={cn("relative", !loaded && "mt-4")}>
             {!loaded && (
                 <Skeleton
                     className="absolute top-0 left-0 rounded-xl aspect-square"
-                    style={{ width: size, height: size }}
+                    style={{ width: 250, height: 250 }}
                 />
             )}
             <Image

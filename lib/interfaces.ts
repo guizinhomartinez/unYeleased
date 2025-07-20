@@ -161,7 +161,6 @@ export interface LyricsInterface {
     songVal: string;
     isSynced?: boolean;
     isFullscreenMode?: boolean;
-    setLyricsStr?: any;
     syncedLyricsClassName?: string;
 }
 

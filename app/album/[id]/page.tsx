@@ -2,9 +2,8 @@
 
 import * as React from 'react'
 import { useEffect, useState, useRef, use } from 'react';
-import '@public/CSS/song-controls.css';
 import { useQueryState } from "nuqs";
-import { fetchAlbumCredits, fetchAlbumInfo, fetchAlbumSongs } from '@/lib/fetching';
+import { fetchAlbumCredits, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
 import AlbumPage from '@/components/albumPage';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -47,8 +46,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, []);
 
   useEffect(() => {
-    document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
-
     async function loadSongs() {
       const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
       if (data === "NOT FOUND") {
@@ -64,9 +61,17 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       const data = await fetchAlbumCredits(id.toLowerCase().replace(" ", "-"));
       setCredits(data.credits);
     }
+
     loadSongCredits();
     loadSongs();
   }, [id, albumName]);
+
+  useEffect(() => {
+    if ((playingSong === null || playingSong === "") && !isPlaying)
+      document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
+    else
+      document.title = `${playingSong} by ${songCreator} | UnYeleased`;
+  }, [playingSong, songCreator, id, albumName])
 
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;

@@ -1,12 +1,13 @@
-import { cn } from "@/lib/utils"
+import { cn, formatDuration } from "@/lib/utils"
 import { Skeleton } from "../ui/skeleton"
 import { AlbumPageTracklistInterface } from "@/lib/interfaces"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee"
 import { Button } from "../ui/button"
-import { EllipsisVertical } from "lucide-react"
+import { EllipsisVertical, MicVocal } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
+import { useEffect, useState } from "react"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return !props.songs.length ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />
@@ -14,6 +15,34 @@ export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
 
 function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const isMobile = useIsMobile();
+    const [durations, setDurations] = useState<(string | null)[]>([]);
+
+    useEffect(() => {
+        async function loadDurations() {
+            const newDurations = await Promise.all(
+                props.songs.map((song) => {
+                    return new Promise<string | null>((resolve) => {
+                        const audioPrefix = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/`;
+                        const audioFileType = '.m4a';
+                        const audio = new Audio(audioPrefix + song.title + audioFileType);
+
+                        audio.addEventListener("loadedmetadata", () => {
+                            resolve(formatDuration(audio.duration));
+                        });
+                        audio.addEventListener("error", () => {
+                            resolve(null);
+                        });
+                    });
+                })
+            );
+
+            setDurations(newDurations);
+        };
+
+        loadDurations();
+    }, [props.songs, props.id]);
+
+    console.log(durations)
 
     return (
         <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', !props.newStyle && 'border-2', props.appearBar ? (props.newStyle ? (isMobile ? 'mb-20' : 'mb-16') : 'mb-24') : (props.newStyle ? (isMobile ? '-mb-0' : '-mb-8') : '-mb-4'))}>
@@ -21,34 +50,42 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                 <div
                     key={index}
                     className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full",
-                        props.playingSong === element.title ? 'bg-primary/15 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')}
+                        props.playingSong === element.title ? 'bg-primary/10 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')}
                     onClick={() => props.handleClickEvent(element, index)}
                     tabIndex={0}
                 >
-                    <div className="flex gap-2 w-full justify-between">
-                        <div
-                            className="flex gap-2 w-full h-full"
-                        >
+                    <div className="flex w-full items-center justify-between gap-2">
+                        <div className="flex h-full max-w-[65%] md:max-w-[80%] lg:max-w-full items-center gap-2 overflow-hidden">
                             <div className='flex items-center gap-3 relative justify-center'>
-                                <div className='w-10 md:w-12 flex items-start justify-center'>
+                                <div className='w-8 md:w-12 flex items-start justify-center font-mono'>
                                     <p>{index + 1}</p>
                                 </div>
                             </div>
-                            <div className='flex flex-col max-w-full w-full h-full pr-4 md:pr-0'>
+                            <div className='flex flex-col max-w-[58vw] h-full'>
                                 <AutoMarquee text={element.title ? element.title : ""} className="text-sm font-semibold" number={index} />
                                 <AutoMarquee text={element.artist ? element.artist : ""} className="text-sm text-muted-foreground" number={index + 2} />
                             </div>
                         </div>
-                        <Popover>
-                            <PopoverTrigger onClick={(e) => e.stopPropagation()}>
-                                <Button className="rounded-full bg-transparent" variant="outline" size="icon">
-                                    <EllipsisVertical />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent align="end" className="rounded-2xl p-2">
-                                <DownloadMenu id={props.id} songVal={element.title} className="rounded-xl w-full" />
-                            </PopoverContent>
-                        </Popover>
+                        <div className="flex min-w-fit items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                            {durations[index] ?
+                                <span className="text-sm text-muted-foreground min-w-[40px] text-right font-mono">
+                                    {durations[index]}
+                                </span>
+                                :
+                                <Skeleton className="w-10 h-7" />
+                            }
+
+                            <Popover>
+                                <PopoverTrigger onClick={(e) => e.stopPropagation()}>
+                                    <Button className="rounded-full bg-transparent" variant="outline" size="icon">
+                                        <EllipsisVertical />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent align="end" className="flex flex-col gap-2 rounded-2xl p-2 max-w-72 items-center">
+                                    <DownloadMenu id={props.id} songVal={element.title} className="rounded-xl w-full" />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
                     </div>
                 </div>
             ))}
@@ -57,8 +94,9 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
 }
 
 function LoadingComponent() {
-    const randomNumber1 = Math.floor(Math.random() * 48);
-    const randomNumber2 = Math.floor(Math.random() * 56);
+    const [randomNumber1] = useState(32);
+    const [randomNumber2] = useState(48);
+
     function TrackItem({ index }: { index: number }) {
         return (
             <div className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full cursor-not-allowed")}>
@@ -67,16 +105,23 @@ function LoadingComponent() {
                         <div className='w-2 text-right'>{index + 1}</div>
                     </div>
                 </div>
-                <div className='select-none whitespace-pre overflow-hidden shadowed-song-name'>
-                    <div className="text-sm font-semibold max-w-52"><Skeleton className={cn('rounded-full h-5', `w-${randomNumber1}`)} /></div>
-                    <div className='text-sm text-muted-foreground'><Skeleton className={cn('rounded-full h-5 translate-y-0.5', `w-${randomNumber2}`)} /></div>
+                <div className="flex gap-2 w-full justify-between">
+                    <div className='select-none whitespace-pre overflow-hidden shadowed-song-name'>
+                        <div className="max-w-52"><Skeleton className={cn('rounded-xl h-5', `w-${randomNumber1}`)} /></div>
+                        <div><Skeleton className={cn('rounded-xl h-5 translate-y-0.5', `w-${randomNumber2}`)} /></div>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        <Skeleton className="w-10 h-7" />
+                    </div>
                 </div>
+
             </div>
         )
     }
 
     return (
         <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted -mb-4')}>
+
             <TrackItem index={0} />
             <TrackItem index={1} />
             <TrackItem index={2} />

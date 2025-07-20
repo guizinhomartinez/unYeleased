@@ -53,9 +53,12 @@ export async function fetchSinglesExplanation(id: string) {
 // album lyrics, more specifically fetching the lyric of each file on demand
 export async function fetchAlbumLyrics(id: any, songName: any) {
     let response = "";
+
+    if (songName === null || songName === "" || id === null || id === "") return;
+
     try {
         const res = await fetch(`/song-files/songLyrics/${id.toLowerCase()}/${songName.toLowerCase()}.lrc`);
-        res.ok ? response = await res.text() : response = "Unable to fetch the lyrics :C";
+        res.ok ? response = await res.text() : response = "LYRICS NOT FOUND";
     } catch (e) {
         response = "Error: Network or server issue";
     }

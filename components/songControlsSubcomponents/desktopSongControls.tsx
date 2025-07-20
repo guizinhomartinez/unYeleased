@@ -9,7 +9,7 @@ import { Label } from "../ui/label";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import Lyrics from "./lyrics";
 import VolumeSlider from "./volumeSlider";
-import '@public/CSS/song-controls.css';
+import '@/app/CSS-files/song-controls.css';
 import { formattedSongTime, formatTime, handleSliderChange, muteSong, PlayIcon, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { toast } from "sonner"
 import { motion } from "motion/react";
@@ -60,7 +60,7 @@ export const DesktopSongControls = ({
     useEffect(() => {
         async function fetchLyrics() {
             const data = await fetchAlbumLyrics(id, songVal);
-            return setFullscreenLyricsStr(data || "Unable to fetch the lyrics :C");
+            setFullscreenLyricsStr(data || "LYRICS NOT FOUND");
         }
         fetchLyrics();
     }, [songVal, id])
@@ -280,7 +280,7 @@ export const DesktopSongControls = ({
                     </div>
                     <div />
                     <div className="flex justify-center gap-3 w-[25%] items-center">
-                        <Button className={cn("rounded-full p-6", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} variant='link' disabled={fullscreenLyricsStr === "Unable to fetch the lyrics :C"} onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
+                        <Button className={cn("rounded-full p-6")} variant='link' onClick={() => setShowLyricsFullscreen(!showLyricsFullscreen)}>
                             <MicVocal size='36' />
                         </Button>
                         <Button
@@ -374,14 +374,14 @@ export const DesktopSongControls = ({
                             </Popover>
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button className={cn("rounded-full", fullscreenLyricsStr === "Unable to fetch the lyrics :C" && "opacity-50 cursor-not-allowed")} size='icon' variant='secondary' disabled={!songRef.current || fullscreenLyricsStr === "Unable to fetch the lyrics :C"} id="lyrics-button">
+                                    <Button className={cn("rounded-full", fullscreenLyricsStr === "LYRICS NOT FOUND" && "opacity-50 cursor-not-allowed")} size='icon' variant='secondary' disabled={!songRef.current || fullscreenLyricsStr === "LYRICS NOT FOUND"} id="lyrics-button">
                                         <MicVocal />
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[450px] h-full rounded-xl p-2 flex justify-center group" side='top'>
                                     <div className="relative rounded-lg size-full overflow-hidden">
                                         <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                                        <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} setLyricsStr={setLyricsStr} />
+                                        <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} />
                                         <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-90 opacity-0 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
                                             <div className="rounded-full flex justify-center items-center w-full relative">
                                                 <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>

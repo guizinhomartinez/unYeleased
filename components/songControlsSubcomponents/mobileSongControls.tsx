@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { Button } from "../ui/button";
-import { LoaderCircleIcon, Pause, Play, SkipForward } from "lucide-react";
 import { Progress } from "../ui/progress";
-import '@public/CSS/song-controls.css';
 import { songControlsInterface } from "@/lib/interfaces";
-import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { PlayIcon } from "@/lib/songControlsFunctions";
 import PlayerButtons from "./playerButtons";
 import { AutoMarquee } from "./autoMarquee";
 
@@ -16,12 +11,9 @@ export const MobileSongControls = ({
     songVal,
     isPlaying,
     setIsPlaying,
-    volumeVal,
-    setVolumeVal,
     image,
     songCreator,
     handleSkipSong,
-    id,
     isLoading,
     appearBar,
     tutorialNumber
@@ -54,13 +46,13 @@ export const MobileSongControls = ({
                             <div className="flex items-center p-3 justify-between">
                                 <div className="flex items-center gap-2 flex-1 select-none relative">
                                     <Image src={image} alt={image} width={60} height={60} className="rounded-lg" />
-                                    <div className="overflow-hidden max-w-[60%]">
+                                    <div className="overflow-hidden max-w-[50vw]">
                                         <AutoMarquee text={songVal || "No Track Found"} className={"font-semibold"} number={0} />
                                         <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={2} />
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-1" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
+                                <div className="flex justify-end gap-1 ml-3 w-fit" onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
                                     <PlayerButtons
                                         handleSkipSong={handleSkipSong}
                                         songVal={songVal}

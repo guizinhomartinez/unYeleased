@@ -14,7 +14,8 @@ import { SongCover } from "./albumPage";
 import { ArrowRightIcon, ChevronLeft, EllipsisVertical } from "lucide-react";
 import DownloadAlbumButton from "./albumPageSubcomponents/ui/downloadAlbumButton";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMedia } from "react-use";
 
 export default function NewAlbumPage(
     {
@@ -50,7 +51,7 @@ export default function NewAlbumPage(
         setShuffle
     }: AlbumPageInterface) {
     const isMobile = useIsMobile();
-    const [open, setOpen] = useState(false);
+    const isWideEnough = useMedia('(min-width: 1024px)');
 
     return (
         <>
@@ -61,10 +62,10 @@ export default function NewAlbumPage(
                     </Button>
                 </Link>
             </div>
-            <div className='flex m-5 mt-12 md:m-16 md:mt-16 gap-4 flex-col md:flex-row'>
-                <div className={'flex gap-y-2 flex-col items-center justify-start md:w-[425px]'}>
+            <div className={cn('flex m-5 mt-12 md:m-16 md:mt-16 gap-4', isWideEnough ? "flex-row" : "flex-col")}>
+                <div className={cn('flex gap-y-2 flex-col items-center justify-start', isWideEnough ? "w-96" : "w-full")}>
                     <div className="relative flex flex-col gap-2">
-                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl relative p-4 px-8", !isMobile ? "border border-muted h-fit overflow-hidden" : "w-full h-full")}>
+                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-4 px-8", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
                             <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
                                 <SongCover id={id} newAlbumPage={true} />
@@ -88,7 +89,7 @@ export default function NewAlbumPage(
                         </div>
 
                         <div className={cn(
-                            "rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full mx-auto flex flex-col gap-2",
+                            "rounded-xl h-fit border border-muted bg-primary-foreground/50 max-w-full mx-auto flex flex-col gap-2",
                             credits.length > 0 ? "p-4" : "px-4 py-2 opacity-80"
                         )}>
                             {credits.length > 0 ? (
@@ -169,7 +170,7 @@ export default function NewAlbumPage(
                         </div>
                     </div>
                 </div>
-                {isMobile && <div className="my-2 h-px w-full bg-muted" />}
+                {!isWideEnough && <div className="my-2 h-px w-full bg-muted" />}
                 <div className="flex flex-col gap-3 w-full h-full">
                     <div className='flex gap-4 justify-between items-center md:items-end w-full'>
                         <div className="font-semibold text-2xl">Tracklist</div>
@@ -187,14 +188,14 @@ export default function NewAlbumPage(
                                         />
                                     </>
                                     :
-                                    <Drawer open={open} onOpenChange={setOpen}>
+                                    <Drawer>
                                         <DrawerTrigger asChild>
-                                            <Button className="rounded-full size-12" variant='outline' size='icon' onClick={() => setOpen(true)}>
+                                            <Button className="rounded-full size-12" variant='outline' size='icon'>
                                                 <EllipsisVertical size='24' />
                                             </Button>
                                         </DrawerTrigger>
                                         <DrawerContent>
-                                            <div className="w-full flex flex-col gap-2 *:w-full p-5" onClick={() => setOpen(false)}>
+                                            <div className="w-full flex flex-col gap-2 *:w-full p-5">
                                                 <DownloadAlbumButton songs={songs} id={id} variant={1} />
                                                 <MobileAlbumExplanation
                                                     setShowExplanation={setShowExplanation}

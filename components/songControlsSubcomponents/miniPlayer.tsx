@@ -79,13 +79,14 @@ export const MiniPlayer = ({
         <ScrollArea className="w-full h-full flex flex-col justify-center items-center overflow-x-hidden max-w-screen">
             <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center max-w-screen'>
                 <div className="flex flex-col gap-4 mt-0 rounded-2xl">
+                    <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-x-0 top-8 bg-cover bg-center opacity-10 blur-2xl w-full rounded-3xl h-96 touch-none select-none pointer-events-none" />
                     <TooltipProvider>
                         <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>
                                 <div className="flex flex-col relative items-center rounded-2xl overflow-hidden shadow-xl" onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
                                     <div className={cn("size-full bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute shadow-xl inset-0 rounded-2xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="size-full px-2">
-                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} setLyricsStr={setLyricsStr} />}
+                                            {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} />}
                                             <div className="absolute top-1 right-1 inline-flex items-center gap-3 p-1 rounded-full bg-primary-foreground">
                                                 <div onClick={(e) => { e.stopPropagation(); setShowLyrics(false) }} className="relative">
                                                     <X size='14' />
@@ -125,12 +126,12 @@ export const MiniPlayer = ({
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <div className="flex gap-2 mt-2 w-full">
-                        <div className="flex flex-col overflow-hidden flex-1 gap-1 min-w-0 w-full max-w-full">
+                    <div className="flex gap-2 mt-2 relative">
+                        <div className="flex flex-col overflow-hidden flex-1 gap-1 min-w-0 max-w-[70vw]">
                             <AutoMarquee text={songVal || "No Track Found"} className="text-2xl font-semibold" number={0} />
                             <AutoMarquee text={songCreator || "Unknown"} className="text-md text-muted-foreground" number={2} />
                         </div>
-                        <div className="items-center flex gap-2">
+                        <div className="items-center flex gap-2 absolute top-1/2 -translate-y-1/2 right-0">
                             <MoreOptionsMenu songRef={songRef} songVal={songVal} id={id} />
                         </div>
                     </div>
@@ -188,7 +189,7 @@ const FullscreenButton = (props: FullscreenButtonInterface) => {
             <SheetContent className="w-[95%] h-[96%] -translate-x-2 my-3 rounded-3xl border overflow-auto p-1.5">
                 <div className={cn("relative rounded-3xl size-full overflow-hidden border border-muted/50", !props.isSynced && "pt-12")}>
                     <Image src={props.albumCover} alt={props.albumCover} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                    <Lyrics currentTimeVal={props.currentTimeVal} id={props.id} songVal={props.songVal} isSynced={!props.isSynced} isFullscreenMode={false} setLyricsStr={setLyricsStr} />
+                    <Lyrics currentTimeVal={props.currentTimeVal} id={props.id} songVal={props.songVal} isSynced={!props.isSynced} isFullscreenMode={false} />
                     <div className="absolute left-1 top-1.5">
                         <Button size='icon' variant='link' className="bg-secondary/50 hover:bg-secondary p-1.5 rounded-full opacity-75 hover:opacity-100 z-[1000]" onClick={() => setHidePill(!hidePill)}>
                             <ChevronLeft className={cn("transition-all duration-500", !hidePill ? "rotate-0" : "rotate-180")} />

@@ -114,6 +114,17 @@
             ],
             "link": "/album/yeezus-2",
             "creators": "Kanye West"
+        },
+        {
+            "image": "yebu",
+            "text": "Someday We'll All Be Free",
+            "subtext": "Released on December 7, 2022",
+            "tags": [
+                "2022",
+                "Single"
+            ],
+            "link": "/single/someday-well-all-be-free",
+            "creators": "Kanye West"
         }
     ]
 }

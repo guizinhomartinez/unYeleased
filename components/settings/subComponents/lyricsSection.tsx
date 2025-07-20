@@ -39,7 +39,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "left" && "bg-secondary"
+                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "left" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"left"}
@@ -50,7 +50,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "center" && "bg-secondary"
+                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "center" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"Center"}
@@ -61,7 +61,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "right" && "bg-secondary"
+                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "right" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"Right"}
@@ -77,7 +77,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "left" && "bg-secondary"
+                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "left" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"left"}
@@ -88,7 +88,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "center" && "bg-secondary"
+                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "center" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"Center"}
@@ -99,7 +99,7 @@ export const LyricsSection = () => {
                     <div
                         className={cn(
                             "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "right" && "bg-secondary"
+                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "right" && "bg-primary/10"
                         )}
                         suppressHydrationWarning
                         aria-label={"Right"}

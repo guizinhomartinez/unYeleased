@@ -50,7 +50,7 @@ export function MobileAlbumExplanation(props: AlbumExplanationInterface) {
                     {props.variant === 1 && "Album Explanation"}
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className={cn('h-full max-h-full items-center rounded-t-3xl')}>
+            <DrawerContent className={cn('h-full max-h-full items-center rounded-t-none')}>
                 <div className='overflow-y-auto size-full'>
                     <AlbumExplanation id={props.id} />
                 </div>

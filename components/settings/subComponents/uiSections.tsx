@@ -1,38 +1,19 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
-import { Laptop2Icon, Moon, PaintbrushVertical, Sun } from "lucide-react";
+import { Check, Laptop2Icon, Moon, PaintbrushVertical, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
 import Link from "next/link";
 import { LyricsSection } from "./lyricsSection";
-import { Switch } from "@/components/ui/switch";
-import { useEffect, useState } from "react";
+import Img from 'next/image'
 import { useLocalStorage } from 'react-use';
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export const UISection = () => {
     const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
     const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage("fullscreen-lyrics-right", false);
-    const [scrollOnOverflowLocalStorage, setScrollOnOverflowLocalStorage] = useState("true");
-    const [fullscreenLyricsRightLocalStorage, setFullscreenLyricsRightLocalStorage] = useState("false");
-
-    useEffect(() => {
-        const val = localStorage.getItem("text-scroll-overflow");
-
-        if (val !== null || val !== "") {
-            setScrollOnOverflowLocalStorage(val || "true");
-        }
-    }, [scrollOnOverflow]);
-
-    useEffect(() => {
-        const val = localStorage.getItem("fullscreen-lyrics-right");
-
-        if (val !== null || val !== "") {
-            setFullscreenLyricsRightLocalStorage(val || "true");
-        }
-    }, [fullscreenLyricsRight]);
-
-    console.log(scrollOnOverflow + " | " + scrollOnOverflowLocalStorage);
+    const [dancingEmoji, setDancingEmoji] = useLocalStorage<boolean>("dancing-emoji", false);
 
     function ThemeSelection(props: { colorPrimary?: string, option: string }) {
         const { setTheme, theme } = useTheme();
@@ -60,6 +41,18 @@ export const UISection = () => {
                     </p>
                 </div>
             </>
+        )
+    }
+
+    const CheckComponent = (props: { checkedElement: any, setCheckElement: any }) => {
+        return (
+            <div className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group" onClick={() => props.setCheckElement(!props.checkedElement)}>
+                {props.checkedElement ?
+                    <Check className="text-green-400" />
+                    :
+                    <X className="text-red-500" />
+                }
+            </div>
         )
     }
 
@@ -95,12 +88,34 @@ export const UISection = () => {
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Scrolling text on overflow</Label>
-                    <Switch checked={scrollOnOverflow || scrollOnOverflowLocalStorage === "true"} onCheckedChange={setScrollOnOverflow} />
+                    <CheckComponent checkedElement={scrollOnOverflow} setCheckElement={setScrollOnOverflow} />
                 </div>
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Fullscreen lyrics on the right</Label>
-                    <Switch checked={(fullscreenLyricsRight || fullscreenLyricsRightLocalStorage === "true") || (fullscreenLyricsRight === undefined && false)} onCheckedChange={setFullscreenLyricsRight} />
+                    <CheckComponent checkedElement={fullscreenLyricsRight} setCheckElement={setFullscreenLyricsRight} />
+                </div>
+
+                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Label className="text-base text-muted-foreground cursor-pointer">
+                                Dancing emoji on song interlude (click to see it)
+                            </Label>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="!rounded-xl w-[95vw] md:max-w-lg">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-center">Dancing emoji</AlertDialogTitle>
+                                <div className="flex justify-center items-center">
+                                    <Img unoptimized width={156} height={156} alt="Dancing emoji" src="/gifs/dancing-emoji.gif" />
+                                </div>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel className="rounded-xl w-full">Close</AlertDialogCancel>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    <CheckComponent checkedElement={dancingEmoji} setCheckElement={setDancingEmoji} />
                 </div>
 
                 <LyricsSection />

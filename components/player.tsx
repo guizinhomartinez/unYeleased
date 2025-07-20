@@ -380,14 +380,14 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
 const ImagePlaceholder = ({ image }: { image: string | null }) => {
     const [loaded, setLoaded] = useState(false);
     return (
-        <div className="relative">
+        <div className="relative flex justify-center items-center">
             {!loaded &&
                 (
                     <Skeleton className="size-[320px] rounded-xl absolute inset-0 aspect-square" />
                 )
             }
             {image !== null &&
-                <Image width={320} height={320} alt="Single Cover" src={image} className="aspect-square rounded-xl select-none pointer-events-none" onLoad={() => setLoaded(true)} />
+                <Image width={320} height={320} alt="Single Cover" src={image} className="text-transparent aspect-square rounded-xl select-none pointer-events-none" onLoad={() => setLoaded(true)} />
             }
         </div>
     )
@@ -404,11 +404,11 @@ const DrawerMenu = ({
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button className="rounded-full" variant='secondary' size='icon' disabled={!songRef.current}>
+                <Button className="rounded-full min-w-9" variant='secondary' size='icon' disabled={!songRef.current}>
                     <EllipsisVertical size='24' />
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-[100%] rounded-xl">
+            <DrawerContent className="max-h-full rounded-xl">
                 <div className="p-8 px-4 w-full flex flex-col gap-3">
                     <Button className="rounded-full" variant='secondary' disabled={!songRef.current}
                         onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
@@ -478,7 +478,7 @@ const PopoverMenu = ({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button className="rounded-full" size='icon' variant='secondary' id="lyrics-button">
+                <Button className="rounded-full min-w-9" size='icon' variant='secondary' id="lyrics-button">
                     <EllipsisVertical />
                 </Button>
             </PopoverTrigger>

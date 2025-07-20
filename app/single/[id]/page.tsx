@@ -18,10 +18,12 @@ export default function SinglesPage({ params }: { params: Promise<{ id: string }
     useEffect(() => {
         async function loadSongs() {
             const data = await fetchSinglesInfo(id);
+            const songValStr: string = data.songVal.split(".m4a").pop();
+
             setImage(`/song-files/covers/${data.image}`);
             setText(data.text);
             setSubtext(data.subtext);
-            setSongVal(`/song-files/songs/singles/${data.songVal}`);
+            setSongVal(`/song-files/songs/singles/${songValStr}.m4a`);
             setLink(data.link);
         }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
-import { IBM_Plex_Mono, Geist, Geist_Mono, Inter } from 'next/font/google'
-import "./globals.css";
+import { IBM_Plex_Mono, Geist, Geist_Mono, Inter, JetBrains_Mono } from 'next/font/google'
+import "@/app/CSS-files/globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
@@ -19,6 +19,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const JetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
@@ -41,7 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${JetBrainsMono.variable} antialiased overflow-x-hidden`}
       >
         <Toaster position="top-center" className='toaster group' toastOptions={{ className: "group-[.toaster]:rounded-xl group-[.toaster]:bg-primary-foreground" }} />
         <ThemeProvider
