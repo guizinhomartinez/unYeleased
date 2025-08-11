@@ -74,12 +74,12 @@ export default function Page() {
 
     return (
         <>
-            <div className="m-4 md:md-8 mb-0">
+            <div className="m-4 md:md-8 mb-0" aria-hidden={false}>
                 <Navbar />
             </div>
 
-            <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col">
-                <div className="relative flex h-[80vh] p-2 w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
+            <div className="m-4 px-1 overflow-x-hidden flex gap-4 flex-col" aria-hidden={false}>
+                <main className="relative flex h-[80vh] p-2 w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-background">
                     <BlurFade className="pointer-events-none whitespace-pre-wrap text-primary bg-clip-text text-center text-5xl md:text-7xl lg:text-8xl leading-none dark:text-transparent dark:bg-gradient-to-b dark:from-primary dark:to-background dark:to-95% font-geist" direction="up">
                         UnYeleased
                     </BlurFade>
@@ -123,7 +123,7 @@ export default function Page() {
                             </Button>
                         </Link>
                     </BlurFade>
-                </div>
+                </main>
 
                 {/* <Separator orientation="horizontal" className="w-full translate-y-6" /> */}
 

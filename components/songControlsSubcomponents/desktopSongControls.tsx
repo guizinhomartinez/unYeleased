@@ -324,7 +324,7 @@ export const DesktopSongControls = ({
                     }
                     <div className="flex items-center gap-3 select-none w-full">
                         <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
-                        <div className="max-w-[70%] w-full">
+                        <div className="max-w-[60%] w-full">
                             <AutoMarquee text={songVal || "No Track Found"} className="font-semibold text-md" number={0} />
                             <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={0} />
                         </div>

@@ -77,7 +77,7 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
 
                             <Popover>
                                 <PopoverTrigger onClick={(e) => e.stopPropagation()}>
-                                    <Button className="rounded-full bg-transparent" variant="outline" size="icon">
+                                    <Button className="rounded-full bg-transparent" variant="ghost" size="icon">
                                         <EllipsisVertical />
                                     </Button>
                                 </PopoverTrigger>

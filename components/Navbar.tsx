@@ -53,12 +53,12 @@ export default function Navbar({ className }: { className?: string }) {
                     ))}
                 </div>
                 <div className="flex gap-2">
-                    <Link href="/settings">
+                    <Link href="/settings" aria-label="Settings page">
                         <Button className="rounded-full p-5" variant='outline' size="icon">
                             <Settings />
                         </Button>
                     </Link>
-                    <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank">
+                    <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank" aria-label="Source code of the project">
                         <Button variant='default' className="rounded-full p-5">
                             <Github className="-translate-x-1" />
                             Source

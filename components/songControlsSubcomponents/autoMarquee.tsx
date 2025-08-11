@@ -45,10 +45,10 @@ export const AutoMarquee = (props: { text: string, className: string, marqueeCla
                     speed={30}
                     onCycleComplete={() => {
                         setShouldPlay(false);
-                        setTimeout(() => setShouldPlay(true), 2500);
+                        setTimeout(() => setShouldPlay(true), 2000);
                     }}
                 >
-                    {props.text}
+                    {props.text} {'\u00A0'.repeat(25)}
                 </Marquee>
             ) : (
                 <span className="select-none w-36 whitespace-nowrap max-w-32">

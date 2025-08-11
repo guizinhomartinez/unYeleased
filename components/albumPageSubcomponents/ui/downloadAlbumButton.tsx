@@ -30,14 +30,20 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
 
         const content = await zip.generateAsync({ type: "blob" });
         saveAs(content, `${props.id}.zip`);
-
-        toast("Download will start in a moment", {
-            description: "Check your browser’s download section for more information",
-        })
     }
 
     return (
-        <Button className="rounded-full size-12" variant={props.variant === 1 ? "secondary" : "outline"} size="icon" onClick={downloadFunction}>
+        <Button
+            className="rounded-full size-12" variant={props.variant === 1 ? "secondary" : "outline"}
+            size="icon"
+            onClick={() => {
+                toast("Download will start in a moment", {
+                    description: "Check your browser’s download section for more information. Don't worry, it takes a bit to zip all of the files.",
+                })
+            
+                downloadFunction();
+            }}
+        >
             <DownloadIcon />
             {props.variant === 1 && "Download album"}
         </Button>

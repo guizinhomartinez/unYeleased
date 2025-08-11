@@ -89,8 +89,8 @@ export default function NewAlbumPage(
                         </div>
 
                         <div className={cn(
-                            "rounded-xl h-fit border border-muted bg-primary-foreground/50 max-w-full mx-auto flex flex-col gap-2",
-                            credits.length > 0 ? "p-4" : "px-4 py-2 opacity-80"
+                            "rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full max-w-full mx-auto flex flex-col gap-2",
+                            credits.length > 0 ? "p-4" : "px-4 py-2 opacity-50"
                         )}>
                             {credits.length > 0 ? (
                                 <>
@@ -165,7 +165,7 @@ export default function NewAlbumPage(
                                     </Dialog>
                                 </>
                             ) : (
-                                <p className="text-primary/50">No credits available</p>
+                                <p className="text-primary/50 text-center">No credits available</p>
                             )}
                         </div>
                     </div>
