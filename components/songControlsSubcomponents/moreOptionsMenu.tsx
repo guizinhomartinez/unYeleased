@@ -40,9 +40,9 @@ const ShareMenu = (props: { songRef: any, songVal: string }) => {
                 </Button>
             </DrawerTrigger>
             <DrawerContent className="min-h-36 rounded-t-3xl bg-transparent" showGrabThing={false}>
-                <div className="bg-primary-foreground w-[93%] translate-x-3.5 h-[95%] -translate-y-2 rounded-3xl border">
-                    <div className="mx-auto mt-4 h-1.5 w-20 rounded-full bg-muted-foreground" />
-                    <div className="flex items-center justify-center my-20 mx-2">
+                <div className="bg-primary-foreground/75 backdrop-blur-md w-[93%] translate-x-3.5 h-[95%] -translate-y-2 rounded-3xl border">
+                    <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-muted-foreground" />
+                    <div className="flex items-center justify-center my-12 mx-2">
                         <div className="w-28 h-20 flex flex-col justify-center items-center gap-3">
                             <div className="rounded-full p-5 bg-secondary active:bg-primary/30 active:scale-95 transition-all" onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                                 <Copy />

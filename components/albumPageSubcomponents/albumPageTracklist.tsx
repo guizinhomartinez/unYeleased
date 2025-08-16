@@ -8,6 +8,7 @@ import { EllipsisVertical, MicVocal } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
 import { useEffect, useState } from "react"
+import { useLocalStorage } from "react-use"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return !props.songs.length ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />
@@ -16,8 +17,11 @@ export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
 function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const isMobile = useIsMobile();
     const [durations, setDurations] = useState<(string | null)[]>([]);
+    const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
 
     useEffect(() => {
+        if (!showSongDurationOnTracklist) return setDurations([]);
+
         async function loadDurations() {
             const newDurations = await Promise.all(
                 props.songs.map((song) => {
@@ -42,7 +46,21 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
         loadDurations();
     }, [props.songs, props.id]);
 
-    console.log(durations)
+    const SongDurations = (props: { index: any }) => {
+        if (!showSongDurationOnTracklist) return;
+
+        return (
+            <div>
+                {durations[props.index] ?
+                    <span className="text-sm text-muted-foreground min-w-[40px] text-right font-mono">
+                        {durations[props.index]}
+                    </span>
+                    :
+                    <Skeleton className="w-10 h-7" />
+                }
+            </div>
+        )
+    }
 
     return (
         <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', !props.newStyle && 'border-2', props.appearBar ? (props.newStyle ? (isMobile ? 'mb-20' : 'mb-16') : 'mb-24') : (props.newStyle ? (isMobile ? '-mb-0' : '-mb-8') : '-mb-4'))}>
@@ -67,14 +85,7 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                             </div>
                         </div>
                         <div className="flex min-w-fit items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                            {durations[index] ?
-                                <span className="text-sm text-muted-foreground min-w-[40px] text-right font-mono">
-                                    {durations[index]}
-                                </span>
-                                :
-                                <Skeleton className="w-10 h-7" />
-                            }
-
+                            <SongDurations index={index} />
                             <Popover>
                                 <PopoverTrigger onClick={(e) => e.stopPropagation()}>
                                     <Button className="rounded-full bg-transparent" variant="ghost" size="icon">

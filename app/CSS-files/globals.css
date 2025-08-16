@@ -26,10 +26,15 @@ nextjs-portal {
   /* animation: appear .3s cubic-bezier(0.165, 0.84, 0.44, 1); */
 }
 
+.absolute-div-center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+}
+
 @keyframes appear {
   from {
     transform: translate(10em, 0);
   }
+
   to {
     transform: translate(0, 0);
   }
@@ -43,6 +48,7 @@ nextjs-portal {
   from {
     transform: translate(0, 0);
   }
+
   to {
     transform: translate(10em, 0);
   }
@@ -114,6 +120,7 @@ nextjs-portal {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -123,6 +130,7 @@ nextjs-portal {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

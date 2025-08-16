@@ -14,6 +14,7 @@ export const UISection = () => {
     const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
     const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage("fullscreen-lyrics-right", false);
     const [dancingEmoji, setDancingEmoji] = useLocalStorage<boolean>("dancing-emoji", false);
+    const [showSongDurationOnTracklist, setShowSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
 
     function ThemeSelection(props: { colorPrimary?: string, option: string }) {
         const { setTheme, theme } = useTheme();
@@ -41,6 +42,15 @@ export const UISection = () => {
                     </p>
                 </div>
             </>
+        )
+    }
+
+    const CheckboxComponent = (props: { children:React.ReactNode, text:string, addExplanation:boolean }) => {
+        return (
+            <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                <Label className="text-base text-muted-foreground">{props.text}</Label>
+                {props.children}
+            </div>
         )
     }
 
@@ -86,15 +96,17 @@ export const UISection = () => {
                     </Link>
                 </div>
 
-                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                    <Label className="text-base text-muted-foreground">Scrolling text on overflow</Label>
+                <CheckboxComponent addExplanation={false} text='Scrolling text on overflow'>
                     <CheckComponent checkedElement={scrollOnOverflow} setCheckElement={setScrollOnOverflow} />
-                </div>
+                </CheckboxComponent>
 
-                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                    <Label className="text-base text-muted-foreground">Fullscreen lyrics on the right</Label>
+                <CheckboxComponent addExplanation={false} text='Fullscreen lyrics on the right'>
                     <CheckComponent checkedElement={fullscreenLyricsRight} setCheckElement={setFullscreenLyricsRight} />
-                </div>
+                </CheckboxComponent>
+
+                <CheckboxComponent addExplanation={false} text='Show song duration on tracklist'>
+                    <CheckComponent checkedElement={showSongDurationOnTracklist} setCheckElement={setShowSongDurationOnTracklist} />
+                </CheckboxComponent>
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <AlertDialog>

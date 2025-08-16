@@ -194,7 +194,7 @@ export default function NewAlbumPage(
                                                 <EllipsisVertical size='24' />
                                             </Button>
                                         </DrawerTrigger>
-                                        <DrawerContent>
+                                        <DrawerContent className="rounded-t-3xl">
                                             <div className="w-full flex flex-col gap-2 *:w-full p-5">
                                                 <DownloadAlbumButton songs={songs} id={id} variant={1} />
                                                 <MobileAlbumExplanation

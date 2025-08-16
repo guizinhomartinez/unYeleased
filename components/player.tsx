@@ -408,16 +408,16 @@ const DrawerMenu = ({
                     <EllipsisVertical size='24' />
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-full rounded-xl">
-                <div className="p-8 px-4 w-full flex flex-col gap-3">
-                    <Button className="rounded-full" variant='secondary' disabled={!songRef.current}
+            <DrawerContent className="max-h-full rounded-t-3xl">
+                <div className="p-5 w-full flex flex-col gap-2">
+                    <Button className="rounded-full h-12" variant='secondary' disabled={!songRef.current}
                         onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                         {PopoverMenuItems[0].icon}
                         {PopoverMenuItems[0].text}
                     </Button>
                     <Drawer>
                         <DrawerTrigger asChild>
-                            <Button className="w-full rounded-full" size='icon' variant='secondary' id="share-button">
+                            <Button className="w-full rounded-full h-12" size='icon' variant='secondary' id="share-button">
                                 {PopoverMenuItems[2].icon}
                                 {PopoverMenuItems[2].text}
                             </Button>

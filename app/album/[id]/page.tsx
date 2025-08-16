@@ -35,6 +35,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
   const [shuffle, setShuffle] = useState(false);
+  const [mutedSong, setMutedSong] = useState(true);
 
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
@@ -82,6 +83,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setIsLoading(true);
         songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
         songRef.current.loop = (repeatAlbum === 2 && true);
+        // songRef.current.muted = !mutedSong;
         songRef.current.addEventListener("canplaythrough", () => setIsLoading(false));
         songRef.current.addEventListener("error", () => setIsLoading(null));
       } catch (e) {

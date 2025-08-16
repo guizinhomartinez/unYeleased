@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-vaul-drawer-wrapper="">
       <body
         className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${JetBrainsMono.variable} antialiased overflow-x-hidden`}
       >

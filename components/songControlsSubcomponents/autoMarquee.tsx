@@ -45,7 +45,7 @@ export const AutoMarquee = (props: { text: string, className: string, marqueeCla
                     speed={30}
                     onCycleComplete={() => {
                         setShouldPlay(false);
-                        setTimeout(() => setShouldPlay(true), 2000);
+                        setTimeout(() => setShouldPlay(true), 5000);
                     }}
                 >
                     {props.text} {'\u00A0'.repeat(25)}
