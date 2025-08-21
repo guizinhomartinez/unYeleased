@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "bully"
+            ],
             "albumName": "BULLY V1",
             "albumCreator": "Kanye West",
             "year": "2025",

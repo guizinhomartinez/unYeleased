@@ -1,21 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { DownloadIcon } from "lucide-react";
-import { toast } from "sonner";
 import JSZip from "jszip";
 import { saveAs } from 'file-saver';
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Label } from "@/components/ui/label";
+import { useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { AnimatedCircularProgressBar } from "@/components/magicui/animated-circular-progress-bar";
+import { toast } from "sonner";
 
 export default function DownloadAlbumButton(props: { songs: any, id: string, variant: number }) {
     const zip = new JSZip();
     const [downloadedPercentage, setDownloadedPercentage] = useState(0);
     const [dialogOpened, setDialogOpened] = useState(false);
+    const cancel = useRef(false);
 
     const downloadFunction = async () => {
+        cancel.current = false;
+
         for (let index = 0; index < props.songs.length; index++) {
             const songNames = props.songs[index].title;
+            if (cancel.current) return;
 
             const audioPrefix = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/`;
             const audioFileType = '.m4a';
@@ -35,6 +38,8 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
             setDownloadedPercentage(Math.round(percentDone));
         }
 
+        if (cancel.current) return;
+
         const content = await zip.generateAsync({ type: "blob" });
         saveAs(content, `${props.id}.zip`);
     }
@@ -44,7 +49,7 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
     }, [downloadedPercentage])
 
     return (
-        <Dialog open={dialogOpened}>
+        <Dialog open={dialogOpened} onOpenChange={setDialogOpened}>
             <DialogTrigger asChild>
                 <Button
                     className="rounded-full size-12" variant={props.variant === 1 ? "secondary" : "outline"}
@@ -59,16 +64,32 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[90%] max-w-[80%] md:max-w-[30%] !rounded-xl">
-                    <div className="flex flex-col gap-6">
-                        <div className="flex flex-col gap-2 justify-center items-center">
-                            <p className="text-lg font-semibold leading-none tracking-tight text-center">Download started</p>
-                            <p className="text-sm text-muted-foreground text-center">Sit tight and wait for the download to finish</p>
-                        </div>
-                        <div className="flex gap-2 items-center justify-center">
-                            <Progress value={downloadedPercentage} />
-                            <Label>{downloadedPercentage}%</Label>
-                        </div>
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-2 justify-center items-center">
+                        <p className="text-lg font-semibold leading-none tracking-tight text-center">Download started</p>
+                        <p className="text-sm text-muted-foreground text-center">Sit tight and wait for the download to finish</p>
                     </div>
+                    <div className="flex gap-2 items-center justify-center">
+                        <AnimatedCircularProgressBar
+                            value={downloadedPercentage}
+                            gaugePrimaryColor="hsl(var(--primary))"
+                            gaugeSecondaryColor="hsl(var(--background))"
+                        />
+                    </div>
+                </div>
+                <DialogFooter className="pt-6">
+                    <Button
+                        className="w-full rounded-full p-5"
+                        variant='secondary'
+                        onClick={() => {
+                            toast.success("Cancelled album download");
+                            setDialogOpened(false);
+                            cancel.current = true;
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

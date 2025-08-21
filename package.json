@@ -35,6 +35,7 @@
     "@types/mdx": "^2.0.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.6.0",
     "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "genius-lyrics": "^4.4.7",

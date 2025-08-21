@@ -79,7 +79,7 @@ export const MiniPlayer = ({
         <ScrollArea className="w-full h-full flex flex-col justify-center items-center overflow-x-hidden max-w-screen">
             <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center max-w-screen'>
                 <div className="flex flex-col gap-4 mt-0 rounded-2xl relative">
-                    <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-x-0 top-8 bg-cover bg-center blur-2xl w-full rounded-3xl h-96 touch-none select-none pointer-events-none opacity-0 dark:opacity-10" />
+                    <Image src={albumCover} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-x-0 top-8 bg-cover bg-center blur-2xl w-full rounded-3xl h-96 touch-none select-none pointer-events-none opacity-0 dark:opacity-10" />
                     <TooltipProvider>
                         <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>

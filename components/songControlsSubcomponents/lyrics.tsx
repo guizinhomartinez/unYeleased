@@ -59,7 +59,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 {content === "" || content === " " || content === "♪" ?
                     <div className={cn('flex items-center', lyricsAlignment === "center" && "justify-center", (lyricsAlignment === "left" || isFullscreenMode) && "justify-start", lyricsAlignment === "right" && "justify-end")}>
                         {dancingEmoji ?
-                            <Img width={75} height={75} alt="Dancing emoji" src={`/gifs/${active ? "dancing-emoji" : "first-frame-dacing-emoji"}.gif`} />
+                            <Img unoptimized width={75} height={75} alt="Dancing emoji" src={`/gifs/${active ? "dancing-emoji" : "first-frame-dacing-emoji"}.gif`} />
                             :
                             <AudioLines size='36' />
                         }

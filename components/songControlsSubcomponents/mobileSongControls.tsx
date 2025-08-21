@@ -44,7 +44,7 @@ export const MobileSongControls = ({
                     <TooltipTrigger asChild>
                         <div className="flex flex-col w-full h-full">
                             <div className="flex items-center p-3 justify-between">
-                                <div className="flex items-center gap-2 flex-1 select-none relative">
+                                <div className="flex items-center gap-3 flex-1 select-none relative">
                                     <Image src={image} alt={image} width={60} height={60} className="rounded-lg" />
                                     <div className="overflow-hidden max-w-[50vw]">
                                         <AutoMarquee text={songVal || "No Track Found"} className={"font-semibold"} number={0} />

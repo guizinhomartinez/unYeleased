@@ -36,7 +36,12 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
   const [shuffle, setShuffle] = useState(false);
   const [mutedSong, setMutedSong] = useState(true);
+  const [albumCover, setAlbumCover] = useState(`/song-files/covers/${id}.jpg`);
+  const [albumCoverType, setAlbumCoverType] = useLocalStorage(`${id}-album-cover-type`, 0);
+  const [albumCoverInfo, setAlbumCoverInfo] = useState<string[]>([""]);
+  const [fetchedAlbumInfo, setFetchedAlbumInfo] = useState<any>();
 
+  // gets the locally stored value of volume and applies it to the volumeval variable if it exists
   useEffect(() => {
     const storedVolume = localStorage.getItem("volume") || 100;
     try {
@@ -46,12 +51,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, []);
 
+  // This basically loads everything that is needed for an album, like its tracklist, album name, album credits etc.
   useEffect(() => {
     async function loadSongs() {
       const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
-      if (data === "NOT FOUND") {
-        window.location.replace("/page-not-found");
-      }
+      data === "NOT FOUND" && window.location.replace("/page-not-found");
+
+      setFetchedAlbumInfo(data);
       setSongs(data.tracks);
       setYear(data.config[0].year);
       setAlbumName(data.config[0].albumName);
@@ -67,6 +73,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     loadSongs();
   }, [id, albumName]);
 
+  // sets the album cover
+  useEffect(() => {
+    if (!fetchedAlbumInfo) return;
+  
+    const covers = fetchedAlbumInfo.config[0].albumCover;
+    const chosenCover = covers[albumCoverType && albumCoverType >= 0 && albumCoverType < covers.length ? albumCoverType : 0];
+  
+    setAlbumCover(`/song-files/covers/${chosenCover ?? id}.jpg`);
+    setAlbumCoverInfo(covers);
+  }, [fetchedAlbumInfo, albumCover, albumCoverInfo, albumCoverType]);
+
+  // changes the website's title depending on the song being played
   useEffect(() => {
     if ((playingSong === null || playingSong === "") && !isPlaying)
       document.title = `${albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`;
@@ -74,6 +92,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       document.title = `${playingSong} by ${songCreator} | UnYeleased`;
   }, [playingSong, songCreator, id, albumName])
 
+  // sets up the songRef variable to be used in other areas and loads the correct song
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;
     const audioFileType = '.m4a';
@@ -93,6 +112,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, [playingSong, id]);
 
+  // plays/pauses the song when needed
   useEffect(() => {
     const song = songRef.current;
     if (!song) return;
@@ -251,9 +271,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setShowLyricsFullscreen={setShowLyricsFullscreen}
         shuffle={shuffle}
         setShuffle={setShuffle}
+        albumCover={albumCover}
+        albumCoverType={albumCoverType || 0}
+        setAlbumCoverType={setAlbumCoverType}
+        albumCoverInfo={albumCoverInfo}
       />
     )
-  } else {
+  } /* else {
     return (
       <AlbumPage
         albumName={albumName}
@@ -292,5 +316,5 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         setShuffle={setShuffle}
       />
     );
-  }
+  }*/
 }

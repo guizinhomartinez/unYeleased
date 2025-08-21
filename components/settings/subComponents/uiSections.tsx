@@ -18,14 +18,15 @@ export const UISection = () => {
 
     function ThemeSelection(props: { colorPrimary?: string, option: string }) {
         const { setTheme, theme } = useTheme();
+        const systemTheme = props.option === "system" || theme === "" || theme === null;
 
         return (
             <>
                 <div className="cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl" style={{ backgroundColor: props.option === theme ? "hsl(var(--secondary))" : "" }} onClick={() => setTheme(props.option)} tabIndex={0} suppressHydrationWarning>
                     <div className="size-12 mx-auto relative shadow-lg rounded-full">
-                        <div className={cn("size-12 rounded-full", props.option === "system" && "outline-[2px] outline-primary/30")} style={{ background: props.option !== "system" ? props.colorPrimary : "#161616" }} />
+                        <div className={cn("size-12 rounded-full", systemTheme && "outline-[2px] outline-primary/30")} style={{ background: !systemTheme ? props.colorPrimary : "#161616" }} />
                         <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
-                            {props.option !== "system" ? (props.option !== "dark" ? <Sun className="text-black" /> : <Moon className="text-white" />) : <Laptop2Icon className="text-white" />}
+                            {!systemTheme ? (props.option !== "dark" ? <Sun className="text-black" /> : <Moon className="text-white" />) : <Laptop2Icon className="text-white" />}
                         </div>
                     </div>
                     <p
@@ -33,37 +34,49 @@ export const UISection = () => {
                         suppressHydrationWarning
                         style={
                             {
-                                color: props.option === theme ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.8)",
-                                fontWeight: props.option === theme ? 600 : 300
+                                color: systemTheme ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.8)",
+                                fontWeight: systemTheme ? 600 : 300
                             }
                         }
                     >
-                        {capitalizeFirstLetter(props.option)}{(props.option !== "system" && !useIsMobile()) ? " mode" : ""}
+                        {capitalizeFirstLetter(props.option)}{!(systemTheme && !useIsMobile()) ? " mode" : ""}
                     </p>
                 </div>
             </>
         )
     }
 
-    const CheckboxComponent = (props: { children:React.ReactNode, text:string, addExplanation:boolean }) => {
+    const CheckboxComponent = (props: { children:React.ReactNode, text:string, addExplanation:boolean, id:number }) => {
         return (
             <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                <Label className="text-base text-muted-foreground">{props.text}</Label>
+                <Label className="text-base text-muted-foreground" htmlFor={`checkbox-element-${props.id}`}>{props.text}</Label>
                 {props.children}
             </div>
         )
     }
 
-    const CheckComponent = (props: { checkedElement: any, setCheckElement: any }) => {
-        return (
-            <div className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group" onClick={() => props.setCheckElement(!props.checkedElement)}>
-                {props.checkedElement ?
+    const CheckComponent = (props: { checkedElement: any, setCheckElement: any, id:number }) => {
+    return (
+        <>
+            <input
+                id={`checkbox-element-${props.id}`}
+                type="checkbox"
+                checked={props.checkedElement}
+                onChange={() => props.setCheckElement(!props.checkedElement)}
+                className="sr-only" // hides it visually but keeps it accessible
+            />
+            <div
+                className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group"
+                onClick={() => props.setCheckElement(!props.checkedElement)}
+            >
+                {props.checkedElement ? (
                     <Check className="text-green-400" />
-                    :
+                ) : (
                     <X className="text-red-500" />
-                }
+                )}
             </div>
-        )
+        </>
+    );
     }
 
     return (
@@ -86,7 +99,7 @@ export const UISection = () => {
                     </div>
                 </div>
 
-                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                {/* <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Album page style</Label>
                     <Link href="/album-page-style">
                         <Button variant='secondary' className="rounded-full">
@@ -94,18 +107,18 @@ export const UISection = () => {
                             Show in action
                         </Button>
                     </Link>
-                </div>
+                </div> */}
 
-                <CheckboxComponent addExplanation={false} text='Scrolling text on overflow'>
-                    <CheckComponent checkedElement={scrollOnOverflow} setCheckElement={setScrollOnOverflow} />
+                <CheckboxComponent addExplanation={false} text='Scrolling text on overflow' id={1}>
+                    <CheckComponent checkedElement={scrollOnOverflow} setCheckElement={setScrollOnOverflow} id={1} />
                 </CheckboxComponent>
 
-                <CheckboxComponent addExplanation={false} text='Fullscreen lyrics on the right'>
-                    <CheckComponent checkedElement={fullscreenLyricsRight} setCheckElement={setFullscreenLyricsRight} />
+                <CheckboxComponent addExplanation={false} text='Fullscreen lyrics on the right' id={2}>
+                    <CheckComponent checkedElement={fullscreenLyricsRight} setCheckElement={setFullscreenLyricsRight} id={2} />
                 </CheckboxComponent>
 
-                <CheckboxComponent addExplanation={false} text='Show song duration on tracklist'>
-                    <CheckComponent checkedElement={showSongDurationOnTracklist} setCheckElement={setShowSongDurationOnTracklist} />
+                <CheckboxComponent addExplanation={false} text='Show song duration on tracklist' id={3}>
+                    <CheckComponent checkedElement={showSongDurationOnTracklist} setCheckElement={setShowSongDurationOnTracklist} id={3} />
                 </CheckboxComponent>
 
                 <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
@@ -127,7 +140,7 @@ export const UISection = () => {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-                    <CheckComponent checkedElement={dancingEmoji} setCheckElement={setDancingEmoji} />
+                    <CheckComponent checkedElement={dancingEmoji} setCheckElement={setDancingEmoji} id={4} />
                 </div>
 
                 <LyricsSection />

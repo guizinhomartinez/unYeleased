@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "good-ass-job"
+            ],
             "albumName": "Good Ass Job",
             "albumCreator": "Kanye West",
             "year": "2009",

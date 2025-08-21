@@ -14,6 +14,7 @@ import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubc
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
 import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
 import { useState } from "react";
+import AlbumCover from "./albumPageSubcomponents/albumCover";
 
 export default function AlbumPage(
     {
@@ -59,7 +60,7 @@ export default function AlbumPage(
                 <div className='flex-1'>
                     <div className={`flex gap-4 items-center p-4 md:p-8 mt-4 overflow-x-hidden pt-16 w-full justify-center md:justify-normal border-b-2 border-b-primary-foreground`}>
                         <div className='flex flex-col md:flex-row items-center gap-5'>
-                            <SongCover id={id} newAlbumPage={false} />
+                            <AlbumCover id={id} newAlbumPage={false} albumCover={`/song-files/covers/${id.toLowerCase()}.jpg`} />
                             <div className='flex flex-col gap-2'>
                                 <div className='text-4xl font-semibold text-center md:text-left'>{albumName || capitalizeFirstLetter(id.replace("-", " "))}</div>
                                 <div className='flex flex-col justify-center'>
@@ -214,32 +215,6 @@ export default function AlbumPage(
                     setShuffle={setShuffle}
                 />
             </div>
-        </div>
-    )
-}
-
-export function SongCover({ id, newAlbumPage }: { id: string, newAlbumPage: boolean }) {
-    const [loaded, setLoaded] = useState(false);
-    const isMobile = useIsMobile();
-    const size = !newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260);
-
-    return (
-        <div className={cn("relative", !loaded && "mt-4")}>
-            {!loaded && (
-                <Skeleton
-                    className="absolute top-0 left-0 rounded-xl aspect-square"
-                    style={{ width: 250, height: 250 }}
-                />
-            )}
-            <Image
-                src={`/song-files/covers/${id.toLowerCase()}.jpg`}
-                alt={id}
-                width={size}
-                height={size}
-                priority={true}
-                className={cn('rounded-xl transition-opacity duration-300 aspect-square', !newAlbumPage && "outline outline-primary/10", loaded ? 'opacity-100 md:mt-4' : 'opacity-0')}
-                onLoad={() => setLoaded(true)}
-            />
         </div>
     )
 }

@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "bad-bitch-playbook"
+            ],
             "albumName": "Bad Bitch Playbook",
             "albumCreator": "¥$",
             "year": "2023",

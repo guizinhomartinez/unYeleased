@@ -10,12 +10,12 @@ import Link from "next/link";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
 import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
-import { SongCover } from "./albumPage";
-import { ArrowRightIcon, ChevronLeft, EllipsisVertical } from "lucide-react";
+import { ArrowRightIcon, ChevronLeft, EllipsisVertical, X } from "lucide-react";
 import DownloadAlbumButton from "./albumPageSubcomponents/ui/downloadAlbumButton";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { useEffect, useState } from "react";
 import { useMedia } from "react-use";
+import { AlbumCoverDialog } from "./albumPageSubcomponents/albumCoverMenu";
+import AlbumCover from "./albumPageSubcomponents/albumCover";
 
 export default function NewAlbumPage(
     {
@@ -48,10 +48,11 @@ export default function NewAlbumPage(
         showLyricsFullscreen,
         setShowLyricsFullscreen,
         shuffle,
-        setShuffle
+        setShuffle,
+        ...props
     }: AlbumPageInterface) {
     const isMobile = useIsMobile();
-    const isWideEnough = useMedia('(min-width: 1024px)');
+    const isWideEnough = useMedia('(min-width: 1024px)', true);
 
     return (
         <>
@@ -66,9 +67,13 @@ export default function NewAlbumPage(
                 <div className={cn('flex gap-y-2 flex-col items-center justify-start', isWideEnough ? "w-96" : "w-full")}>
                     <div className="relative flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-4 px-8", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
-                            <Image src={`/song-files/covers/${id.toLowerCase()}.jpg`} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
+                            <Image src={props.albumCover} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
-                                <SongCover id={id} newAlbumPage={true} />
+                                {props.albumCoverInfo.length === 0 || props.albumCoverInfo.length === 1 ?
+                                    <AlbumCover id={id} newAlbumPage={true} albumCover={props.albumCover} />
+                                    :
+                                    <AlbumCoverDialog id={id} newAlbumPage={true} albumCover={props.albumCover} albumName={albumName} albumCoverInfo={props.albumCoverInfo} albumCoverType={props.albumCoverType} setAlbumCoverType={props.setAlbumCoverType} />
+                                }
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold text-center'>{albumName}</p>
                                     {(albumCreator && songs.length) ? (
@@ -230,7 +235,7 @@ export default function NewAlbumPage(
                     setIsPlaying={setIsPlaying}
                     volumeVal={volumeVal}
                     setVolumeVal={setVolumeVal}
-                    image={`/song-files/covers/${id.toLowerCase()}.jpg`}
+                    image={props.albumCover}
                     songCreator={songCreator}
                     handleSkipSong={handleSkipSong}
                     repeat={repeatAlbum}

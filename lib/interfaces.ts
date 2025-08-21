@@ -144,6 +144,10 @@ export interface AlbumPageInterface {
     setShowLyricsFullscreen?: any;
     shuffle: boolean;
     setShuffle: any;
+    albumCover: string;
+    albumCoverType: number;
+    setAlbumCoverType: any;
+    albumCoverInfo: string[];
 }
 
 // Stuff related to album explanations

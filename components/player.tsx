@@ -25,6 +25,7 @@ import { useLocalStorage } from "react-use";
 import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
 import { AutoMarquee } from "./songControlsSubcomponents/autoMarquee";
+import { Card, CardContent, CardFooter } from "./ui/card";
 
 type KeyboardThing = {
     letter: any;
@@ -95,7 +96,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
     const [sliderValue, setSliderValue] = useState(0);
     const [repeat, setRepeat] = useState(false);
 
-    console.log(id);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (!songRef.current) return;
@@ -291,7 +292,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
 
     return (
         <>
-            <div className='absolute left-4 md:left-5 top-2 md:top-4'>
+            <div className="w-full absolute top-0 left-0 px-4 py-2 z-50">
                 <Link href={"/" + (id === "2424" ? "settings" : "")}>
                     <Button className="rounded-full" size='icon' variant='ghost'>
                         <ChevronLeft />
@@ -299,7 +300,86 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                 </Link>
             </div>
 
-            <div className="flex justify-center items-center align-center md:m-4 mt-8 md:mt-4 overflow-y-auto mr-1">
+            <div className="w-screen h-screen">
+                <div className={cn("bg-secondary/30 border p-6", isMobile ? "rounded-none h-[120vh] pt-12" : "rounded-3xl w-96 max-h-fit absolute-div-center shadow-xl")}>
+                    <div className="flex flex-col gap-2 justify-center items-start">
+                        <ImagePlaceholder image={image || null} />
+                        <div className="flex justify-between items-center gap-4 w-[85%]">
+                            <div className="w-full flex flex-col">
+                                <AutoMarquee text={text} className="font-bold text-2xl" number={0} />
+                                <AutoMarquee text={subtext} className="text-muted-foreground/80" number={2} />
+                            </div>
+                            {!useIsMobile() ?
+                                <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} />
+                                :
+                                <DrawerMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} songRef={songRef} />
+                            }
+                        </div>
+                        <div className="flex flex-col justify-center items-center pt-4 gap-4 w-full">
+                            <div className="flex gap-2 w-full">
+                                <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
+                                <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
+                                <div className="text-md opacity-60 text-right w-12">{songRef.current ? (isNaN(songRef.current.duration) ? '0:00' : formatTime(songRef.current.duration)) : '0:00'}</div>
+                            </div>
+                            <div className="flex justify-between w-full items-center gap-4 mt-2">
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    variant="ghost"
+                                    onClick={() => { goBackFunc(); }}
+                                >
+                                    <Rewind size='32' />
+                                </Button>
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    variant="ghost"
+                                    onClick={() => { skipTimeFunc(true); }}
+                                >
+                                    <RotateCcw size='32' />
+                                </Button>
+                                <Button
+                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed')}
+                                    size="icon"
+                                    onClick={() => setIsPlaying(songVal !== "" && !isPlaying)}
+                                >
+                                    {!isPlaying ? <Play size='32' /> : <Pause size='32' />}
+                                </Button>
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    variant="ghost"
+                                    onClick={() => {
+                                        skipTimeFunc(false);
+                                    }}
+                                >
+                                    <RotateCw size='32' />
+                                </Button>
+                                <Button
+                                    size="icon"
+                                    className={cn('p-6 rounded-full sm:bg-transparent sm:focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', !repeat && 'opacity-50')}
+                                    variant="ghost"
+                                    onClick={() => setRepeat(!repeat)}
+                                >
+                                    <RepeatIcon repeat={!repeat ? 0 : 1} size='32' />
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cn("flex justify-center items-end w-full pt-8")}>
+                        <div className="w-full flex justify-center items-center gap-2">
+                            <Button onClick={() => { songRef.current && muteSong(songRef) }}
+                                variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
+                                <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal || 100} />
+                            </Button>
+                            <VolumeSlider className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70" value={[Number(volumeVal)]} onValueChange={(val) => setVolumeVal(val[0])} />
+                            <Label className="-translate-y-0.5">{volumeVal}%</Label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="flex justify-center items-center align-center md:m-4 mt-8 md:mt-4 overflow-y-auto mr-1">
                 <div className="flex flex-col gap-2 md:border md:border-muted p-5 rounded-xl overflow-y-auto">
                     <ImagePlaceholder image={image || null} />
                     <div className="flex justify-between items-center gap-2 mt-1">
@@ -372,7 +452,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </>
     );
 }
@@ -387,7 +467,7 @@ const ImagePlaceholder = ({ image }: { image: string | null }) => {
                 )
             }
             {image !== null &&
-                <Image width={320} height={320} alt="Single Cover" src={image} className="text-transparent aspect-square rounded-xl select-none pointer-events-none" onLoad={() => setLoaded(true)} />
+                <Image width={360} height={360} alt="Single Cover" src={image} className="text-transparent aspect-square rounded-xl select-none pointer-events-none" onLoad={() => setLoaded(true)} />
             }
         </div>
     )

@@ -53,7 +53,7 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
                             />
                         </div>
                         <div className="flex flex-col justify-center items-center gap-1 max-w-[400px]">
-                            <AutoMarquee text={songVal} className="text-3xl text-center leading-10 font-bold" number={0} />
+                            <AutoMarquee text={songVal} className="text-3xl text-center tracking-tight font-bold" number={0} />
                             <AutoMarquee text={songCreator} className="text-xl text-center font-medium text-primary/30" marqueeClassName="gap-10" number={2} />
                         </div>
                     </div>

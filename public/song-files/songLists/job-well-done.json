@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "job-well-done"
+            ],
             "albumName": "Job Well Done (Good Ass Job 2018)",
             "albumCreator": "Kanye West & Chance the Rapper",
             "year": "2018",

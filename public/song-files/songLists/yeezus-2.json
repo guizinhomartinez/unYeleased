@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "yeezus-2"
+            ],
             "albumName": "Yeezus 2",
             "albumCreator": "Kanye West",
             "year": "2013",

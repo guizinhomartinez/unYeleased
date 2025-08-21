@@ -1,6 +1,9 @@
 {
     "config": [
         {
+            "albumCover": [
+                "yandhi"
+            ],
             "albumName": "Yandhi",
             "albumCreator": "Kanye West",
             "year": "2018",
