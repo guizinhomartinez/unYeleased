@@ -2,9 +2,20 @@
     "config": [
         {
             "albumCover": [
-                "yeezus-2"
+                "yeezus-2/yeezus-2",
+                "yeezus-2/Yeezus_2_(Rough_Draft_Cover_1)",
+                "yeezus-2/Yeezus_2_(Rough_Draft_Cover_2)",
+                "yeezus-2/Yeezus_2_(Rough_Draft_Cover_3)",
+                "yeezus-2/Yeezus_2_(Rough_Draft_Cover_4)"
             ],
-            "albumName": "Yeezus 2",
+            "albumCoverDescription": [
+                "Gulp me down by opt_archive on Instagram.",
+                "Posted by opt_archive on Instagram.",
+                "Posted by opt_archive on Instagram.",
+                "Posted by opt_archive on Instagram.",
+                "Posted by opt_archive on Instagram."
+            ],
+            "albumName": "Yeezus II",
             "albumCreator": "Kanye West",
             "year": "2013",
             "credits": "Credits to Z for songs"
@@ -21,10 +32,6 @@
         },
         {
             "title": "Been Trill",
-            "artist": "Kanye West"
-        },
-        {
-            "title": "All Day",
             "artist": "Kanye West"
         },
         {
@@ -58,10 +65,6 @@
         {
             "title": "After You",
             "artist": "Kanye West, John Legend, Pusha T & Sia"
-        },
-        {
-            "title": "Tell Your Friends",
-            "artist": "Kanye West"
         },
         {
             "title": "Wolves",

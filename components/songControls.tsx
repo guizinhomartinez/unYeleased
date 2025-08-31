@@ -8,7 +8,7 @@ import { cn, lyricsDelay } from "@/lib/utils";
 import { songControlsInterface } from "@/lib/interfaces";
 import { AnimatePresence } from "motion/react";
 import { FullscreenUI } from "./songControlsSubcomponents/fullscreenUI";
-import { useLocalStorage } from "react-use";
+import { useLocalStorage, useLockBodyScroll } from "react-use";
 
 export const SongControls = ({
     songRef,
@@ -37,8 +37,10 @@ export const SongControls = ({
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
 
-    const necessaryDesktopProps = {songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, isFullscreenMode, setShuffle, shuffle, albumName, setIsFullscreenMode, setShowLyricsFullscreen, showLyricsFullscreen};
-    const necessaryMobileProps = {songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, tutorialNumber, shuffle, setShuffle};
+    const necessaryDesktopProps = { songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, isFullscreenMode, setShuffle, shuffle, albumName, setIsFullscreenMode, setShowLyricsFullscreen, showLyricsFullscreen };
+    const necessaryMobileProps = { songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, tutorialNumber, shuffle, setShuffle };
+
+    useLockBodyScroll(isFullscreenMode);
 
     useEffect(() => {
         const song = songRef.current;
@@ -92,7 +94,7 @@ export const SongControls = ({
             {!useIsMobile() ? (
                 <div className="size-full">
                     <AnimatePresence>
-                        {isFullscreenMode && <FullscreenUI {...{image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, isLoading}} />}
+                        {isFullscreenMode && <FullscreenUI {...{ image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, isLoading }} />}
                     </AnimatePresence>
                     <div
                         className={cn(`fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,

@@ -148,6 +148,7 @@ export interface AlbumPageInterface {
     albumCoverType: number;
     setAlbumCoverType: any;
     albumCoverInfo: string[];
+    albumCoverDescription: string[];
 }
 
 // Stuff related to album explanations

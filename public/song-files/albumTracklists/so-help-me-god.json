@@ -1,0 +1,34 @@
+{
+    "config": [
+        {
+            "albumCover": [
+                "so-help-me-god/So_Help_Me_God_album_cover",
+                "so-help-me-god/So_Help_Me_God_Rough_Draft_Cover_1",
+                "so-help-me-god/So_Help_Me_God_Rough_Draft_Cover_2",
+                "so-help-me-god/So_Help_Me_God_Rough_Draft_Cover_3",
+                "so-help-me-god/So_Help_Me_God_Rough_Draft_Cover_4"
+            ],
+            "albumCoverDescription": [
+                "Cover for the single \"All Day\"",
+                "So Help Me God cover specifically was teased by Joe Perez on Instagram multiple times, implying it was the main or one of the main SHMG covers.",
+                "Another So Help Me God cover in the style of the early All Day single covers, with a different piece of religious art covering the disk.",
+                "Another So Help Me God cover using religious art. Possibly used in an unseen vacuum sealed CD cover like the previous cover was.",
+                "Another So Help Me God cover. Similar to the All Day cover art. Possibly an earlier version of that concept."
+            ],
+            "albumName": "So Help Me God",
+            "albumCreator": "Kanye West",
+            "year": "2015",
+            "credits": "Credits to Z for songs"
+        }
+    ],
+    "tracks": [
+        {
+            "title": "All Day",
+            "artist": "Kanye West & Kendrick Lamar"
+        },
+        {
+            "title": "When I See It",
+            "artist": "Kanye West & The Weekend"
+        }
+    ]
+}

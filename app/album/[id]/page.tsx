@@ -5,7 +5,6 @@ import { useEffect, useState, useRef, use } from 'react';
 import { useQueryState } from "nuqs";
 import { fetchAlbumCredits, fetchAlbumSongs } from '@/lib/fetching';
 import NewAlbumPage from '@/components/newAlbumPage';
-import AlbumPage from '@/components/albumPage';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { SongInterface, Credits } from '@/lib/interfaces';
 import { useEffectOnce, useLocalStorage } from 'react-use';
@@ -35,11 +34,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
   const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
   const [shuffle, setShuffle] = useState(false);
-  const [mutedSong, setMutedSong] = useState(true);
   const [albumCover, setAlbumCover] = useState(`/song-files/covers/${id}.jpg`);
   const [albumCoverType, setAlbumCoverType] = useLocalStorage(`${id}-album-cover-type`, 0);
   const [albumCoverInfo, setAlbumCoverInfo] = useState<string[]>([""]);
   const [fetchedAlbumInfo, setFetchedAlbumInfo] = useState<any>();
+  const [albumCoverDescription, setAlbumCoverDescription] = useState<string[]>([""]);
 
   // gets the locally stored value of volume and applies it to the volumeval variable if it exists
   useEffect(() => {
@@ -76,12 +75,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   // sets the album cover
   useEffect(() => {
     if (!fetchedAlbumInfo) return;
-  
+
     const covers = fetchedAlbumInfo.config[0].albumCover;
     const chosenCover = covers[albumCoverType && albumCoverType >= 0 && albumCoverType < covers.length ? albumCoverType : 0];
-  
+
     setAlbumCover(`/song-files/covers/${chosenCover ?? id}.jpg`);
     setAlbumCoverInfo(covers);
+    setAlbumCoverDescription(fetchedAlbumInfo.config[0].albumCoverDescription);
   }, [fetchedAlbumInfo, albumCover, albumCoverInfo, albumCoverType]);
 
   // changes the website's title depending on the song being played
@@ -236,46 +236,47 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   if (newPageLayout === 1) {
     return (
-      <NewAlbumPage
-        albumName={albumName}
-        albumCreator={albumCreator}
-        id={id.toLowerCase().replace(" ", "-")}
-        isPlaying={isPlaying}
-        showExplanation={showExplanation}
-        setShowExplanation={setShowExplanation}
-        fullscreen={fullscreen}
-        setFullscreen={setFullscreen}
-        songs={songs}
-        searchQuery={searchQuery}
-        playAlbum={playAlbum}
-        appearBar={appearBar}
-        currentSongIndex={currentSongIndex}
-        handleClickEvent={handleClickEvent}
-        setSearchQuery={setSearchQuery}
-        setAppearBar={setAppearBar}
-        year={year}
-        songRef={songRef}
-        playingSong={playingSong}
-        setIsPlaying={setIsPlaying}
-        volumeVal={volumeVal}
-        setVolumeVal={setVolumeVal}
-        songCreator={songCreator}
-        handleSkipSong={handleSkipSong}
-        repeatAlbum={repeatAlbum}
-        setRepeatAlbum={setRepeatAlbum}
-        credits={credits}
-        isLoading={isLoading}
-        isFullscreenMode={isFullscreenMode}
-        setIsFullscreenMode={setIsFullscreenMode}
-        showLyricsFullscreen={showLyricsFullscreen}
-        setShowLyricsFullscreen={setShowLyricsFullscreen}
-        shuffle={shuffle}
-        setShuffle={setShuffle}
-        albumCover={albumCover}
-        albumCoverType={albumCoverType || 0}
-        setAlbumCoverType={setAlbumCoverType}
-        albumCoverInfo={albumCoverInfo}
-      />
+        <NewAlbumPage
+          albumName={albumName}
+          albumCreator={albumCreator}
+          id={id.toLowerCase().replace(" ", "-")}
+          isPlaying={isPlaying}
+          showExplanation={showExplanation}
+          setShowExplanation={setShowExplanation}
+          fullscreen={fullscreen}
+          setFullscreen={setFullscreen}
+          songs={songs}
+          searchQuery={searchQuery}
+          playAlbum={playAlbum}
+          appearBar={appearBar}
+          currentSongIndex={currentSongIndex}
+          handleClickEvent={handleClickEvent}
+          setSearchQuery={setSearchQuery}
+          setAppearBar={setAppearBar}
+          year={year}
+          songRef={songRef}
+          playingSong={playingSong}
+          setIsPlaying={setIsPlaying}
+          volumeVal={volumeVal}
+          setVolumeVal={setVolumeVal}
+          songCreator={songCreator}
+          handleSkipSong={handleSkipSong}
+          repeatAlbum={repeatAlbum}
+          setRepeatAlbum={setRepeatAlbum}
+          credits={credits}
+          isLoading={isLoading}
+          isFullscreenMode={isFullscreenMode}
+          setIsFullscreenMode={setIsFullscreenMode}
+          showLyricsFullscreen={showLyricsFullscreen}
+          setShowLyricsFullscreen={setShowLyricsFullscreen}
+          shuffle={shuffle}
+          setShuffle={setShuffle}
+          albumCover={albumCover}
+          albumCoverType={albumCoverType || 0}
+          setAlbumCoverType={setAlbumCoverType}
+          albumCoverInfo={albumCoverInfo}
+          albumCoverDescription={albumCoverDescription}
+        />
     )
   } /* else {
     return (

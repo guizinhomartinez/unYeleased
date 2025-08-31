@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -6,16 +6,11 @@ import '@/app/CSS-files/song-controls.css';
 import { toast } from "sonner"
 import { songControlsInterface } from "@/lib/interfaces";
 import useAlbumAverageColor from "../getAverageColor";
-import { useLockBodyScroll } from "react-use";
 import FullscreenSongControls from "./desktopSubcomponents/fullscreenSongControls";
 import LeftSectionSongControls from "./desktopSubcomponents/sections/leftSection";
 import MiddleSectionSongControls from "./desktopSubcomponents/sections/middleSection";
 import RightSectionSongControls from "./desktopSubcomponents/sections/rightSection";
-
-export const SliderValue = createContext<number | any>(0);
-export const KeyboardHandler = createContext(() => { });
-export const WheelEventHandler = createContext(() => { });
-export const LyricsOpened = createContext<boolean | any>(false);
+import { KeyboardHandler, LyricsOpened, SliderValue, WheelEventHandler } from "../contexts";
 
 // got this function from the beautiful lyrics spicetify extension
 // shoutout to the goat who made it
@@ -57,8 +52,6 @@ export const DesktopSongControls = ({
     const [lyricsOpened, setLyricsOpened] = useState(false);
 
     const necessaryProps = { shuffle, setShuffle, handleSkipSong, songVal, isLoading, isPlaying, setIsPlaying, songRef, repeat, setRepeat, appearBar, setAppearBar, setVolumeVal, volumeVal, id, image, songCreator, isFullscreenMode, setIsFullscreenMode };
-
-    useLockBodyScroll(isFullscreenMode);
 
     const handleKeyDown = useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {

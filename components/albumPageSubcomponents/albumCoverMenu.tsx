@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useClickAway, useMedia } from "react-use";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { cn } from "@/lib/utils";
@@ -12,8 +12,9 @@ import { DialogFooter } from "../ui/dialog";
 import AlbumCover from "./albumCover";
 import Image from 'next/image'
 import { toast } from "sonner";
+import { Skeleton } from "../ui/skeleton";
 
-export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: string[], albumCoverType: number, setAlbumCoverType: any, id: string, newAlbumPage: boolean, albumName: string }) => {
+export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: string[], albumCoverType: number, setAlbumCoverType: any, id: string, newAlbumPage: boolean, albumName: string, albumCoverDescription: string[] }) => {
     const [dialogOpened, setDialogOpened] = useState(false);
     const isMobile = useIsMobile();
     const [displayAlbumCover, setDisplayAlbumCover] = useState(false);
@@ -23,6 +24,9 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
     const textRef = useRef<HTMLDivElement>(null);
     const emblaRef = useRef<any>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
+    const [loadedImage, setLoadedImage] = useState(false);
+
+    console.log(props.albumCoverDescription[0])
 
     useClickAway(overlayRef, () => {
         isMobile && setDisplayAlbumCover(false);
@@ -37,7 +41,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                     opts={{
                         align: "center",
                         loop: true,
-                        startIndex: props.albumCoverType - 2
+                        startIndex: props.albumCoverType - props.albumCoverInfo.length
                     }}
                     className="max-w-full md:max-w-[50%] rounded-2xl flex flex-col gap-3"
                     setApi={(api) => {
@@ -54,28 +58,35 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                 >
                     <div className="relative flex overflow-hidden rounded-2xl shadow-xl bg-background">
                         <CarouselContent className="rounded-2xl">
-                            {Array.from({ length: props.albumCoverInfo.length }).map((_, index) => (
+                            {props.albumCoverInfo.map((_, index) => (
                                 <CarouselItem key={index}>
+                                    {!loadedImage && (
+                                        <Skeleton
+                                            className="rounded-2xl overflow-hidden"
+                                            style={{ width: albumCoverSize, height: albumCoverSize }}
+                                        />
+                                    )}
                                     <Image
                                         src={`/song-files/covers/${props.albumCoverInfo[index]}.jpg`}
-                                        alt={`album cover`}
+                                        alt="album cover"
                                         width={albumCoverSize}
                                         height={albumCoverSize}
-                                        className="w-full h-full flex-shrink-0 snap-center rounded-2xl"
+                                        className="flex-shrink-0 snap-center rounded-2xl"
+                                        onLoad={() => setLoadedImage(true)}
                                     />
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-16 flex items-end justify-center rounded-b-2xl p-2 -order-last md:order-last bg-gradient-to-t from-black/60 to-transparent">
                             <div className="flex justify-center gap-1 opacity-80">
-                                {Array.from({ length: props.albumCoverInfo.length }).map((_, index) => (
+                                {props.albumCoverInfo.map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => {
                                             emblaRef.current?.scrollTo(index);
                                             setCurrent(index);
                                         }}
-                                        className={cn("size-4 rounded-full transition-all duration-500 backdrop-blur-md", current === index ? "bg-primary" : "bg-muted/40")}
+                                        className={cn("size-4 rounded-full transition-color duration-500 backdrop-blur-md border", current === index ? "bg-primary border-transparent" : "border-muted/50")}
                                     />
                                 ))}
                             </div>
@@ -87,7 +98,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                     <p className="text-md text-muted-foreground text-center md:text-left" ref={textRef}>Check these other album covers that were made for this album but were scrapped.</p>
                     <div className="w-full h-0.5 bg-secondary rounded-full" />
                     <ScrollArea className="w-full max-h-80 overflow-auto leading-6 text-base text-md text-muted-foreground/60">
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                        {props.albumCoverDescription[current]}
                     </ScrollArea>
                 </div>
             </div >
@@ -170,7 +181,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                 <Drawer open={dialogOpened} onOpenChange={setDialogOpened} dismissible={false}>
                     <DrawerContent className="h-full max-h-full rounded-t-none" showGrabThing={false}>
                         <ScrollArea className="size-full">
-                            <div className="px-6 py-6 pt-14">
+                            <div className="px-6 py-6 pt-16">
                                 <MainContent />
                             </div>
                         </ScrollArea>
@@ -180,8 +191,9 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                         >
                             <X className="min-h-4 min-w-4 rounded-full text-primary" />
                         </Button>
-                        <DrawerFooter className="border-t-2">
-                            <div className="flex gap-4 items-center justify-center">
+                        <DrawerFooter className="">
+                            <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-b from-transparent to-primary-foreground to-95% z-10" />
+                            <div className="flex gap-4 items-center justify-center z-20">
                                 <SelectButtons isMobile={false} setAlbumCoverType={props.setAlbumCoverType} />
                             </div>
                         </DrawerFooter>

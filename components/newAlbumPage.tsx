@@ -63,7 +63,7 @@ export default function NewAlbumPage(
                     </Button>
                 </Link>
             </div>
-            <div className={cn('flex m-5 mt-12 md:m-16 md:mt-16 gap-4', isWideEnough ? "flex-row" : "flex-col")}>
+            <div className={cn('flex m-5 mt-12 md:m-16 md:mt-16 gap-4 max-w-7xl', isWideEnough ? "flex-row !mx-auto" : "flex-col")}>
                 <div className={cn('flex gap-y-2 flex-col items-center justify-start', isWideEnough ? "w-96" : "w-full")}>
                     <div className="relative flex flex-col gap-2">
                         <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-4 px-8", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
@@ -72,7 +72,7 @@ export default function NewAlbumPage(
                                 {props.albumCoverInfo.length === 0 || props.albumCoverInfo.length === 1 ?
                                     <AlbumCover id={id} newAlbumPage={true} albumCover={props.albumCover} />
                                     :
-                                    <AlbumCoverDialog id={id} newAlbumPage={true} albumCover={props.albumCover} albumName={albumName} albumCoverInfo={props.albumCoverInfo} albumCoverType={props.albumCoverType} setAlbumCoverType={props.setAlbumCoverType} />
+                                    <AlbumCoverDialog id={id} newAlbumPage={true} albumCover={props.albumCover} albumName={albumName} albumCoverInfo={props.albumCoverInfo} albumCoverType={props.albumCoverType} setAlbumCoverType={props.setAlbumCoverType} albumCoverDescription={props.albumCoverDescription} />
                                 }
                                 <div className='flex flex-col mt-2 justify-center items-center'>
                                     <p className='text-3xl font-semibold text-center'>{albumName}</p>

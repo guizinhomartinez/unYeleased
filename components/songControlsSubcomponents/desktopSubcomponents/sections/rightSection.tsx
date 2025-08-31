@@ -12,7 +12,8 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { fetchAlbumLyrics } from "@/lib/fetching";
 import { motion } from "motion/react";
 import { songControlsInterface } from "@/lib/interfaces";
-import { LyricsOpened, setFullscreen, SliderValue, WheelEventHandler } from "../../desktopSongControls";
+import { setFullscreen } from '@/components/songControlsSubcomponents/desktopSongControls';
+import { LyricsOpened, SliderValue, WheelEventHandler } from "@/components/contexts";
 import { Label } from "@/components/ui/label";
 
 interface LyricsPopover {
@@ -86,7 +87,7 @@ function VolumePopover({ songRef, volumeVal, repeat, setVolumeVal }: VolumePopov
                     }}
                 >
                     <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal || 100} repeat={repeat} />
-                    <div className="w-[0.25px] h-4 rounded-full bg-primary/40 ml-3 mr-1.5" />
+                    <div className="w-px h-4 rounded-full bg-primary/40 ml-3 mr-1.5" />
                     <Label className="w-12 cursor-pointer">{volumeVal}%</Label>
                 </Button>
             </PopoverTrigger>

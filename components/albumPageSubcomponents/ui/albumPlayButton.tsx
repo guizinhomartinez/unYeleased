@@ -6,7 +6,7 @@ export default function AlbumPlayButton({ isPlaying, playAlbum }: { isPlaying: b
     return (
         <Button className={cn('rounded-full h-12 transition-all duration-300 justify-normal', isPlaying ? 'w-12' : 'w-24')} onClick={() => playAlbum()}>
             {!isPlaying ? <Play /> : <Pause />}
-            <div className={cn('transition-all text-center ml-1 duration-300', isPlaying ? 'opacity-0' : '')}>
+            <div className={cn('transition-all text-center ml-1 duration-300', isPlaying && 'opacity-0')}>
                 {!isPlaying ? String('Play') : String('')}
             </div>
         </Button>

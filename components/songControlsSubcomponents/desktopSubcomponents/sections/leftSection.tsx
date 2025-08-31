@@ -95,7 +95,7 @@ export default function LeftSectionSongControls({ image, songCreator, songRef, s
                 </div>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <Button className="rounded-full min-w-9" size='icon' variant='secondary' disabled={!songRef.current}>
+                        <Button className="rounded-full min-w-9 bg-primary/10 hover:bg-primary/5" size='icon' variant='secondary' disabled={!songRef.current}>
                             <EllipsisVertical />
                         </Button>
                     </PopoverTrigger>

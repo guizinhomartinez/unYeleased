@@ -8,7 +8,7 @@ export async function fetchHomeSongs() {
 export async function fetchAlbumSongs(id: string) {
     let response;
     try {
-        const res = await fetch(`../song-files/songLists/${id.toLowerCase()}.json`);
+        const res = await fetch(`../song-files/albumTracklists/${id.toLowerCase()}.json`);
         res.ok ? response = await res.json() : response = "NOT FOUND";
     } catch (e) {
         response = "Network Error";
@@ -23,7 +23,7 @@ export async function fetchAlbumInfo(id: string) {
 
 // testing home fetching
 export async function fetchHomeInfo() {
-    const response = await fetch(`/song-files/fetchAlbumsExperimental.json`);
+    const response = await fetch(`/song-files/fetchAlbums.json`);
     return response.json();
 }
 

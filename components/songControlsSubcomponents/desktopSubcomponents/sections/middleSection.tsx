@@ -3,7 +3,7 @@ import PlayerButtons from "../../playerButtons";
 import { formattedSongTime, formatTime, handleSliderChange } from "@/lib/songControlsFunctions";
 import { songControlsInterface } from "@/lib/interfaces";
 import { useContext } from "react";
-import { SliderValue } from "../../desktopSongControls";
+import { SliderValue } from "@/components/contexts";
 
 export default function MiddleSectionSongControls({ shuffle, setShuffle, handleSkipSong, songVal, isLoading, isPlaying, setIsPlaying, songRef, repeat, setRepeat }: songControlsInterface) {
     const [sliderValue, setSliderValue] = useContext(SliderValue).sliderValue;

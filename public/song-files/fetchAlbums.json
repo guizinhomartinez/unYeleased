@@ -1,77 +1,141 @@
 {
-    "songs": [
+    "entries": [
         {
-            "year": "2025",
-            "row": 1,
-            "entries": [
-                {
-                    "image": "/song-files/covers/bully-big.jpg",
-                    "text": "Bully",
-                    "subtext": "Beauty and the Beast",
-                    "duration": "1:45",
-                    "link": "/single/beauty-and-the-beast"
-                },
-                {
-                    "image": "/song-files/covers/wheels-fall-off-big.jpg",
-                    "text": "Wheels Fall Off",
-                    "subtext": "Full Version",
-                    "duration": "4:50",
-                    "link": "/single/wheels-fall-off-full"
-                },
-                {
-                    "image": "/song-files/covers/wheels-fall-off-big.jpg",
-                    "text": "Wheels Fall Off",
-                    "subtext": "Released Version (Clean)",
-                    "duration": "2:01",
-                    "link": "/single/wheels-fall-off-released"
-                }
-            ]
+            "image": "yandhi",
+            "text": "Yandhi",
+            "subtext": null,
+            "link": "/album/yandhi",
+            "tags": [
+                "2018",
+                "Album"
+            ],
+            "creators": "Kanye West"
         },
         {
-            "year": "2018",
-            "row": 2,
-            "entries": [
-                {
-                    "image": "/song-files/covers/yandhi.jpg",
-                    "text": "Yandhi",
-                    "subtext": "Album",
-                    "duration": "40:45",
-                    "link": "/album/yandhi"
-                },
-                {
-                    "image": "/song-files/covers/job-well-done.jpg",
-                    "text": "Job Well Done",
-                    "subtext": "Album",
-                    "duration": "40:45",
-                    "link": "/album/job-well-done"
-                }
-            ]
+            "image": "job-well-done",
+            "text": "Job Well Done",
+            "subtext": null,
+            "link": "/album/job-well-done",
+            "tags": [
+                "2018",
+                "Album"
+            ],
+            "creators": "Kanye West & Chance the Rapper"
         },
         {
-            "year": "2013",
-            "row": 4,
-            "entries": [
-                {
-                    "image": "/song-files/covers/yeezus-2.jpg",
-                    "text": "Yeezus 2",
-                    "subtext": "Album",
-                    "duration": "40:45",
-                    "link": "/album/yeezus-2"
-                }
-            ]
+            "image": "bully-big",
+            "text": "Beauty and The Beast",
+            "subtext": "Version from Yeezy.com",
+            "tags": [
+                "2025",
+                "Single",
+                "Bully"
+            ],
+            "link": "/single/beauty-and-the-beast",
+            "creators": "Kanye West"
         },
         {
-            "year": "2009",
-            "row": 3,
-            "entries": [
-                {
-                    "image": "/song-files/covers/good-ass-job.jpg",
-                    "text": "Good Ass Job",
-                    "subtext": "Album",
-                    "duration": "40:45",
-                    "link": "/album/good-ass-job"
-                }
-            ]
+            "image": "bully-big",
+            "text": "World War 3",
+            "subtext": "Released on March 6th on Ye's X account",
+            "tags": [
+                "2025",
+                "Single",
+                "Bully"
+            ],
+            "link": "/single/world-war-3",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "bully",
+            "text": "BULLY V1",
+            "subtext": "First official release of Bully",
+            "tags": [
+                "2025",
+                "Album",
+                "Bully"
+            ],
+            "link": "/album/bully",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "wheels-fall-off-big",
+            "text": "Wheels Fall Off",
+            "subtext": "Full Version",
+            "tags": [
+                "2025",
+                "Single",
+                "Wheels Fall Off"
+            ],
+            "link": "/single/wheels-fall-off-full",
+            "creators": "Kanye West & Ty Dolla $ign"
+        },
+        {
+            "image": "wheels-fall-off-big",
+            "text": "Wheels Fall Off",
+            "subtext": "Released Clean Version",
+            "tags": [
+                "2025",
+                "Single",
+                "Wheels Fall Off"
+            ],
+            "link": "/single/wheels-fall-off-released",
+            "creators": "Kanye West & Ty Dolla $ign"
+        },
+        {
+            "image": "good-ass-job",
+            "text": "Good Ass Job",
+            "subtext": null,
+            "tags": [
+                "2009",
+                "Album"
+            ],
+            "link": "/album/good-ass-job",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "bad-bitch-playbook",
+            "text": "Bad Bitch Playbook",
+            "subtext": null,
+            "tags": [
+                "2023",
+                "Album"
+            ],
+            "link": "/album/bad-bitch-playbook",
+            "creators": "¥$"
+        },
+        {
+            "image": "yeezus-2",
+            "text": "Yeezus 2",
+            "subtext": null,
+            "tags": [
+                "2014",
+                "Album"
+            ],
+            "link": "/album/yeezus-2",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "yebu",
+            "text": "Someday We'll All Be Free",
+            "subtext": "Released on December 7, 2022",
+            "tags": [
+                "2022",
+                "Single"
+            ],
+            "link": "/single/someday-well-all-be-free",
+            "creators": "Kanye West"
+        },
+        {
+            "image": "So_Help_Me_God_album_cover",
+            "text": "So Help Me God",
+            "subtext": null,
+            "tags": [
+                "2015",
+                "Album"
+            ],
+            "link": "/album/so-help-me-god",
+            "creators": "Kanye West"
         }
     ]
 }

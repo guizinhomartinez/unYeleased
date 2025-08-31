@@ -8,7 +8,7 @@ import VolumeSlider from "../volumeSlider";
 import { Label } from "@/components/ui/label";
 import { songControlsInterface } from "@/lib/interfaces";
 import { useContext } from "react";
-import { KeyboardHandler, SliderValue, WheelEventHandler } from "../desktopSongControls"
+import { KeyboardHandler, SliderValue, WheelEventHandler } from "@/components/contexts"
 
 export default function FullscreenSongControls({
     songRef,

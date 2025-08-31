@@ -301,7 +301,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
             </div>
 
             <div className="w-screen h-screen">
-                <div className={cn("bg-secondary/30 border p-6", isMobile ? "rounded-none h-[120vh] pt-12" : "rounded-3xl w-96 max-h-fit absolute-div-center shadow-xl")}>
+                <div className={cn("bg-secondary/30 border p-6", isMobile ? "rounded-none h-[107vh] pt-12" : "rounded-3xl w-96 max-h-fit absolute-div-center shadow-xl")}>
                     <div className="flex flex-col gap-2 justify-center items-start">
                         <ImagePlaceholder image={image || null} />
                         <div className="flex justify-between items-center gap-4 w-[85%]">

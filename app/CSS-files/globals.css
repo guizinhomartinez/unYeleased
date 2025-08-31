@@ -136,4 +136,8 @@ nextjs-portal {
   .absolute-div-center {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
   }
+
+  .gradient-from-top-to-bottom {
+    mask-image: linear-gradient(to top, transparent 0%, #000 0%, #000 95%, transparent 100%);
+  }
 }
