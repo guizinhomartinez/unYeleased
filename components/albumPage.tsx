@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Dot, Search } from "lucide-react";
-import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { SongControls } from "./songControls";
 import BasicPageStuff from "./basicPageStuff";
-import { AlbumPageInterface, SongInterface } from "@/lib/interfaces";
+import { AlbumPageInterface } from "@/lib/interfaces";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
 import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
-import { useState } from "react";
 import AlbumCover from "./albumPageSubcomponents/albumCover";
 
 export default function AlbumPage(

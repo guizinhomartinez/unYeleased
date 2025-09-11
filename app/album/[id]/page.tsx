@@ -51,28 +51,27 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, []);
 
   // This basically loads everything that is needed for an album, like its tracklist, album name, album credits etc.
+
   useEffect(() => {
     async function loadSongs() {
-      const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
-      data === "NOT FOUND" && window.location.replace("/page-not-found");
+      fetchAlbumSongs(id.toLowerCase().replace(" ", "-")).then(data => {
+        data === "NOT FOUND" && window.location.replace("/page-not-found");
 
-      setFetchedAlbumInfo(data);
-      setSongs(data.tracks);
-      setYear(data.config[0].year);
-      setAlbumName(data.config[0].albumName);
-      setAlbumCreator(data.config[0].albumCreator);
+        setFetchedAlbumInfo(data);
+        setSongs(data.tracks);
+        setYear(data.config[0].year);
+        setAlbumName(data.config[0].albumName);
+        setAlbumCreator(data.config[0].albumCreator);
+      })
     }
 
-    async function loadSongCredits() {
-      const data = await fetchAlbumCredits(id.toLowerCase().replace(" ", "-"));
-      setCredits(data.credits);
-    }
+    const loadSongCredits = async () => fetchAlbumCredits(id.toLowerCase().replace(" ", "-")).then(data => setCredits(data.credits));
 
     loadSongCredits();
     loadSongs();
   }, [id, albumName]);
 
-  // sets the album cover
+  // sets the album cover based on what the user sets
   useEffect(() => {
     if (!fetchedAlbumInfo) return;
 
@@ -92,7 +91,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       document.title = `${playingSong} by ${songCreator} | UnYeleased`;
   }, [playingSong, songCreator, id, albumName])
 
-  // sets up the songRef variable to be used in other areas and loads the correct song
+  // sets up the songRef variable to be used in other areas
+  // songRef is used to play the song the user wants to play. it sets up all the basic audio stuff aswell
+  // and loads the correct song
   useEffect(() => {
     const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;
     const audioFileType = '.m4a';
@@ -236,47 +237,47 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   if (newPageLayout === 1) {
     return (
-        <NewAlbumPage
-          albumName={albumName}
-          albumCreator={albumCreator}
-          id={id.toLowerCase().replace(" ", "-")}
-          isPlaying={isPlaying}
-          showExplanation={showExplanation}
-          setShowExplanation={setShowExplanation}
-          fullscreen={fullscreen}
-          setFullscreen={setFullscreen}
-          songs={songs}
-          searchQuery={searchQuery}
-          playAlbum={playAlbum}
-          appearBar={appearBar}
-          currentSongIndex={currentSongIndex}
-          handleClickEvent={handleClickEvent}
-          setSearchQuery={setSearchQuery}
-          setAppearBar={setAppearBar}
-          year={year}
-          songRef={songRef}
-          playingSong={playingSong}
-          setIsPlaying={setIsPlaying}
-          volumeVal={volumeVal}
-          setVolumeVal={setVolumeVal}
-          songCreator={songCreator}
-          handleSkipSong={handleSkipSong}
-          repeatAlbum={repeatAlbum}
-          setRepeatAlbum={setRepeatAlbum}
-          credits={credits}
-          isLoading={isLoading}
-          isFullscreenMode={isFullscreenMode}
-          setIsFullscreenMode={setIsFullscreenMode}
-          showLyricsFullscreen={showLyricsFullscreen}
-          setShowLyricsFullscreen={setShowLyricsFullscreen}
-          shuffle={shuffle}
-          setShuffle={setShuffle}
-          albumCover={albumCover}
-          albumCoverType={albumCoverType || 0}
-          setAlbumCoverType={setAlbumCoverType}
-          albumCoverInfo={albumCoverInfo}
-          albumCoverDescription={albumCoverDescription}
-        />
+      <NewAlbumPage
+        albumName={albumName}
+        albumCreator={albumCreator}
+        id={id.toLowerCase().replace(" ", "-")}
+        isPlaying={isPlaying}
+        showExplanation={showExplanation}
+        setShowExplanation={setShowExplanation}
+        fullscreen={fullscreen}
+        setFullscreen={setFullscreen}
+        songs={songs}
+        searchQuery={searchQuery}
+        playAlbum={playAlbum}
+        appearBar={appearBar}
+        currentSongIndex={currentSongIndex}
+        handleClickEvent={handleClickEvent}
+        setSearchQuery={setSearchQuery}
+        setAppearBar={setAppearBar}
+        year={year}
+        songRef={songRef}
+        playingSong={playingSong}
+        setIsPlaying={setIsPlaying}
+        volumeVal={volumeVal}
+        setVolumeVal={setVolumeVal}
+        songCreator={songCreator}
+        handleSkipSong={handleSkipSong}
+        repeatAlbum={repeatAlbum}
+        setRepeatAlbum={setRepeatAlbum}
+        credits={credits}
+        isLoading={isLoading}
+        isFullscreenMode={isFullscreenMode}
+        setIsFullscreenMode={setIsFullscreenMode}
+        showLyricsFullscreen={showLyricsFullscreen}
+        setShowLyricsFullscreen={setShowLyricsFullscreen}
+        shuffle={shuffle}
+        setShuffle={setShuffle}
+        albumCover={albumCover}
+        albumCoverType={albumCoverType || 0}
+        setAlbumCoverType={setAlbumCoverType}
+        albumCoverInfo={albumCoverInfo}
+        albumCoverDescription={albumCoverDescription}
+      />
     )
   } /* else {
     return (

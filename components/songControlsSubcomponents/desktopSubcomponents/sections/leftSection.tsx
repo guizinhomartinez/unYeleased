@@ -86,10 +86,10 @@ const keyboardThing: KeyboardThing = [
 
 export default function LeftSectionSongControls({ image, songCreator, songRef, songVal, id }: songControlsInterface) {
     return (
-        <div className="flex items-center gap-3 select-none lg:w-full md:w-[30%]">
+        <div className="flex items-center gap-3 select-none overflow-hidden md:!max-w-[25%] lg:!max-w-[73%] w-full">
             <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
-            <div className="flex gap-5 items-center">
-                <div className="md:max-w-[40%] lg:max-w-full w-full">
+            <div className="flex gap-5 items-center md:!max-w-[40%] lg:!max-w-[73%] overflow-hidden">
+                <div className="md:!max-w-[40%] lg:!max-w-[73%] w-full">
                     <AutoMarquee text={songVal || "No Track Found"} className="font-semibold text-md" number={0} />
                     <AutoMarquee text={songCreator || "Unknown"} className="text-sm text-muted-foreground" number={0} />
                 </div>

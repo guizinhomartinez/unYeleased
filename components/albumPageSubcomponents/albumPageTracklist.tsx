@@ -1,4 +1,4 @@
-import { cn, formatDuration } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Skeleton } from "../ui/skeleton"
 import { AlbumPageTracklistInterface } from "@/lib/interfaces"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -7,11 +7,15 @@ import { Button } from "../ui/button"
 import { EllipsisVertical, MicVocal } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
-import { useEffect, useState } from "react"
+import { Suspense, useState } from "react"
 import { useLocalStorage } from "react-use"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
-    return !props.songs.length ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />
+    return (
+        <Suspense fallback={<LoadingComponent />}>
+            {(!props.songs.length || !props.songs || props.songs.length === 0) ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />}
+        </Suspense>
+    )
 }
 
 function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
@@ -19,35 +23,35 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const [durations, setDurations] = useState<(string | null)[]>([]);
     const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
 
-    useEffect(() => {
-        if (!showSongDurationOnTracklist) return setDurations([]);
+    // useEffect(() => {
+    //     if (!showSongDurationOnTracklist) return setDurations([]);
 
-        async function loadDurations() {
-            const newDurations = await Promise.all(
-                props.songs.map((song) => {
-                    return new Promise<string | null>((resolve) => {
-                        const audioPrefix = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/`;
-                        const audioFileType = '.m4a';
-                        const audio = new Audio(audioPrefix + song.title + audioFileType);
+    //     async function loadDurations() {
+    //         const newDurations = await Promise.all(
+    //             props.songs.map((song) => {
+    //                 return new Promise<string | null>((resolve) => {
+    //                     const audioPrefix = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/`;
+    //                     const audioFileType = '.m4a';
+    //                     const audio = new Audio(audioPrefix + song.title + audioFileType);
 
-                        audio.addEventListener("loadedmetadata", () => {
-                            resolve(formatDuration(audio.duration));
-                        });
-                        audio.addEventListener("error", () => {
-                            resolve(null);
-                        });
-                    });
-                })
-            );
+    //                     audio.addEventListener("loadedmetadata", () => {
+    //                         resolve(formatDuration(audio.duration));
+    //                     });
+    //                     audio.addEventListener("error", () => {
+    //                         resolve(null);
+    //                     });
+    //                 });
+    //             })
+    //         );
 
-            setDurations(newDurations);
-        };
+    //         setDurations(newDurations);
+    //     };
 
-        loadDurations();
-    }, [props.songs, props.id]);
+    //     loadDurations();
+    // }, [props.songs, props.id]);
 
     const SongDurations = (props: { index: any }) => {
-        if (!showSongDurationOnTracklist) return;
+        /* if (!showSongDurationOnTracklist) */ return;
 
         return (
             <div>
@@ -87,8 +91,8 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                         <div className="flex min-w-fit items-center gap-3" onClick={(e) => e.stopPropagation()}>
                             <SongDurations index={index} />
                             <Popover>
-                                <PopoverTrigger onClick={(e) => e.stopPropagation()}>
-                                    <Button className="rounded-full bg-transparent" variant="ghost" size="icon">
+                                <PopoverTrigger asChild>
+                                    <Button onClick={(e) => e.stopPropagation()} className="rounded-full bg-transparent" variant="ghost" size="icon">
                                         <EllipsisVertical />
                                     </Button>
                                 </PopoverTrigger>

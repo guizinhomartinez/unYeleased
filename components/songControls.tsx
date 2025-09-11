@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
 import { MobileSongControls } from "./songControlsSubcomponents/mobileSongControls";
 import { DesktopSongControls } from "./songControlsSubcomponents/desktopSongControls";
@@ -9,6 +9,7 @@ import { songControlsInterface } from "@/lib/interfaces";
 import { AnimatePresence } from "motion/react";
 import { FullscreenUI } from "./songControlsSubcomponents/fullscreenUI";
 import { useLocalStorage, useLockBodyScroll } from "react-use";
+import { X } from "lucide-react";
 
 export const SongControls = ({
     songRef,
@@ -136,6 +137,11 @@ export const SongControls = ({
                                 shuffle={shuffle}
                                 setShuffle={setShuffle}
                             />
+                            <DrawerClose asChild>
+                                <button className="absolute right-3 top-2 rounded-full p-2 bg-secondary/50">
+                                    <X className="h-4 w-4 text-muted-foreground" strokeWidth={3.5} />
+                                </button>
+                            </DrawerClose>
                         </DrawerContent>
                     </Drawer>
                 </div>

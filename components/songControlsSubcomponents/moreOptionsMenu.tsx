@@ -4,6 +4,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 import { toast } from "sonner";
 import { saveAs } from "file-saver";
 import { cn } from "@/lib/utils";
+import React, { useState } from "react";
 
 export const MoreOptionsMenu = (props: { songRef: any, songVal: string, id: string }) => {
 
@@ -14,7 +15,7 @@ export const MoreOptionsMenu = (props: { songRef: any, songVal: string, id: stri
                     <EllipsisVertical size='24' />
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-full">
+            <DrawerContent className="max-h-full rounded-t-3xl">
                 <div className="p-5 w-full flex flex-col gap-2">
                     <ShareMenu songRef={props.songRef} songVal={props.songVal} />
                     <DownloadMenu songVal={props.songVal} id={props.id} />
@@ -24,7 +25,7 @@ export const MoreOptionsMenu = (props: { songRef: any, songVal: string, id: stri
     )
 }
 
-const ShareMenu = (props: { songRef: any, songVal: string }) => {
+export const ShareMenu = (props: { songRef: any, songVal: string, onClick?: React.MouseEventHandler }) => {
     const showShareMenu = () => {
         if (!navigator.share) return;
 
@@ -34,7 +35,7 @@ const ShareMenu = (props: { songRef: any, songVal: string }) => {
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button className="rounded-full h-12 w-full" size="icon" variant='secondary' disabled={!props.songRef.current} id="share-button">
+                <Button className="rounded-full h-12 w-full" size="icon" variant='secondary' onClick={props.onClick} disabled={!props.songRef.current} id="share-button">
                     <Share />
                     Share
                 </Button>
@@ -62,7 +63,7 @@ const ShareMenu = (props: { songRef: any, songVal: string }) => {
     )
 }
 
-export const DownloadMenu = (props: { songVal:string, id: string, className?:string }) => {
+export const DownloadMenu = (props: { songVal: string, id: string, className?: string, onClick?: React.MouseEventHandler }) => {
     async function downloadSong() {
         const audioLocation = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/${props.songVal}.m4a`;
 
@@ -79,7 +80,7 @@ export const DownloadMenu = (props: { songVal:string, id: string, className?:str
     }
 
     return (
-        <Button className={cn("rounded-full h-12 w-full", props.className)} size="icon" variant='secondary' onClick={downloadSong}>
+        <Button className={cn("rounded-full h-12 w-full", props.className)} size="icon" variant='secondary' onClick={() => { downloadSong(); props.onClick; }}>
             <DownloadIcon />
             Download song
         </Button>

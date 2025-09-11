@@ -8,17 +8,11 @@ export const TutorialSection = () => {
     const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
 
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-col mb-3 text-center">
-                <p className="text-3xl font-semibold">Tweaks</p>
-                <p className="text-sm text-primary/50">Change more advanced stuff.</p>
-            </div>
-            <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                <Label className="text-base text-muted-foreground">Reset tutorial</Label>
-                <Button size="icon" variant='destructive' className="rounded-full" onClick={() => setTutorialNumber(0)}>
-                    <RotateCcw />
-                </Button>
-            </div>
+        <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+            <Label className="text-base text-muted-foreground">Reset tutorial</Label>
+            <Button size="icon" variant='destructive' className="rounded-full" onClick={() => setTutorialNumber(0)}>
+                <RotateCcw />
+            </Button>
         </div>
     )
 }

@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import { SongControls } from "./songControls";
-import { AlbumPageInterface } from "@/lib/interfaces";
+import { AlbumPageInterface, Credits, SongInterface } from "@/lib/interfaces";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import Link from "next/link";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
@@ -63,10 +63,10 @@ export default function NewAlbumPage(
                     </Button>
                 </Link>
             </div>
-            <div className={cn('flex m-5 mt-12 md:m-16 md:mt-16 gap-4 max-w-7xl', isWideEnough ? "flex-row !mx-auto" : "flex-col")}>
+            <div className={cn('flex m-5 mt-12 md:!pb-10 md:p-8 lg:!px-0 lg:!pt-0 md:mt-16 gap-3 max-w-7xl', isWideEnough ? "flex-row !mx-auto" : "flex-col")}>
                 <div className={cn('flex gap-y-2 flex-col items-center justify-start', isWideEnough ? "w-96" : "w-full")}>
                     <div className="relative flex flex-col gap-2">
-                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-4 px-8", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
+                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-8 pb-4", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
                             <Image src={props.albumCover} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
                                 {props.albumCoverInfo.length === 0 || props.albumCoverInfo.length === 1 ?

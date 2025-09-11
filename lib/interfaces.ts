@@ -89,6 +89,11 @@ export interface FullscreenButtonInterface {
     id: string;
     songVal: string;
     songRef: any;
+    songCreator: string;
+    isPlaying: boolean;
+    setIsPlaying: any;
+    handleSkipSong: any;
+    isLoading: boolean | null;
 }
 
 // Homepage stuff
@@ -167,6 +172,9 @@ export interface LyricsInterface {
     isSynced?: boolean;
     isFullscreenMode?: boolean;
     syncedLyricsClassName?: string;
+    haveVerticalSpace?: boolean;
+    style?: React.CSSProperties;
+    ref?: any;
 }
 
 //Album page tracklist subcompoennt

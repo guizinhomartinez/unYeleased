@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon } from "lucide-react";
+import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer as Drawer2 } from 'vaul';
 import {
     Drawer,
+    DrawerClose,
     DrawerContent,
     DrawerTrigger,
 } from "@/components/ui/drawer"
@@ -26,6 +27,7 @@ import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
 import { AutoMarquee } from "./songControlsSubcomponents/autoMarquee";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import AlbumCover from "./albumPageSubcomponents/albumCover";
 
 type KeyboardThing = {
     letter: any;
@@ -303,8 +305,8 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
             <div className="w-screen h-screen">
                 <div className={cn("bg-secondary/30 border p-6", isMobile ? "rounded-none h-[107vh] pt-12" : "rounded-3xl w-96 max-h-fit absolute-div-center shadow-xl")}>
                     <div className="flex flex-col gap-2 justify-center items-start">
-                        <ImagePlaceholder image={image || null} />
-                        <div className="flex justify-between items-center gap-4 w-[85%]">
+                        <AlbumCover id={text} newAlbumPage={true} albumCover={image} imageSize={360} />
+                        <div className="flex justify-between items-center gap-4 mt-3 w-[85%]">
                             <div className="w-full flex flex-col">
                                 <AutoMarquee text={text} className="font-bold text-2xl" number={0} />
                                 <AutoMarquee text={subtext} className="text-muted-foreground/80" number={2} />
@@ -321,10 +323,10 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                                 <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
                                 <div className="text-md opacity-60 text-right w-12">{songRef.current ? (isNaN(songRef.current.duration) ? '0:00' : formatTime(songRef.current.duration)) : '0:00'}</div>
                             </div>
-                            <div className="flex justify-between w-full items-center gap-4 mt-2">
+                            <div className="flex justify-between w-full items-center gap-2 mt-2">
                                 <Button
                                     size="icon"
-                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    className={cn('p-0 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
                                     variant="ghost"
                                     onClick={() => { goBackFunc(); }}
                                 >
@@ -332,7 +334,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                                 </Button>
                                 <Button
                                     size="icon"
-                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    className={cn('p-0 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
                                     variant="ghost"
                                     onClick={() => { skipTimeFunc(true); }}
                                 >
@@ -347,7 +349,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                                 </Button>
                                 <Button
                                     size="icon"
-                                    className={cn('p-6 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
+                                    className={cn('p-0 rounded-full', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', useIsMobile() && 'bg-transparent focus:bg-transparent')}
                                     variant="ghost"
                                     onClick={() => {
                                         skipTimeFunc(false);
@@ -357,7 +359,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                                 </Button>
                                 <Button
                                     size="icon"
-                                    className={cn('p-6 rounded-full sm:bg-transparent sm:focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', !repeat && 'opacity-50')}
+                                    className={cn('p-0 rounded-full sm:bg-transparent sm:focus:bg-transparent', songVal !== "" || songVal !== null && 'opacity-50 cursor-not-allowed', !repeat && 'opacity-50')}
                                     variant="ghost"
                                     onClick={() => setRepeat(!repeat)}
                                 >
@@ -457,22 +459,6 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
     );
 }
 
-const ImagePlaceholder = ({ image }: { image: string | null }) => {
-    const [loaded, setLoaded] = useState(false);
-    return (
-        <div className="relative flex justify-center items-center">
-            {!loaded &&
-                (
-                    <Skeleton className="size-[320px] rounded-xl absolute inset-0 aspect-square" />
-                )
-            }
-            {image !== null &&
-                <Image width={360} height={360} alt="Single Cover" src={image} className="text-transparent aspect-square rounded-xl select-none pointer-events-none" onLoad={() => setLoaded(true)} />
-            }
-        </div>
-    )
-}
-
 const DrawerMenu = ({
     showExplanation,
     setShowExplanation,
@@ -484,13 +470,13 @@ const DrawerMenu = ({
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button className="rounded-full min-w-9" variant='secondary' size='icon' disabled={!songRef.current}>
+                <Button className="rounded-full min-w-9" variant='secondary' size='icon'>
                     <EllipsisVertical size='24' />
                 </Button>
             </DrawerTrigger>
             <DrawerContent className="max-h-full rounded-t-3xl">
                 <div className="p-5 w-full flex flex-col gap-2">
-                    <Button className="rounded-full h-12" variant='secondary' disabled={!songRef.current}
+                    <Button className="rounded-full h-12" variant='secondary'
                         onClick={() => { navigator.clipboard.writeText(location.href); toast("Copied song link to clipboard"); }}>
                         {PopoverMenuItems[0].icon}
                         {PopoverMenuItems[0].text}
@@ -502,7 +488,7 @@ const DrawerMenu = ({
                                 {PopoverMenuItems[2].text}
                             </Button>
                         </DrawerTrigger>
-                        <DrawerContent>
+                        <DrawerContent className="max-h-full rounded-t-2xl pt-1" showGrabThing={false}>
                             <div className="w-[30vw]">
                                 <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} shouldShowClose={false} />
                             </div>

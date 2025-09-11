@@ -3,19 +3,32 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from 'next/image'
 import Lyrics from "./lyrics";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { Info, LoaderCircleIcon } from "lucide-react";
 import { AutoMarquee } from "./autoMarquee";
 import { useLocalStorage } from "react-use";
 
 export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, setShowLyricsFullscreen, isLoading }: isFullscreenModeInterface) => {
-    const [lyricsStr, setLyricsStr] = useState("");
     const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage("fullscreen-lyrics-right", false);
 
     return (
-        <motion.div className="size-full fixed inset-0 bg-background top-0" initial={{ opacity: 0, y: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 0 }} transition={{ duration: 0.6, ease: "easeInOut" }}>
-            <Image src={image} alt={image} width={1000} height={1000} className="absolute inset-0 bg-center opacity-40 blur-3xl size-full touch-none select-none pointer-events-none" />
-            <motion.div className={cn("flex size-full transition-all duration-500", showLyricsFullscreen ? "justify-start" : "justify-center")} layout="position">
+        <motion.div
+            className="size-full fixed inset-0 bg-background top-0"
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+        >
+            <Image
+                src={image}
+                alt={image}
+                width={1000}
+                height={1000}
+                className="absolute inset-0 bg-center opacity-40 blur-3xl size-full touch-none select-none pointer-events-none"
+            />
+            <motion.div
+                className={cn("flex size-full transition-all duration-500", showLyricsFullscreen ? "justify-start" : "justify-center")}
+                layout="position"
+            >
                 <motion.div
                     className={cn("size-full flex flex-col items-center justify-center py-12", fullscreenLyricsRight && "order-2")}
                     initial={{ opacity: 0, x: 0 }}

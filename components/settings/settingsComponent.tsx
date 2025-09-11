@@ -1,12 +1,6 @@
 "use client"
 
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { ArrowLeft, Brush, ChevronLeft, Home, KeyRoundIcon, Menu, Settings2Icon, Sidebar } from "lucide-react"
+import { ArrowLeft, Brush, Home, KeyRoundIcon, Menu, Settings2Icon, Sidebar } from "lucide-react"
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { TutorialSection } from "./subComponents/tutorialSection";
@@ -16,8 +10,14 @@ import { useLockBodyScroll, useMedia } from "react-use";
 import { useEffect, useState } from "react";
 import { useQueryState } from "nuqs";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+
+type HeadersInterface = {
+    title: string;
+    subtext: string;
+    id: string;
+}[];
 
 export default function SettingsComponent() {
     return (
@@ -34,10 +34,27 @@ const NewSettingsPage = () => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [changeNavbarStyle, setChangeNavbarStyle] = useState(false);
 
-
     const appearenceTab = (currentTab === "appearence");
     const tweaksTab = (currentTab === "tweaks");
     const passwordTab = (currentTab === "password");
+
+    const mainTitle: HeadersInterface = [
+        {
+            title: "Appearence",
+            subtext: "Change how some aspects of the UI look.",
+            id: "appearence"
+        },
+        {
+            title: "Tweaks",
+            subtext: "Change more advanced stuff.",
+            id: "tweaks"
+        },
+        {
+            title: "Password",
+            subtext: "Here you can type a secret code to access a hidden song.",
+            id: "password"
+        }
+    ]
 
     useLockBodyScroll(isWideEnough);
 
@@ -177,53 +194,20 @@ const NewSettingsPage = () => {
                 </div>
             </div>
             <div className={cn("bg-primary-foreground/50 w-full p-4 md:p-8", isWideEnough ? "border-l overflow-y-auto rounded-tl-xl" : "")}>
-                {appearenceTab && <UISection />}
-                {tweaksTab && <TutorialSection />}
-                {passwordTab && <Password />}
-            </div>
-        </div>
-    )
-}
-
-const OldSettingsPage = () => {
-    return (
-        <div>
-            <div className="flex items-center justify-between rounded-full mb-4 relative">
-                <Link href="/">
-                    <Button className="rounded-full" size='icon' variant='ghost'>
-                        <ChevronLeft />
-                    </Button>
-                </Link>
-                <p className="text-2xl font-bold absolute top-1 left-1/2 -translate-x-1/2">Settings</p>
-                <div />
-            </div>
-            <Tabs defaultValue="appearence" className="w-full gap-4 overflow-hidden">
-                <TabsList className="w-full gap-1 rounded-lg *:rounded-lg *:w-full bg-primary-foreground/50 py-1 overflow-x-auto">
-                    <TabsTrigger
-                        value="appearence"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Appearence
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="tweaks"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Tweaks
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="password"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Password
-                    </TabsTrigger>
-                </TabsList>
-                <div className="rounded-2xl border bg-primary-foreground/50 p-4">
-                    <TabsContent value="appearence"><UISection /></TabsContent>
-                    <TabsContent value="tweaks"><TutorialSection /></TabsContent>
-                    <TabsContent value="password"><Password /></TabsContent>
+                <div className="flex flex-col gap-2">
+                    {mainTitle.map((element, index) => (
+                        (element.id === currentTab) && (
+                            <div className="flex flex-col mb-3 text-center" key={index}>
+                                <p className="text-3xl font-semibold">{element.title}</p>
+                                <p className="text-sm text-primary/50">{element.subtext}</p>
+                            </div>
+                        )
+                    ))}
+                    {appearenceTab && <UISection />}
+                    {tweaksTab && <TutorialSection />}
+                    {passwordTab && <Password />}
                 </div>
-            </Tabs>
+            </div>
         </div>
     )
 }

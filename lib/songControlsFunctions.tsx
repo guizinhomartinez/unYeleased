@@ -60,7 +60,7 @@ export const RepeatIcon = ({ repeat, size }: { repeat: number, size?: string | a
 
 export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: any, size?: number }) => {
     if (isLoading)
-        return <LoaderCircleIcon className="animate-spin" size={36} />
+        return <LoaderCircleIcon className="animate-spin" size={size} />
 
     if (!songRef.current) {
         return <Play size={size?.toString()} />

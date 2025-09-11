@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import localFont from 'next/font/local'
-import { IBM_Plex_Mono, Geist, Geist_Mono, Inter, JetBrains_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Inter, JetBrains_Mono } from 'next/font/google'
 import "@/app/CSS-files/globals.css";
 import { ThemeProvider } from "@/components/themeProvider"
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from "@/components/ui/sonner";
+import { TanstackProvider } from "@/components/providers/tanstack-provider";
 
-const yeezy = localFont({
-  src: '../public/yeezy_tstar-bold-webfont.ttf'
-})
-
-const IBMPlexMono = IBM_Plex_Mono({ weight: ['400'], subsets: ['latin'] })
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -70,7 +65,7 @@ export default function RootLayout({
             showAtBottom={false}
           />
           <NuqsAdapter>
-            {children}
+            <TanstackProvider>{children}</TanstackProvider>
           </NuqsAdapter>
         </ThemeProvider>
       </body>

@@ -1,8 +1,8 @@
 import { Label } from "@/components/ui/label";
-import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, LucideIcon } from "lucide-react";
 import { useLocalStorage } from "react-use";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const LyricsSection = () => {
     const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
@@ -19,13 +19,39 @@ export const LyricsSection = () => {
         }
     }, [lyricsAlignment]);
 
-        useEffect(() => {
+    useEffect(() => {
         const val = localStorage.getItem("normal-lyrics-alignment");
 
         if (val !== null || val !== "") {
             setNormalLyricsAlignmentLocalStorage(val || "left");
         }
     }, [normalLyricsAlignment]);
+
+    const OptionsTemplate = ({ normalVal, localStorageVal, setLyricsFunction }: { normalVal: string | undefined, localStorageVal: string | undefined, setLyricsFunction: Dispatch<SetStateAction<string | undefined>> }) => {
+        const ActualOptions = ({ type, Icon }: { type: string, Icon: LucideIcon }) => {
+            return (
+                <div
+                    className={cn(
+                        "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50 active:bg-primary/15",
+                        (localStorageVal || normalVal) === type && "bg-primary/10"
+                    )}
+                    suppressHydrationWarning
+                    aria-label={type}
+                    onClick={() => setLyricsFunction(type)}
+                >
+                    <Icon size='18' />
+                </div>
+            )
+        }
+
+        return (
+            <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
+                <ActualOptions type='left' Icon={AlignLeft} />
+                <ActualOptions type='center' Icon={AlignCenter} />
+                <ActualOptions type='right' Icon={AlignRight} />
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col gap-2 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
@@ -35,79 +61,11 @@ export const LyricsSection = () => {
             </div>
             <div className="flex justify-between items-center p-4 rounded-xl bg-secondary/20 border border-muted">
                 <Label className="text-base text-muted-foreground">Synced lyrics alignment</Label>
-                <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "left" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"left"}
-                        onClick={() => setLyricsAlignment("left")}
-                    >
-                        <AlignLeft size='18' />
-                    </div>
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "center" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"Center"}
-                        onClick={() => setLyricsAlignment("center")}
-                    >
-                        <AlignCenter size='18' />
-                    </div>
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (lyricsAlignmentLocalStorage || lyricsAlignment) === "right" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"Right"}
-                        onClick={() => setLyricsAlignment("right")}
-                    >
-                        <AlignRight size='18' />
-                    </div>
-                </div>
+                <OptionsTemplate setLyricsFunction={setLyricsAlignment} normalVal={lyricsAlignment} localStorageVal={lyricsAlignmentLocalStorage} />
             </div>
             <div className="flex justify-between items-center p-4 rounded-xl bg-secondary/20 border border-muted">
                 <Label className="text-base text-muted-foreground">Normal lyrics alignment</Label>
-                <div className="flex gap-0.5 p-0.5 items-center justify-between rounded-full border border-muted">
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "left" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"left"}
-                        onClick={() => setNormalLyricsAlignment("left")}
-                    >
-                        <AlignLeft size='18' />
-                    </div>
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "center" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"Center"}
-                        onClick={() => setNormalLyricsAlignment("center")}
-                    >
-                        <AlignCenter size='18' />
-                    </div>
-                    <div
-                        className={cn(
-                            "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50",
-                            (normalLyricsAlignmentLocalStorage || normalLyricsAlignment) === "right" && "bg-primary/10"
-                        )}
-                        suppressHydrationWarning
-                        aria-label={"Right"}
-                        onClick={() => setNormalLyricsAlignment("right")}
-                    >
-                        <AlignRight size='18' />
-                    </div>
-                </div>
+                <OptionsTemplate setLyricsFunction={setNormalLyricsAlignment} normalVal={normalLyricsAlignment} localStorageVal={normalLyricsAlignmentLocalStorage} />
             </div>
         </div>
     )

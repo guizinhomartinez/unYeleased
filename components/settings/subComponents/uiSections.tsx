@@ -1,14 +1,20 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
-import { Check, Laptop2Icon, Moon, PaintbrushVertical, Sun, X } from "lucide-react";
+import { Check, Info, Laptop2Icon, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
-import Link from "next/link";
 import { LyricsSection } from "./lyricsSection";
 import Img from 'next/image'
 import { useLocalStorage } from 'react-use';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dispatch, SetStateAction } from "react";
+
+type optionsMapInterface = {
+    text: string;
+    checkedElement: boolean | undefined;
+    setCheckedElement: Dispatch<SetStateAction<boolean | undefined>>;
+}[];
 
 export const UISection = () => {
     const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage("text-scroll-overflow", true);
@@ -46,7 +52,7 @@ export const UISection = () => {
         )
     }
 
-    const CheckboxComponent = (props: { children:React.ReactNode, text:string, addExplanation:boolean, id:number }) => {
+    const CheckboxComponent = (props: { children: React.ReactNode, text: string, addExplanation: boolean, id: number }) => {
         return (
             <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                 <Label className="text-base text-muted-foreground" htmlFor={`checkbox-element-${props.id}`}>{props.text}</Label>
@@ -55,51 +61,63 @@ export const UISection = () => {
         )
     }
 
-    const CheckComponent = (props: { checkedElement: any, setCheckElement: any, id:number }) => {
-    return (
-        <>
-            <input
-                id={`checkbox-element-${props.id}`}
-                type="checkbox"
-                checked={props.checkedElement}
-                onChange={() => props.setCheckElement(!props.checkedElement)}
-                className="sr-only" // hides it visually but keeps it accessible
-            />
-            <div
-                className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group"
-                onClick={() => props.setCheckElement(!props.checkedElement)}
-            >
-                {props.checkedElement ? (
-                    <Check className="text-green-400" />
-                ) : (
-                    <X className="text-red-500" />
-                )}
-            </div>
-        </>
-    );
+    const CheckComponent = (props: { checkedElement: any, setCheckElement: any, id: number }) => {
+        return (
+            <>
+                <input
+                    id={`checkbox-element-${props.id}`}
+                    type="checkbox"
+                    checked={props.checkedElement}
+                    onChange={() => props.setCheckElement(!props.checkedElement)}
+                    className="sr-only" // hides it visually but keeps it accessible
+                />
+                <div
+                    className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group"
+                    onClick={() => props.setCheckElement(!props.checkedElement)}
+                >
+                    {props.checkedElement ? (
+                        <Check className="text-green-400" />
+                    ) : (
+                        <X className="text-red-500" />
+                    )}
+                </div>
+            </>
+        );
     }
 
+    const optionsMap: optionsMapInterface = [
+        {
+            text: "Scrolling text on overflow",
+            checkedElement: scrollOnOverflow,
+            setCheckedElement: setScrollOnOverflow
+        },
+        {
+            text: "Fullscreen lyrics on the right",
+            checkedElement: fullscreenLyricsRight,
+            setCheckedElement: setFullscreenLyricsRight,
+        },
+        {
+            text: "Show song duration on tracklist",
+            checkedElement: showSongDurationOnTracklist,
+            setCheckedElement: setShowSongDurationOnTracklist
+        }
+    ]
+
     return (
         <>
-            <div className="flex flex-col gap-2">
-                <div className="flex flex-col mb-3 text-center">
-                    <p className="text-3xl font-semibold">Appearence</p>
-                    <p className="text-sm text-primary/50">Change how some aspects of the UI look.</p>
+            <div className="flex flex-col gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                <div className="flex flex-col mb-2">
+                    <Label className="text-2xl font-semibold text-primary/90">Theme</Label>
+                    <Label className="text-primary/50">Change the theme of the website.</Label>
                 </div>
-
-                <div className="flex flex-col gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                    <div className="flex flex-col mb-2">
-                        <Label className="text-2xl font-semibold text-primary/90">Theme</Label>
-                        <Label className="text-primary/50">Change the theme of the website.</Label>
-                    </div>
-                    <div className="flex gap-2 overflow-scroll">
-                        <ThemeSelection colorPrimary={"#ffffff"} option="light" />
-                        <ThemeSelection colorPrimary={"#0a0a0a"} option="dark" />
-                        <ThemeSelection option="system" />
-                    </div>
+                <div className="flex gap-2 overflow-scroll">
+                    <ThemeSelection colorPrimary={"#ffffff"} option="light" />
+                    <ThemeSelection colorPrimary={"#0a0a0a"} option="dark" />
+                    <ThemeSelection option="system" />
                 </div>
+            </div>
 
-                {/* <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+            {/* <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                     <Label className="text-base text-muted-foreground">Album page style</Label>
                     <Link href="/album-page-style">
                         <Button variant='secondary' className="rounded-full">
@@ -109,42 +127,38 @@ export const UISection = () => {
                     </Link>
                 </div> */}
 
-                <CheckboxComponent addExplanation={false} text='Scrolling text on overflow' id={1}>
-                    <CheckComponent checkedElement={scrollOnOverflow} setCheckElement={setScrollOnOverflow} id={1} />
+            {optionsMap.map((element, index) => (
+                <CheckboxComponent addExplanation={false} text={element.text} id={index}>
+                    <CheckComponent checkedElement={element.checkedElement} setCheckElement={element.setCheckedElement} id={index} />
                 </CheckboxComponent>
+            ))}
 
-                <CheckboxComponent addExplanation={false} text='Fullscreen lyrics on the right' id={2}>
-                    <CheckComponent checkedElement={fullscreenLyricsRight} setCheckElement={setFullscreenLyricsRight} id={2} />
-                </CheckboxComponent>
-
-                <CheckboxComponent addExplanation={false} text='Show song duration on tracklist' id={3}>
-                    <CheckComponent checkedElement={showSongDurationOnTracklist} setCheckElement={setShowSongDurationOnTracklist} id={3} />
-                </CheckboxComponent>
-
-                <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Label className="text-base text-muted-foreground cursor-pointer">
-                                Dancing emoji on song interlude (click to see it)
-                            </Label>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="!rounded-xl w-[95vw] md:max-w-lg">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-center">Dancing emoji</AlertDialogTitle>
-                                <div className="flex justify-center items-center">
-                                    <Img unoptimized width={156} height={156} alt="Dancing emoji" src="/gifs/dancing-emoji.gif" />
-                                </div>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="rounded-xl w-full">Close</AlertDialogCancel>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                    <CheckComponent checkedElement={dancingEmoji} setCheckElement={setDancingEmoji} id={4} />
-                </div>
-
-                <LyricsSection />
+            <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Label className="text-base text-muted-foreground cursor-pointer flex gap-1 items-center">
+                            Dancing emoji on song interlude
+                            <Button variant='ghost' className="size-7">
+                                <Info size='2' />
+                            </Button>
+                        </Label>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="!rounded-xl w-[95vw] md:max-w-lg">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle className="text-center">Dancing emoji</AlertDialogTitle>
+                            <div className="flex justify-center items-center">
+                                <Img unoptimized width={156} height={156} alt="Dancing emoji" src="/gifs/dancing-emoji.gif" />
+                            </div>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="rounded-xl w-full">Close</AlertDialogCancel>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+                <CheckComponent checkedElement={dancingEmoji} setCheckElement={setDancingEmoji} id={4} />
             </div>
+
+            <LyricsSection />
         </>
     )
 }

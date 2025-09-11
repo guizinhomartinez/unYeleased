@@ -123,10 +123,10 @@ function LyricsPopover({ image, lyricsOpened, setLyricsOpened, fullscreenLyricsS
                     <MicVocal />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[450px] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group" side='top'>
+            <PopoverContent className="w-[450px] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group" style={{backgroundColor: 'hsl(0 0% 3.9%)'}} side='top'>
                 <div className="relative rounded-lg size-full overflow-hidden">
                     <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} />
+                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} haveVerticalSpace={true} />
                     <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-90 opacity-0 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
                         <div className="rounded-full flex justify-center items-center w-full relative">
                             <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>

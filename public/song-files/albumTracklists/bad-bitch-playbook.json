@@ -2,12 +2,12 @@
     "config": [
         {
             "albumCover": [
-                "bad-bitch-playbook"
+                "bad-bitch-playbook/bad-bitch-playbook",
+                "bad-bitch-playbook/bbpb-alt"
             ],
             "albumName": "Bad Bitch Playbook",
             "albumCreator": "¥$",
-            "year": "2023",
-            "credits": "Credits to [yeunrlsd] for songs and Kanye West Wiki for tracklist."
+            "year": "2023"
         }
     ],
     "tracks": [

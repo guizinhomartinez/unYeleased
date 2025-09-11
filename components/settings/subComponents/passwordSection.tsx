@@ -29,8 +29,6 @@ export const Password = () => {
         setRandomNumber(Math.floor(Math.random() * 5));
     }, []);
 
-    console.log(randomNumber);
-
     const FormSchema = z.object({
         pin: z.string().min(4, {
             message: "Your one-time password must be 6 characters.",
@@ -44,8 +42,6 @@ export const Password = () => {
     })
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(JSON.stringify(data, null, 2));
-
         if (String(JSON.stringify(data, null, 2)).includes("2424")) {
             router.push("/single/2424");
         }
@@ -54,11 +50,7 @@ export const Password = () => {
     }
 
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-col mb-3 text-center">
-                <p className="text-3xl font-semibold">Password</p>
-                <p className="text-sm text-primary/50">Here you can type a secret code to access a hidden song.</p>
-            </div>
+        <>
             <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-fit flex flex-col gap-5 justify-center items-center">
@@ -93,6 +85,6 @@ export const Password = () => {
             {(randomNumber !== null && randomNumber === 0) &&
                 <p className="text-center mt-4 text-muted-foreground opacity-75">The passcode is 2424 btw</p>
             }
-        </div>
+        </>
     )
 }

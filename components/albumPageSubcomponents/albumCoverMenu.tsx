@@ -26,8 +26,6 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
     const overlayRef = useRef<HTMLDivElement>(null);
     const [loadedImage, setLoadedImage] = useState(false);
 
-    console.log(props.albumCoverDescription[0])
-
     useClickAway(overlayRef, () => {
         isMobile && setDisplayAlbumCover(false);
     })
@@ -96,7 +94,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                 <div className={cn("flex flex-col gap-2", !isMobile ? "max-w-[50%] max-h-80 mt-1" : "max-w-full max-h-full mt-2", reallyBigScreen && "!max-w-96")}>
                     <p className="text-2xl font-semibold leading-none tracking-tight text-center md:text-left">{props.albumName}'s alternative covers</p>
                     <p className="text-md text-muted-foreground text-center md:text-left" ref={textRef}>Check these other album covers that were made for this album but were scrapped.</p>
-                    <div className="w-full h-0.5 bg-secondary rounded-full" />
+                    <div className="w-full h-0.5 bg-secondary rounded-full" style={{display: props.albumCoverDescription.length === 0 ? "block" : "none"}} />
                     <ScrollArea className="w-full max-h-80 overflow-auto leading-6 text-base text-md text-muted-foreground/60">
                         {props.albumCoverDescription[current]}
                     </ScrollArea>
@@ -146,12 +144,11 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
 
     return (
         <>
-            <div className="group relative size-full overflow-hidden">
+            <div className="group relative size-fit overflow-hidden">
                 <div
                     className={cn(
                         "absolute inset-0 opacity-0 bg-black/60 transition-opacity backdrop-blur-sm duration-500 z-20 rounded-xl",
-                        displayAlbumCover ? "opacity-100" : "opacity-0",
-                        !isMobile && "translate-y-4"
+                        displayAlbumCover ? "opacity-100" : "opacity-0"
                     )}
                     ref={overlayRef}
                     onMouseOver={() => !isMobile && setDisplayAlbumCover(true)}
@@ -164,14 +161,20 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                     }}
                 >
                     <Button
+                        asChild
                         className="absolute-div-center rounded-full py-5"
-                        onClick={(e) => {
-                            displayAlbumCover && setDialogOpened(true);
-                        }}
                         variant="link"
                     >
-                        <Disc />
-                        Show all covers
+                        <span
+                            onClick={(e) => {
+                                e.stopPropagation(); // prevent the parent div’s click
+                                displayAlbumCover && setDialogOpened(true);
+                            }}
+                            className="flex items-center gap-2 cursor-pointer"
+                        >
+                            <Disc />
+                            Show all covers
+                        </span>
                     </Button>
                 </div>
                 <AlbumCover id={props.id} newAlbumPage={props.newAlbumPage} albumCover={props.albumCover} />

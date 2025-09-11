@@ -4,28 +4,25 @@ import { Skeleton } from "../ui/skeleton";
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
-export default function AlbumCover({ id, newAlbumPage, albumCover }: { id: string, newAlbumPage: boolean, albumCover:string }) {
+export default function AlbumCover({ id, newAlbumPage, albumCover, imageSize }: { id: string, newAlbumPage: boolean, albumCover: string, imageSize?: number }) {
     const [loaded, setLoaded] = useState(false);
     const isMobile = useIsMobile();
-    const size = !newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260);
+    const size = imageSize !== undefined
+        ? imageSize
+        : (!newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260));
 
     return (
-        <div className={cn("relative", !loaded && "mt-4")}>
-            {!loaded && (
-                <Skeleton
-                    className="absolute top-0 left-0 rounded-xl aspect-square"
-                    style={{ width: 250, height: 250 }}
-                />
-            )}
+        <div className={cn("relative inline-block before:content-[''] before:absolute before:inset-0 before:bg-secondary", loaded ? "before:opacity-0" : "before:animate-pulse")}>
             <Image
                 src={albumCover}
                 alt={id}
                 width={size}
                 height={size}
                 priority={true}
-                className={cn('rounded-xl transition-opacity duration-300 aspect-square', !newAlbumPage && "outline outline-primary/10", loaded ? 'opacity-100 md:mt-4' : 'opacity-0')}
+                className={cn('rounded-xl aspect-square', !newAlbumPage && "outline outline-primary/10")}
                 onLoad={() => setLoaded(true)}
             />
         </div>
     )
+
 }

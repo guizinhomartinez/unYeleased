@@ -9,7 +9,7 @@ import { useLocalStorage } from 'react-use';
 import Img from 'next/image';
 import { AudioLines } from 'lucide-react';
 
-export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, syncedLyricsClassName }: LyricsInterface) {
+export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, syncedLyricsClassName, haveVerticalSpace, style }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
     const [lrcContent, setLrcContent] = useState("");
     const [lyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
@@ -51,9 +51,8 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 className={
                     cn('z-10 select-none transition-all duration-500 font-semibold',
                         !isFullscreenMode ? "text-2xl mb-3" : "text-4xl mb-8",
-                        !isFullscreenMode ? `text-${lyricsAlignment}` : 'text-left',
-                        !isFullscreenMode && (isLeftAlignedText(active) && "translate-x-2.5", isRightAlignedText(active) && "-translate-x-2.5"),
-                        active ? 'text-white/95' : 'text-white/10 blur-[2px]',
+                        !isFullscreenMode ? `text-${lyricsAlignment} origin-${lyricsAlignment}` : 'text-left',
+                        active ? 'text-white/95' : 'text-white/10 blur-[1.5px]',
                         !isFullscreenMode && (!active ? 'scale-90' : 'scale-95'))}
             >
                 {content === "" || content === " " || content === "♪" ?
@@ -85,7 +84,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                         lrc={lrcContent}
                         currentMillisecond={currentTimeVal}
                         lineRenderer={lineRenderer}
-                        verticalSpace={!isFullscreenMode}
+                        verticalSpace={haveVerticalSpace}
                         style={lrcContainerStyle}
                         recoverAutoScrollInterval={2500}
                     />
