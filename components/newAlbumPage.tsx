@@ -12,7 +12,7 @@ import Link from "next/link";
 import { DesktopAlbumExplanation, MobileAlbumExplanation } from "./albumPageSubcomponents/albumExplanationWrappers";
 import AlbumPageTracklist from "./albumPageSubcomponents/albumPageTracklist";
 import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
-import { ArrowRightIcon, ChevronLeft, EllipsisVertical, X } from "lucide-react";
+import { ArrowRightIcon, ArrowLeft, EllipsisVertical, X } from "lucide-react";
 import DownloadAlbumButton from "./albumPageSubcomponents/ui/downloadAlbumButton";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { useMedia } from "react-use";
@@ -54,21 +54,22 @@ export default function NewAlbumPage(
         ...props
     }: AlbumPageInterface) {
     const isMobile = useIsMobile();
-    const isWideEnough = useMedia('(min-width: 1024px)', true);
+
+    // console.count('counter');
 
     return (
         <>
             <div className='absolute left-4 md:left-5 top-2 md:top-4'>
                 <Link href="/">
                     <Button className="rounded-full" size='icon' variant='ghost'>
-                        <ChevronLeft />
+                        <ArrowLeft />
                     </Button>
                 </Link>
             </div>
-            <div className={cn('flex m-5 mt-12 md:!pb-10 md:p-8 lg:!px-0 lg:!pt-0 md:mt-16 gap-3 max-w-7xl', isWideEnough ? "flex-row !mx-auto" : "flex-col")}>
-                <div className={cn('flex gap-y-2 flex-col items-center justify-start', isWideEnough ? "w-96" : "w-full")}>
+            <div className={cn('flex m-5 mt-12 md:!pb-10 md:p-8 lg:!px-0 lg:!pt-0 md:mt-16 gap-3 max-w-7xl flex-col min-[1024px]:flex-row min-[1024px]:!mx-auto')}>
+                <div className={cn('flex gap-y-2 flex-col items-center justify-start w-full min-[1024px]:w-96')}>
                     <div className="relative flex flex-col gap-2">
-                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-8 pb-4", isWideEnough ? "border border-muted h-fit overflow-hidden relative" : "w-full h-full")}>
+                        <div className={cn("flex flex-col gap-3 items-center justify-center rounded-xl p-8 pb-4 w-full h-full min-[1024px]:border min-[1024px]:border-muted min-[1024px]:h-fit min-[1024px]:overflow-hidden min-[1024px]:relative min-[1024px]:w-[initial]")}>
                             <Image src={props.albumCover} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full touch-none select-none pointer-events-none" />
                             <div className="flex gap-2 flex-col items-center justify-center">
                                 {props.albumCoverInfo.length === 0 || props.albumCoverInfo.length === 1 ?
@@ -97,9 +98,9 @@ export default function NewAlbumPage(
 
                         <div className={cn(
                             "rounded-xl h-fit border border-muted bg-primary-foreground/50 w-full max-w-full mx-auto flex flex-col gap-2",
-                            credits.length > 0 ? "p-4" : "px-4 py-2 opacity-50"
+                            (credits !== undefined) ? "p-4" : "px-4 py-2 opacity-50"
                         )}>
-                            {credits.length > 0 ? (
+                            {(credits !== undefined) ? (
                                 <>
                                     <div className="inline-flex grow items-center text-primary/50">
                                         <div>
@@ -177,7 +178,7 @@ export default function NewAlbumPage(
                         </div>
                     </div>
                 </div>
-                {!isWideEnough && <div className="my-2 h-px w-full bg-muted" />}
+                <div className="my-2 h-px w-full bg-muted visible min-[1024px]:hidden" />
                 <div className="flex flex-col gap-3 w-full h-full">
                     <div className='flex gap-4 justify-between items-center md:items-end w-full'>
                         <div className="font-semibold text-2xl">Tracklist</div>

@@ -7,9 +7,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { songControlsInterface } from "@/lib/interfaces";
 import { AnimatePresence } from "motion/react";
-import { FullscreenUI } from "./songControlsSubcomponents/fullscreenUI";
 import { useLocalStorage, useLockBodyScroll } from "react-use";
 import { X } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const FullscreenUI = dynamic(() =>
+  import("@/components/songControlsSubcomponents/fullscreenUI").then(
+    (mod) => mod.default
+  )
+);
 
 export const SongControls = ({
     songRef,
@@ -98,7 +104,7 @@ export const SongControls = ({
                         {isFullscreenMode && <FullscreenUI {...{ image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, isLoading }} />}
                     </AnimatePresence>
                     <div
-                        className={cn(`fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
+                        className={cn(`z-50 fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
                             isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-primary-foreground to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
                             isFullscreenMode && (isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"),
                             !isFullscreenMode && (appearBar ? 'translate-y-0' : 'translate-y-32'))}

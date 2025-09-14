@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import Image from 'next/image'
-import { ChevronLeft, Info, LoaderCircleIcon, X } from "lucide-react";
+import { Info, LoaderCircleIcon, X } from "lucide-react";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
@@ -63,13 +63,23 @@ export const MiniPlayer = ({
 
     return (
         <ScrollArea className="flex-1 w-full max-w-screen overflow-x-hidden">
-            <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center max-w-screen overflow-hidden'>
+            <div className='p-8 flex flex-col gap-2 transition-all bg-primary-foreground w-full justify-center max-w-screen overflow-hidden'> {/* "absolute absolute-div-center" could be used to center this and make it better for 99% of the suers but then the album cover would need to shrink a lot and I think it's not worth it */}
                 <div className="flex flex-col gap-4 mt-0 rounded-2xl relative">
                     <Image src={albumCover} alt={`${id.toLowerCase()}`} width={0} height={0} className="absolute inset-x-0 top-8 bg-cover bg-center blur-2xl w-full rounded-3xl h-96 touch-none select-none pointer-events-none opacity-0 dark:opacity-10" />
                     <TooltipProvider>
                         <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>
-                                <div className={cn("flex flex-col relative items-center overflow-hidden transition-all duration-300 rounded-2xl", (!isPlaying && songRef.current) ? "scale-75 grayscale" : "")} onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
+                                <div
+                                    className="flex flex-col relative items-center overflow-hidden transition-all duration-300 rounded-2xl"
+                                    style={{
+                                        scale: (!isPlaying && songRef.current) ? 0.9 : 1,
+                                        filter: (!isPlaying && songRef.current) ? "grayscale(1)" : "grayscale(0)",
+                                    }}
+                                    onClick={() => {
+                                        setShowLyrics(true);
+                                        setTutorialNumber(2);
+                                    }}
+                                >
                                     <div className={cn("aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto px-2">
                                             {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} haveVerticalSpace={true} />}
@@ -103,8 +113,8 @@ export const MiniPlayer = ({
                                         priority={true}
                                         className="rounded-xl shadow-xl pointer-events-none aspect-square w-full max-w-xs sm:max-w-sm md:max-w-md" />
                                     {(isLoading || isLoading === null) &&
-                                        <div className={cn("aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto absolute inset-0 overflow-hidden bg-black/60 backdrop-blur-xl dark:bg-black/80", isLoading && "animate-pulse")}>
-                                            <div className={cn("aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto relative", isLoading && "animate-spin")}>
+                                        <div className={cn("aspect-square size-fit mx-auto absolute inset-0 overflow-hidden bg-black/60 backdrop-blur-xl dark:bg-black/80", isLoading && "animate-pulse")}>
+                                            <div className={cn("aspect-square size-fit mx-auto relative", isLoading && "animate-spin")}>
                                                 {isLoading && <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />}
                                                 {isLoading === null &&
                                                     <div className="flex flex-col gap-1 items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-2">

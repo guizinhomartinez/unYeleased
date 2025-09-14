@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Label } from "../ui/label";
+import { VisuallyHidden } from "radix-ui";
+import { Dialog as DialogPrimitive } from "radix-ui";
 
 type HeadersInterface = {
     title: string;
@@ -149,13 +151,13 @@ const NewSettingsPage = () => {
     const pagePercentage = Math.min(scrollProgress / 0.5, 1);
 
     return (
-        <div className={cn("flex w-dvw h-dvh", !isWideEnough && "flex-col")}>
+        <div className={cn("flex w-dvw h-dvh flex-col min-[1024px]:flex-row")}>
             <div
                 className={cn(
-                    "relative w-full transition-all duration-500",
-                    isWideEnough ? "h-full bg-background" : "sticky top-0 bg-background/50 !max-w-full z-50 backdrop-blur-md",
+                    "w-full transition-all duration-500",
+                    "fixed top-0 left-0 bg-background/50 max-w-full z-50 backdrop-blur-md min-[1024px]:h-full min-[1024px]:bg-background min-[1024px]:relative",
                     !hideSidebar ? "max-w-[20vw]" : "max-w-[5vw]",
-                    !isWideEnough && (changeNavbarStyle ? "left-[3vw] !max-w-[94vw]" : "!top-0 !left-0 !max-w-full border-b"))}
+                    changeNavbarStyle ? "max-[1024px]:left-[3vw] max-[1024px]:!max-w-[94vw]" : "max-[1024px]:!top-0 max-[1024px]:!left-0 max-[1024px]:!max-w-full max-[1024px]:border-b")}
                 style={{
                     top: pagePercentage * 15,
                     borderRadius: !isWideEnough ? (changeNavbarStyle ? pagePercentage * 24 : 0) : 0
@@ -184,6 +186,9 @@ const NewSettingsPage = () => {
                                         </Button>
                                     </SheetTrigger>
                                     <SheetContent className="flex flex-col gap-2 pt-12" onClick={() => setOpenedSheet(false)}>
+                                        <DialogPrimitive.Title asChild>
+                                            <VisuallyHidden.Root>Settings sheet</VisuallyHidden.Root>
+                                        </DialogPrimitive.Title>
                                         <Options />
                                     </SheetContent>
                                 </Sheet>
@@ -212,7 +217,7 @@ const NewSettingsPage = () => {
                 </div>
             </div>
             <div className={cn("bg-primary-foreground/50 w-full p-4 md:p-8", isWideEnough ? "border-l overflow-y-auto rounded-tl-xl" : "")}>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 pt-16 md:mt-0">
                     {mainTitle.map((element, index) => (
                         (element.id === currentTab) && (
                             <div className="flex flex-col mb-3 text-center" key={index}>

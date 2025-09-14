@@ -4,7 +4,7 @@ import { AlbumPageRoot } from "@/lib/interfaces";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Credits, SongInterface } from "@/lib/interfaces";
 import { useQueryState } from "nuqs";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useEffectOnce, useLocalStorage } from "react-use";
 import NewAlbumPage from "./newAlbumPage";
 
@@ -112,7 +112,7 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
         }
     }, [data.tracks, playingSong]);
 
-    const playAlbum = () => {
+    const playAlbum = useCallback(() => {
         if (data.tracks.length > 0) {
             if (clickedAmmount < 1) {
                 setPlayingSong(data.tracks[0].title);
@@ -124,7 +124,7 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
             setClickedAmmount(1);
             setSongCreator(data.tracks[0].artist);
         }
-    };
+    }, [playingSong, isPlaying, data.tracks, clickedAmmount]);
 
     function endedSongFunction(newIndex: number) {
         const setupNextSong = (songIndex: number, play: boolean = true) => {

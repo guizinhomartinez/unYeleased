@@ -83,16 +83,26 @@ export const UISection = () => {
                     checked={props.checkedElement}
                     onChange={() => props.setCheckElement(!props.checkedElement)}
                     className="sr-only" // hides it visually but keeps it accessible
+                    key={props.id}
                 />
                 <div
-                    className="size-9 min-w-9 min-h-9 flex justify-center items-center cursor-pointer overflow-hidden border border-primary/20 rounded-full active:-rotate-12 transition-all duration-75 origin-center group"
+                    className={cn(
+                        "peer h-6 w-11 cursor-pointer rounded-full",
+                        "border-2 border-transparent",
+                        "transition-colors duration-300 ease-in-out", // Smoother background transition
+                        props.checkedElement ? "bg-primary" : "bg-muted",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    )}
                     onClick={() => props.setCheckElement(!props.checkedElement)}
                 >
-                    {props.checkedElement ? (
-                        <Check className="text-green-400" />
-                    ) : (
-                        <X className="text-red-500" />
-                    )}
+                    <div className={cn(
+                        "size-5 rounded-full bg-background",
+                        "transform transition-transform duration-300 ease-in-out", // Smoother movement
+                        "pointer-events-none",
+                        props.checkedElement ? "translate-x-5" : "translate-x-0",
+                        "shadow-sm ring-0",
+                        "block"
+                    )} />
                 </div>
             </>
         );

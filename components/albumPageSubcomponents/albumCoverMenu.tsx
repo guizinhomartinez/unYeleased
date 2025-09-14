@@ -91,7 +91,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
                         </div>
                     </div>
                 </Carousel>
-                <div className={cn("flex flex-col gap-2", !isMobile ? "max-w-[50%] max-h-80 mt-1" : "max-w-full max-h-full mt-2", reallyBigScreen && "!max-w-96")}>
+                <div className={cn("flex flex-col gap-2 max-w-full max-h-full mt-2 md:max-w-[50%] md:max-h-80 md:mt-1 min-[1700px]:!max-w-96")}>
                     <p className="text-2xl font-semibold leading-none tracking-tight text-center md:text-left">{props.albumName}'s alternative covers</p>
                     <p className="text-md text-muted-foreground text-center md:text-left" ref={textRef}>Check these other album covers that were made for this album but were scrapped.</p>
                     <div className="w-full h-0.5 bg-secondary rounded-full" style={{display: (props.albumCoverDescription.length === 0 || props.albumCoverDescription === undefined) ? "block" : "none"}} />
@@ -147,7 +147,7 @@ export const AlbumCoverDialog = (props: { albumCover: string, albumCoverInfo: st
             <div className="group relative size-fit overflow-hidden">
                 <div
                     className={cn(
-                        "absolute inset-0 opacity-0 bg-black/60 transition-opacity backdrop-blur-sm duration-500 z-20 rounded-xl",
+                        "absolute inset-0 opacity-0 bg-black/60 transition-opacity backdrop-blur-sm duration-500 z-10 rounded-xl",
                         displayAlbumCover ? "opacity-100" : "opacity-0"
                     )}
                     ref={overlayRef}

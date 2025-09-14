@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { BookOpenText, ChevronLeft, Dot, PaintbrushVertical, Pause, Play, Search } from 'lucide-react';
+import { Dot, PaintbrushVertical, Pause, Play, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image'
 import Link from 'next/link';

@@ -94,3 +94,5 @@ export const FullscreenUI = ({ image, currentTimeVal, id, songVal, songCreator, 
         </motion.div>
     )
 }
+
+export default FullscreenUI;

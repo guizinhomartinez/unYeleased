@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { BookOpenText, ChevronLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
+import { BookOpenText, ArrowLeft, EllipsisVertical, ExternalLink, KeyboardIcon, Mic2Icon, MoveDown, MoveLeft, MoveRight, MoveUp, Pause, Play, Rewind, RotateCcw, RotateCw, Share, SpaceIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils"
 import { Slider } from "@/components/ui/slider";
@@ -29,6 +29,8 @@ import { AutoMarquee } from "./songControlsSubcomponents/autoMarquee";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import AlbumCover from "./albumPageSubcomponents/albumCover";
 import { ScrollArea } from "./ui/scroll-area";
+import { VisuallyHidden } from "radix-ui";
+import {Dialog as DialogPrimitive} from "radix-ui";
 
 type KeyboardThing = {
     letter: any;
@@ -299,7 +301,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
             <div className="w-full absolute top-0 left-0 px-4 py-2 z-50">
                 <Link href={"/" + (id === "2424" ? "settings" : "")}>
                     <Button className="rounded-full" size='icon' variant='ghost'>
-                        <ChevronLeft />
+                        <ArrowLeft />
                     </Button>
                 </Link>
             </div>
@@ -603,6 +605,9 @@ const PopoverMenu = ({
                             // The gap between the edge of the screen and the drawer2 is 8px in this case.
                             style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                         >
+                            <DialogPrimitive.Title asChild>
+                                <VisuallyHidden.Root>Info card containing single explanation and lyrics</VisuallyHidden.Root>
+                            </DialogPrimitive.Title>
                             <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
                             <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
                                 <div className="max-w-md mx-auto overflow-y-auto">

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
 import { AlbumExplanation } from '../albumExplanation';
 import { Drawer, DrawerContent, DrawerTrigger } from '../ui/drawer';
+import { Dialog, VisuallyHidden } from 'radix-ui';
 
 export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, id, variant }: AlbumExplanationInterface) {
     return (
@@ -23,6 +24,9 @@ export function DesktopAlbumExplanation({ setShowExplanation, showExplanation, i
                     // The gap between the edge of the screen and the drawer2 is 8px in this case.
                     style={{ '--initial-transform': 'calc(100% + 24px)' } as React.CSSProperties}
                 >
+                    <Dialog.Title asChild>
+                        <VisuallyHidden.Root>Album explanation</VisuallyHidden.Root>
+                    </Dialog.Title>
                     <div className="mt-4 h-1 w-12 rounded-full bg-muted-foreground absolute rotate-90 top-1/2 -translate-y-1/2 -left-[1.1em] cursor-grab group-active:cursor-grabbing" />
                     <div className="bg-primary-foreground size-full grow flex flex-col rounded-[16px]">
                         <div className="p-4 overflow-y-auto h-full">

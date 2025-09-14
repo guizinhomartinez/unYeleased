@@ -214,20 +214,20 @@ export interface SongPlayerButtonsInterface {
 
 // album page interfaces
 export interface AlbumPageRoot {
-  config: AlbumPageRootConfig[];
-  tracks: AlbumPageRootTracks[];
+    config: AlbumPageRootConfig[];
+    tracks: AlbumPageRootTracks[];
 }
 
 export interface AlbumPageRootConfig {
-  albumCover: string[];
-  albumCoverDescription: string[];
-  albumCreator: string;
-  albumName: string;
-  credits: string;
-  year: number;
+    albumCover: string[];
+    albumCoverDescription: string[];
+    albumCreator: string;
+    albumName: string;
+    credits: string;
+    year: number;
 }
 
 export interface AlbumPageRootTracks {
-  artist: string;
-  title: string;
+    artist: string;
+    title: string;
 }

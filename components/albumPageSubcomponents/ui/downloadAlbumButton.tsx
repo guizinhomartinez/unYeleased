@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { AnimatedCircularProgressBar } from "@/components/magicui/animated-circular-progress-bar";
 import { toast } from "sonner";
+import { VisuallyHidden } from "radix-ui";
+import { Dialog as DialogPrimitive } from "radix-ui";
 
 export default function DownloadAlbumButton(props: { songs: any, id: string, variant: number }) {
     const zip = new JSZip();
@@ -64,6 +66,9 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[90%] max-w-[80%] md:max-w-[30%] !rounded-xl">
+                <DialogPrimitive.Title asChild>
+                    <VisuallyHidden.Root>Info card containing single explanation and lyrics</VisuallyHidden.Root>
+                </DialogPrimitive.Title>
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-2 justify-center items-center">
                         <p className="text-lg font-semibold leading-none tracking-tight text-center">Download started</p>

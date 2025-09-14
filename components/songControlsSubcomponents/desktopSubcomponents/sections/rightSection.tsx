@@ -95,7 +95,7 @@ function VolumePopover({ songRef, volumeVal, repeat, setVolumeVal }: VolumePopov
                 <div className="flex items-center gap-2 justify-center">
                     <TooltipProvider>
                         <Tooltip open={hoveredVolumeIcon}>
-                            <TooltipTrigger>
+                            <TooltipTrigger asChild>
                                 <Button onMouseLeave={() => setTimeout(() => setHoveredVolumeIcon(false), 150)} onMouseOver={() => setTimeout(() => setHoveredVolumeIcon(true), 250)} onClick={() => muteSong(songRef)} variant='ghost' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
                                     <VolumeIcon size='18' songRef={songRef} volumeVal={volumeVal || 100} repeat={repeat} />
                                 </Button>
