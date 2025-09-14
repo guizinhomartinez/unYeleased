@@ -2,9 +2,10 @@
 
 import path from "path";
 import fs from "fs";
+import { AlbumPageResponse, CreditsResponse } from "./interfaces";
 
 // album fetching
-export async function fetchAlbumSongs(id: string) {
+export async function fetchAlbumSongs(id: string): Promise<AlbumPageResponse> {
     try {
         const filePath = path.join(
             process.cwd(),
@@ -20,12 +21,12 @@ export async function fetchAlbumSongs(id: string) {
         if (error.code === "ENOENT") {
             return "NOT FOUND"; // file doesn't exist
         }
-        return "File System Error"; // other errors
+        return "NOT FOUND"; // other errors
     }
 }
 
 // fetches the credits for the albums
-export async function fetchAlbumCredits(id: string) {
+export async function fetchAlbumCredits(id: string): Promise<CreditsResponse> {
     try {
         const filePath = path.join(
             process.cwd(),

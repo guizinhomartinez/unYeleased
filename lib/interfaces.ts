@@ -231,3 +231,6 @@ export interface AlbumPageRootTracks {
     artist: string;
     title: string;
 }
+
+export type AlbumPageResponse = AlbumPageRoot | "NOT FOUND";
+export type CreditsResponse = Credits[] | 0;

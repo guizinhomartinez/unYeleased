@@ -1,13 +1,13 @@
-import { cn } from "@/lib/utils"
+import { cn, formatDuration } from "@/lib/utils"
 import { Skeleton } from "../ui/skeleton"
 import { AlbumPageTracklistInterface } from "@/lib/interfaces"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee"
 import { Button } from "../ui/button"
-import { EllipsisVertical, MicVocal } from "lucide-react"
+import { EllipsisVertical } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { useLocalStorage } from "react-use"
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
@@ -22,36 +22,60 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const isMobile = useIsMobile();
     const [durations, setDurations] = useState<(string | null)[]>([]);
     const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
+    const cacheRef = useRef<Record<string, string | null>>({});
 
-    // useEffect(() => {
-    //     if (!showSongDurationOnTracklist) return setDurations([]);
+    useEffect(() => {
+        if (!showSongDurationOnTracklist) {
+            setDurations([]);
+            return;
+        }
 
-    //     async function loadDurations() {
-    //         const newDurations = await Promise.all(
-    //             props.songs.map((song) => {
-    //                 return new Promise<string | null>((resolve) => {
-    //                     const audioPrefix = `/song-files/songs/${props.id.toLowerCase().replace(" ", "-")}/`;
-    //                     const audioFileType = '.m4a';
-    //                     const audio = new Audio(audioPrefix + song.title + audioFileType);
+        let isCancelled = false;
 
-    //                     audio.addEventListener("loadedmetadata", () => {
-    //                         resolve(formatDuration(audio.duration));
-    //                     });
-    //                     audio.addEventListener("error", () => {
-    //                         resolve(null);
-    //                     });
-    //                 });
-    //             })
-    //         );
+        async function loadDurations() {
+            const newDurations = await Promise.all(
+                props.songs.map(
+                    (song) =>
+                        new Promise<string | null>((resolve) => {
+                            const audioPrefix = `/song-files/songs/${props.id}/`;
+                            const audioFileType = ".m4a";
+                            const cacheKey = `${props.id}:${song.title}`;
+                            const audio = new Audio(audioPrefix + song.title + audioFileType);
 
-    //         setDurations(newDurations);
-    //     };
+                            if (cacheRef.current[cacheKey] !== undefined) {
+                                // Already cached
+                                return resolve(cacheRef.current[cacheKey]);
+                            }
 
-    //     loadDurations();
-    // }, [props.songs, props.id]);
+                            const onLoaded = () => {
+                                const formatted = formatDuration(audio.duration - 1);
+                                cacheRef.current[cacheKey] = formatted;
+                                if (!isCancelled) resolve(formatted);
+                            };
+
+                            const onError = () => {
+                                cacheRef.current[cacheKey] = null;
+                                if (!isCancelled) resolve(null);
+                            };
+
+                            audio.addEventListener("loadedmetadata", onLoaded);
+                            audio.addEventListener("error", onError);
+                        })
+                )
+            );
+
+            if (!isCancelled) setDurations(newDurations);
+        }
+
+        loadDurations();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [props.songs, props.id, showSongDurationOnTracklist]);
 
     const SongDurations = (props: { index: any }) => {
-        /* if (!showSongDurationOnTracklist) */ return;
+        if (!showSongDurationOnTracklist) return;
 
         return (
             <div>
@@ -109,9 +133,6 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
 }
 
 function LoadingComponent() {
-    const [randomNumber1] = useState(32);
-    const [randomNumber2] = useState(48);
-
     function TrackItem({ index }: { index: number }) {
         return (
             <div className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full cursor-not-allowed")}>
@@ -121,11 +142,12 @@ function LoadingComponent() {
                     </div>
                 </div>
                 <div className="flex gap-2 w-full justify-between">
-                    <div className='select-none whitespace-pre overflow-hidden shadowed-song-name'>
-                        <div className="max-w-52"><Skeleton className={cn('rounded-xl h-5', `w-${randomNumber1}`)} /></div>
-                        <div><Skeleton className={cn('rounded-xl h-5 translate-y-0.5', `w-${randomNumber2}`)} /></div>
+                    <div className='select-none whitespace-pre overflow-hidden shadowed-song-name flex flex-col gap-2'>
+                        <Skeleton className='rounded-xl h-5 w-32' />
+                        <Skeleton className='rounded-xl h-5 translate-y-0.5 w-48' />
                     </div>
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center gap-3">
+                        <Skeleton className="size-9 rounded-full mr-2" />
                         <Skeleton className="size-9 rounded-full mr-2" />
                     </div>
                 </div>

@@ -44,8 +44,6 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
 
     // sets the album cover based on what the user sets
     useEffect(() => {
-        if (!data) return;
-
         const covers = data.config[0].albumCover;
         const chosenCover = covers[albumCoverType && albumCoverType >= 0 && albumCoverType < covers.length ? albumCoverType : 0];
 
@@ -63,15 +61,11 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
     // songRef is used to play the song the user wants to play. it sets up all the basic audio stuff aswell
     // and loads the correct song
     useEffect(() => {
-        const audioPrefix = `/song-files/songs/${id.toLowerCase().replace(" ", "-")}/`;
-        const audioFileType = '.m4a';
-
         if (playingSong) {
             try {
                 setIsLoading(true);
-                songRef.current = new Audio(audioPrefix + playingSong + audioFileType);
+                songRef.current = new Audio(`/song-files/songs/${id}/` + playingSong + '.m4a');
                 songRef.current.loop = (repeatAlbum === 2 && true);
-                // songRef.current.muted = !mutedSong;
                 songRef.current.addEventListener("canplaythrough", () => setIsLoading(false));
                 songRef.current.addEventListener("error", () => setIsLoading(null));
             } catch (e) {
@@ -208,7 +202,7 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
             <NewAlbumPage
                 albumName={data.config[0].albumName || id}
                 albumCreator={data.config[0].albumCreator || "Kanye West"}
-                id={id.toLowerCase().replace(" ", "-")}
+                id={id}
                 isPlaying={isPlaying}
                 showExplanation={showExplanation}
                 setShowExplanation={setShowExplanation}
