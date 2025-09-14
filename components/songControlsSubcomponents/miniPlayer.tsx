@@ -69,7 +69,7 @@ export const MiniPlayer = ({
                     <TooltipProvider>
                         <Tooltip open={tutorialNumber === 1} defaultOpen={tutorialNumber === 1} delayDuration={5000}>
                             <TooltipTrigger asChild>
-                                <div className={cn("flex flex-col relative items-center overflow-hidden transition-all duration-300 rounded-2xl", (!isPlaying && songRef.current) ? "scale-90 saturate-50" : "")} onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
+                                <div className={cn("flex flex-col relative items-center overflow-hidden transition-all duration-300 rounded-2xl", (!isPlaying && songRef.current) ? "scale-75 grayscale" : "")} onClick={() => { setShowLyrics(true); setTutorialNumber(2); }}>
                                     <div className={cn("aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto bg-black/80 backdrop-blur-md transition-opacity duration-700 absolute inset-0 rounded-xl", showLyrics ? "opacity-100" : "opacity-0")}>
                                         <div className="aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto px-2">
                                             {showLyrics && <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} haveVerticalSpace={true} />}
@@ -133,7 +133,7 @@ export const MiniPlayer = ({
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col justify-center gap-8 w-full mt-5">
+                <div className="flex flex-col justify-center gap-8 w-full mt-10">
                     <div className="w-full flex flex-col gap-3">
                         <Slider value={[sliderValue]} max={100} step={1} className="w-full [&>:last-child>span]:bg-primary transition-all duration-500" onValueChange={(value) => handleSliderChange(value, setSliderValue, songRef, setCurrentTimeVal)} />
                         <div className="flex justify-between items-center">
@@ -161,7 +161,7 @@ export const MiniPlayer = ({
                         </div>
                     </div>
                 </div>
-                <div className="flex mt-8 sm:mt-0 h-full w-full items-center gap-2">
+                <div className="flex mt-12 sm:mt-0 h-full w-full items-center gap-2">
                     <Button onClick={() => { songRef.current && muteSong(songRef) }}
                         variant='outline' className="rounded-full bg-transparent px-4" size='icon' disabled={!songRef.current}>
                         <VolumeIcon size='18' repeat={repeat} songRef={songRef} volumeVal={volumeVal} />

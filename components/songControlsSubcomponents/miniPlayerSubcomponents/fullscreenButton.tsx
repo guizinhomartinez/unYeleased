@@ -24,16 +24,16 @@ export const FullscreenButton = (props: FullscreenButtonInterface) => {
     const [isDragging, setIsDragging] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
 
-    const defaultOptions = {
-        isPreventDefault: true,
-
-    };
     const longPressEvent = useLongPress(
-        (e) => {
-            setSDSA(true);
+        () => {
+            if (!isDragging) {
+                setSDSA(true);
+            }
         },
         {
-            onStart: () => setIsHolding(true),
+            onStart: () => {
+                if (!isDragging) setIsHolding(true);
+            },
             onFinish: () => setTimeout(() => setIsHolding(false), 1000),
             onCancel: () => setIsHolding(false),
             threshold: 500,
@@ -76,6 +76,7 @@ export const FullscreenButton = (props: FullscreenButtonInterface) => {
                             dragConstraints={{ left: 0, right: 0 }}
                             onDrag={(_, info) => {
                                 setIsDragging(true);
+                                setIsHolding(false);
                                 setDraggedAmmount(-info.offset.x);
                             }}
                             {...longPressEvent}

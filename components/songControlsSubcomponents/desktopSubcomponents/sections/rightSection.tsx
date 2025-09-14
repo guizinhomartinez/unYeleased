@@ -123,11 +123,13 @@ function LyricsPopover({ image, lyricsOpened, setLyricsOpened, fullscreenLyricsS
                     <MicVocal />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[450px] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group" style={{backgroundColor: 'hsl(0 0% 3.9%)'}} side='top'>
-                <div className="relative rounded-lg size-full overflow-hidden">
+            <PopoverContent className="w-[450px] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group" side='top'>
+                <div className="relative rounded-lg w-full max-h-full overflow-hidden">
                     <Image src={image} alt={image} width={0} height={0} className="absolute inset-0 bg-cover bg-center opacity-10 blur-2xl size-full" />
-                    <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} haveVerticalSpace={true} />
-                    <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-90 opacity-0 transition-opacity duration-500 bg-primary-foreground py-1 w-[60%] px-2">
+                    <div className="h-full overflow-y-auto p-2">
+                        <Lyrics currentTimeVal={Math.floor(currentTimeVal * lyricsDelay)} id={id} songVal={songVal} isSynced={!isSynced} isFullscreenMode={false} haveVerticalSpace={true} />
+                    </div>
+                    <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-30 group-hover:blur-sm hover:!opacity-90 hover:!blur-0 opacity-0 transition-all duration-500 bg-primary-foreground py-1 w-[50%] px-2">
                         <div className="rounded-full flex justify-center items-center w-full relative">
                             <div onClick={() => setIsSynced(true)} className={cn("w-full text-center transition-colors duration-500 rounded-full cursor-default select-none", !isSynced && "cursor-pointer")}>
                                 Synced
@@ -137,11 +139,11 @@ function LyricsPopover({ image, lyricsOpened, setLyricsOpened, fullscreenLyricsS
                             </div>
                         </div>
                         <motion.span
-                            className="absolute top-0 bg-primary mix-blend-difference w-1/2 h-full"
+                            className="absolute top-0 bg-white mix-blend-difference h-full w-1/2"
                             animate={{
-                                left: isSynced ? "0%" : "50%",
+                                x: isSynced ? "-60%" : "40%",
                             }}
-                            transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
+                            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
                             style={{ borderRadius: 9999 }}
                         />
                     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Home, Settings } from "lucide-react"
+import { Github, Home, Info, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Separator } from "./ui/separator"
@@ -58,12 +58,18 @@ export default function Navbar({ className }: { className?: string }) {
                             <Settings />
                         </Button>
                     </Link>
-                    <a href="https://github.com/guizinhomartinez/unYeleased" target="_blank" aria-label="Source code of the project">
-                        <Button variant='default' className="rounded-full p-5">
-                            <Github className="-translate-x-1" />
+                    <Link href="https://unyeleased-bankan-board.vercel.app" target="_blank" aria-label="Roadmap of the project">
+                        <Button variant='secondary' className="rounded-full py-5">
+                            <Info />
+                            Roadmap
+                        </Button>
+                    </Link>
+                    <Link href="https://github.com/guizinhomartinez/unYeleased" target="_blank" aria-label="Source code of the project">
+                        <Button variant='default' className="rounded-full py-5">
+                            <Github />
                             Source
                         </Button>
-                    </a>
+                    </Link>
                 </div>
             </div>
             <Separator orientation="horizontal" className="h-[2px] rounded-full bg-muted/80" />

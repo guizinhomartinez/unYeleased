@@ -7,11 +7,12 @@ import { TutorialSection } from "./subComponents/tutorialSection";
 import { UISection } from "./subComponents/uiSections";
 import { Password } from "./subComponents/passwordSection";
 import { useLockBodyScroll, useMedia } from "react-use";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQueryState } from "nuqs";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Label } from "../ui/label";
 
 type HeadersInterface = {
     title: string;
@@ -77,6 +78,23 @@ const NewSettingsPage = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const handleKeyDown = useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            switch (e.key) {
+                case "b":
+                    setHideSidebar(!hideSidebar)
+                    e.preventDefault();
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKey);
+
+        return () => {
+            window.removeEventListener("keydown", handleKey);
+        };
+    })
+
     const Options = () => {
         return (
             <>
@@ -131,7 +149,7 @@ const NewSettingsPage = () => {
     const pagePercentage = Math.min(scrollProgress / 0.5, 1);
 
     return (
-        <div className={cn("flex w-dvw h-dvh", !isWideEnough && "flex-col bg-primary-foreground/80")}>
+        <div className={cn("flex w-dvw h-dvh", !isWideEnough && "flex-col")}>
             <div
                 className={cn(
                     "relative w-full transition-all duration-500",
@@ -143,7 +161,7 @@ const NewSettingsPage = () => {
                     borderRadius: !isWideEnough ? (changeNavbarStyle ? pagePercentage * 24 : 0) : 0
                 }}
             >
-                <div className={cn("sticky top-0 left-0 w-full flex gap-2 items-center overflow-hidden", !isWideEnough ? "justify-between px-4 py-3 w-full" : "border-b px-4 py-2")}>
+                <div className={cn("sticky top-0 left-0 w-full flex gap-2 items-center overflow-hidden", !isWideEnough ? "justify-between px-4 py-3 w-full" : "border-b px-4 py-2")} onKeyDown={(e) => handleKeyDown}>
                     {hideSidebar ?
                         <Link href='/'>
                             <Button variant='ghost' size='icon' className={cn("rounded-[0.55rem]", !isWideEnough && "hidden")} onMouseOver={() => setShowBackArrow(true)} onMouseLeave={() => setShowBackArrow(false)}>
@@ -208,6 +226,15 @@ const NewSettingsPage = () => {
                     {passwordTab && <Password />}
                 </div>
             </div>
+        </div>
+    )
+}
+
+export const WrapperComponent = (props: { children: React.ReactNode, text: string, id: number }) => {
+    return (
+        <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+            <Label className="text-base text-muted-foreground" htmlFor={`checkbox-element-${props.id}`}>{props.text}</Label>
+            {props.children}
         </div>
     )
 }

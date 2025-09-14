@@ -8,6 +8,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useLocalStorage } from 'react-use';
 import Img from 'next/image';
 import { AudioLines } from 'lucide-react';
+import { ScrollArea } from '../ui/scroll-area';
 
 export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullscreenMode, syncedLyricsClassName, haveVerticalSpace, style }: LyricsInterface) {
     const [LyricFile, setLyricFile] = useState<string[]>([]);
@@ -42,18 +43,15 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
         minHeight: 0,
     };
 
-    const isLeftAlignedText = (active: boolean) => (lyricsAlignment === "left") && active;
-    const isRightAlignedText = (active: boolean) => (lyricsAlignment === "right") && active;
-
     const lineRenderer = useCallback(
         ({ active, line: { content } }: { active: boolean; line: LrcLine }) => (
             <div
                 className={
                     cn('z-10 select-none transition-all duration-500 font-semibold',
-                        !isFullscreenMode ? "text-2xl mb-3" : "text-4xl mb-8",
-                        !isFullscreenMode ? `text-${lyricsAlignment} origin-${lyricsAlignment}` : 'text-left',
-                        active ? 'text-white/95' : 'text-white/10 blur-[1.5px]',
-                        !isFullscreenMode && (!active ? 'scale-90' : 'scale-95'))}
+                        !isFullscreenMode ? `text-${lyricsAlignment} origin-${lyricsAlignment} text-2xl mb-3` : 'text-left text-4xl mb-8',
+                        !isFullscreenMode && (!active ? 'scale-90' : 'scale-95'),
+                        active ? 'text-white/95' : 'text-white/10 blur-[1.5px]'
+                    )}
             >
                 {content === "" || content === " " || content === "♪" ?
                     <div className={cn('flex items-center', lyricsAlignment === "center" && "justify-center", (lyricsAlignment === "left" || isFullscreenMode) && "justify-start", lyricsAlignment === "right" && "justify-end")}>
@@ -91,13 +89,13 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 )
 
                 :
-                <div className="overflow-y-auto scroll-smooth pb-16 px-6" style={lrcContainerStyle}>
+                <ScrollArea className='pb-16 px-6' style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (
                         <div key={index} className={cn("whitespace-pre-wrap text-white text-lg [&:not(:last-child)]:mb-3", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("LYRICS NOT FOUND") && "text-left text-md")}>
                             {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
                         </div>
                     ))}
-                </div>
+                </ScrollArea>
             }
 
         </div>

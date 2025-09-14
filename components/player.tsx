@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { toast } from "sonner";
 import { Label } from "./ui/label";
 import VolumeSlider from "./songControlsSubcomponents/volumeSlider";
-import { muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
+import { formattedSongTime, muteSong, RepeatIcon, VolumeIcon } from "@/lib/songControlsFunctions";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer as Drawer2 } from 'vaul';
 import {
@@ -28,6 +28,7 @@ import { Skeleton } from "./ui/skeleton";
 import { AutoMarquee } from "./songControlsSubcomponents/autoMarquee";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import AlbumCover from "./albumPageSubcomponents/albumCover";
+import { ScrollArea } from "./ui/scroll-area";
 
 type KeyboardThing = {
     letter: any;
@@ -97,6 +98,7 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
     const [volumeVal, setVolumeVal] = useLocalStorage("volume", 100);
     const [sliderValue, setSliderValue] = useState(0);
     const [repeat, setRepeat] = useState(false);
+    const [songTimeType, setSongTimeType] = useState(0);
 
     const isMobile = useIsMobile();
 
@@ -302,14 +304,18 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                 </Link>
             </div>
 
-            <div className="w-screen h-screen">
-                <div className={cn("bg-secondary/30 border p-6", isMobile ? "rounded-none h-[107vh] pt-12" : "rounded-3xl w-96 max-h-fit absolute-div-center shadow-xl")}>
-                    <div className="flex flex-col gap-2 justify-center items-start">
-                        <AlbumCover id={text} newAlbumPage={true} albumCover={image} imageSize={360} />
-                        <div className="flex justify-between items-center gap-4 mt-3 w-[85%]">
-                            <div className="w-full flex flex-col">
-                                <AutoMarquee text={text} className="font-bold text-2xl" number={0} />
-                                <AutoMarquee text={subtext} className="text-muted-foreground/80" number={2} />
+            <div className="w-screen h-screen overflow-y-auto">
+                <div className={cn("p-6", isMobile ? "rounded-none h-[107vh] pt-12" : "bg-secondary/30 border rounded-3xl w-96 max-h-[95vh] absolute-div-center shadow-xl overflow-y-auto")}>
+                    <div className="flex flex-col gap-2 justify-center items-start max-w-[100%]">
+                        <div className="mx-auto">
+                            <AlbumCover id={text} newAlbumPage={true} albumCover={image || null} imageSize={360} />
+                        </div>
+                        <div className="flex justify-between items-center relative w-full mt-3">
+                            <div className={cn(isMobile ? "w-[93.5vw]" : "w-full max-w-[85%]")}>
+                                <div className="w-full flex flex-col">
+                                    <AutoMarquee text={text} className="font-bold text-2xl" number={0} />
+                                    <AutoMarquee text={subtext} className="text-muted-foreground/80" number={2} />
+                                </div>
                             </div>
                             {!useIsMobile() ?
                                 <PopoverMenu showExplanation={showExplanation} setShowExplanation={setShowExplanation} backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} />
@@ -318,10 +324,12 @@ export function Player({ image, text, subtext, songVal, backgroundLore, linkToGe
                             }
                         </div>
                         <div className="flex flex-col justify-center items-center pt-4 gap-4 w-full">
-                            <div className="flex gap-2 w-full">
-                                <div className="text-md opacity-60 w-12">{isNaN(currentTimeVal) ? '0:00' : formatTime(currentTimeVal)}</div>
+                            <div className="w-full flex flex-col gap-3">
                                 <Slider value={[sliderValue]} max={100} step={1} className="[&>:last-child>span]:bg-primary" onValueChange={handleSliderChange} />
-                                <div className="text-md opacity-60 text-right w-12">{songRef.current ? (isNaN(songRef.current.duration) ? '0:00' : formatTime(songRef.current.duration)) : '0:00'}</div>
+                                <div className="flex justify-between items-center">
+                                    <div className="w-full text-primary/50 text-sm select-none">{formatTime(songRef.current ? songRef.current.currentTime : 0)}</div>
+                                    <div className="w-full text-right text-primary/50 text-sm select-none" onClick={() => setSongTimeType(songTimeType === 1 ? 0 : 1)}>{formattedSongTime(songRef.current ? songRef.current.duration : 0, songTimeType, currentTimeVal)}</div>
+                                </div>
                             </div>
                             <div className="flex justify-between w-full items-center gap-2 mt-2">
                                 <Button
@@ -488,7 +496,7 @@ const DrawerMenu = ({
                                 {PopoverMenuItems[2].text}
                             </Button>
                         </DrawerTrigger>
-                        <DrawerContent className="max-h-full rounded-t-2xl pt-1" showGrabThing={false}>
+                        <DrawerContent className="max-h-[80dvh] rounded-t-2xl pt-1" showGrabThing={false}>
                             <div className="w-[30vw]">
                                 <InfoCard backgroundLore={backgroundLore} linkToGenius={linkToGenius} lyrics={lyrics} shouldShowClose={false} />
                             </div>

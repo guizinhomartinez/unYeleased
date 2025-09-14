@@ -8,7 +8,9 @@ import { LyricsSection } from "./lyricsSection";
 import Img from 'next/image'
 import { useLocalStorage } from 'react-use';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { WrapperComponent } from "../settingsComponent";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type optionsMapInterface = {
     text: string;
@@ -22,13 +24,36 @@ export const UISection = () => {
     const [dancingEmoji, setDancingEmoji] = useLocalStorage<boolean>("dancing-emoji", false);
     const [showSongDurationOnTracklist, setShowSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return (
+            <>
+                <div className="flex flex-col gap-1.5">
+                    <Skeleton className="h-56 w-full rounded-xl bg-primary-foreground/80 border border-muted" />
+                    {[1, 2, 3, 4].map((_, i) => (
+                        <div key={i} className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+                            <Skeleton className="h-6 w-[200px]" />
+                            <Skeleton className="h-9 w-9 rounded-full" />
+                        </div>
+                    ))}
+                    <Skeleton className="h-56 w-full rounded-xl bg-primary-foreground/80 border border-muted" />
+                </div>
+            </>
+        );
+    }
+
     function ThemeSelection(props: { colorPrimary?: string, option: string }) {
         const { setTheme, theme } = useTheme();
         const systemTheme = props.option === "system" || theme === "" || theme === null;
 
         return (
             <>
-                <div className="cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl" style={{ backgroundColor: props.option === theme ? "hsl(var(--secondary))" : "" }} onClick={() => setTheme(props.option)} tabIndex={0} suppressHydrationWarning>
+                <div className="cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl" style={{ backgroundColor: props.option === theme ? "hsl(var(--secondary))" : "" }} onClick={() => setTheme(props.option)} tabIndex={0}>
                     <div className="size-12 mx-auto relative shadow-lg rounded-full">
                         <div className={cn("size-12 rounded-full", systemTheme && "outline-[2px] outline-primary/30")} style={{ background: !systemTheme ? props.colorPrimary : "#161616" }} />
                         <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -37,27 +62,15 @@ export const UISection = () => {
                     </div>
                     <p
                         className="text-center transition-all"
-                        suppressHydrationWarning
-                        style={
-                            {
-                                color: systemTheme ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.8)",
-                                fontWeight: systemTheme ? 600 : 300
-                            }
-                        }
+                        style={{
+                            color: systemTheme ? "hsl(var(--primary))" : "hsl(var(--primary) / 0.8)",
+                            fontWeight: systemTheme ? 600 : 300
+                        }}
                     >
                         {capitalizeFirstLetter(props.option)}{!(systemTheme && !useIsMobile()) ? " mode" : ""}
                     </p>
                 </div>
             </>
-        )
-    }
-
-    const CheckboxComponent = (props: { children: React.ReactNode, text: string, addExplanation: boolean, id: number }) => {
-        return (
-            <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                <Label className="text-base text-muted-foreground" htmlFor={`checkbox-element-${props.id}`}>{props.text}</Label>
-                {props.children}
-            </div>
         )
     }
 
@@ -111,9 +124,9 @@ export const UISection = () => {
                     <Label className="text-primary/50">Change the theme of the website.</Label>
                 </div>
                 <div className="flex gap-2 overflow-scroll">
-                    <ThemeSelection colorPrimary={"#ffffff"} option="light" />
-                    <ThemeSelection colorPrimary={"#0a0a0a"} option="dark" />
-                    <ThemeSelection option="system" />
+                    <ThemeSelection colorPrimary={"#ffffff"} option="light" key={0} />
+                    <ThemeSelection colorPrimary={"#0a0a0a"} option="dark" key={1} />
+                    <ThemeSelection option="system" key={2} />
                 </div>
             </div>
 
@@ -128,9 +141,9 @@ export const UISection = () => {
                 </div> */}
 
             {optionsMap.map((element, index) => (
-                <CheckboxComponent addExplanation={false} text={element.text} id={index}>
+                <WrapperComponent text={element.text} id={index} key={index}>
                     <CheckComponent checkedElement={element.checkedElement} setCheckElement={element.setCheckedElement} id={index} />
-                </CheckboxComponent>
+                </WrapperComponent>
             ))}
 
             <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">

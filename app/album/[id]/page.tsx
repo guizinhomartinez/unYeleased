@@ -8,6 +8,8 @@ import NewAlbumPage from '@/components/newAlbumPage';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { SongInterface, Credits } from '@/lib/interfaces';
 import { useEffectOnce, useLocalStorage } from 'react-use';
+import { useQuery } from '@tanstack/react-query';
+import { notFound } from 'next/navigation';
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [songs, setSongs] = useState<SongInterface[]>([]);
@@ -37,8 +39,53 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [albumCover, setAlbumCover] = useState(`/song-files/covers/${id}.jpg`);
   const [albumCoverType, setAlbumCoverType] = useLocalStorage(`${id}-album-cover-type`, 0);
   const [albumCoverInfo, setAlbumCoverInfo] = useState<string[]>([""]);
-  const [fetchedAlbumInfo, setFetchedAlbumInfo] = useState<any>();
   const [albumCoverDescription, setAlbumCoverDescription] = useState<string[]>([""]);
+
+  // This basically loads everything that is needed for an album, like its tracklist, album name, album credits etc.
+  async function loadSongs() {
+    const data = await fetchAlbumSongs(id.toLowerCase().replace(" ", "-"));
+    return data;
+  }
+
+  const { isFetching, error, data: albumInfo } = useQuery({
+    queryKey: [`album-data`, id],
+    queryFn: loadSongs,
+    select: (data) => {
+      // optional: pick just what you need from the result
+      return {
+        tracks: data.tracks,
+        year: data.config[0].year,
+        albumName: data.config[0].albumName,
+        albumCreator: data.config[0].albumCreator,
+        albumCover: data.config[0].albumCover,
+        albumCoverDescription: data.config[0].albumCoverDescription
+      };
+    },
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
+  });
+
+  useEffect(() => {
+    if (albumInfo) {
+      setSongs(albumInfo.tracks);
+      setYear(albumInfo.year);
+      setAlbumName(albumInfo.albumName);
+      setAlbumCreator(albumInfo.albumCreator);
+    }
+  }, [albumInfo]);
+
+  async function loadSongCredits() {
+    const data = await fetchAlbumCredits(id.toLowerCase().replace(" ", "-")).then((data) => setCredits(data.credits));
+    return data;
+  }
+
+  useQuery({ queryKey: [`album-credits`, id], queryFn: loadSongCredits });
+
+  if (error) {
+    notFound();
+  }
 
   // gets the locally stored value of volume and applies it to the volumeval variable if it exists
   useEffect(() => {
@@ -50,38 +97,17 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     }
   }, []);
 
-  // This basically loads everything that is needed for an album, like its tracklist, album name, album credits etc.
-
-  useEffect(() => {
-    async function loadSongs() {
-      fetchAlbumSongs(id.toLowerCase().replace(" ", "-")).then(data => {
-        data === "NOT FOUND" && window.location.replace("/page-not-found");
-
-        setFetchedAlbumInfo(data);
-        setSongs(data.tracks);
-        setYear(data.config[0].year);
-        setAlbumName(data.config[0].albumName);
-        setAlbumCreator(data.config[0].albumCreator);
-      })
-    }
-
-    const loadSongCredits = async () => fetchAlbumCredits(id.toLowerCase().replace(" ", "-")).then(data => setCredits(data.credits));
-
-    loadSongCredits();
-    loadSongs();
-  }, [id, albumName]);
-
   // sets the album cover based on what the user sets
   useEffect(() => {
-    if (!fetchedAlbumInfo) return;
+    if (!albumInfo) return;
 
-    const covers = fetchedAlbumInfo.config[0].albumCover;
+    const covers = albumInfo?.albumCover;
     const chosenCover = covers[albumCoverType && albumCoverType >= 0 && albumCoverType < covers.length ? albumCoverType : 0];
 
     setAlbumCover(`/song-files/covers/${chosenCover ?? id}.jpg`);
     setAlbumCoverInfo(covers);
-    setAlbumCoverDescription(fetchedAlbumInfo.config[0].albumCoverDescription);
-  }, [fetchedAlbumInfo, albumCover, albumCoverInfo, albumCoverType]);
+    setAlbumCoverDescription(albumInfo?.albumCoverDescription ?? [""]);
+  }, [albumInfo, albumCover, albumCoverInfo, albumCoverType]);
 
   // changes the website's title depending on the song being played
   useEffect(() => {
@@ -254,7 +280,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         handleClickEvent={handleClickEvent}
         setSearchQuery={setSearchQuery}
         setAppearBar={setAppearBar}
-        year={year}
+        year={albumInfo?.year ?? 0}
         songRef={songRef}
         playingSong={playingSong}
         setIsPlaying={setIsPlaying}

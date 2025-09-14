@@ -4,7 +4,7 @@ import { Skeleton } from "../ui/skeleton";
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
-export default function AlbumCover({ id, newAlbumPage, albumCover, imageSize }: { id: string, newAlbumPage: boolean, albumCover: string, imageSize?: number }) {
+export default function AlbumCover({ id, newAlbumPage, albumCover, imageSize }: { id: string, newAlbumPage: boolean, albumCover: string | null, imageSize?: number }) {
     const [loaded, setLoaded] = useState(false);
     const isMobile = useIsMobile();
     const size = imageSize !== undefined
@@ -12,9 +12,9 @@ export default function AlbumCover({ id, newAlbumPage, albumCover, imageSize }: 
         : (!newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260));
 
     return (
-        <div className={cn("relative inline-block before:content-[''] before:absolute before:inset-0 before:bg-secondary", loaded ? "before:opacity-0" : "before:animate-pulse")}>
+        <div className={cn("relative inline-block before:content-[''] before:absolute before:inset-0", loaded ? "before:opacity-0 before:hidden" : "before:animate-pulse before:bg-secondary")}>
             <Image
-                src={albumCover}
+                src={albumCover ?? ""}
                 alt={id}
                 width={size}
                 height={size}

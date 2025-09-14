@@ -3,6 +3,7 @@ import { AlignCenter, AlignLeft, AlignRight, LucideIcon } from "lucide-react";
 import { useLocalStorage } from "react-use";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { motion } from "motion/react";
 
 export const LyricsSection = () => {
     const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
@@ -27,20 +28,28 @@ export const LyricsSection = () => {
         }
     }, [normalLyricsAlignment]);
 
-    const OptionsTemplate = ({ normalVal, localStorageVal, setLyricsFunction }: { normalVal: string | undefined, localStorageVal: string | undefined, setLyricsFunction: Dispatch<SetStateAction<string | undefined>> }) => {
+    const OptionsTemplate = ({ normalVal, localStorageVal, setLyricsFunction, index }: { normalVal: string | undefined, localStorageVal: string | undefined, setLyricsFunction: Dispatch<SetStateAction<string | undefined>>, index: string }) => {
         const ActualOptions = ({ type, Icon }: { type: string, Icon: LucideIcon }) => {
             return (
-                <div
+                <button
                     className={cn(
-                        "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50 active:bg-primary/15",
-                        (localStorageVal || normalVal) === type && "bg-primary/10"
+                        "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50 relative"
                     )}
                     suppressHydrationWarning
                     aria-label={type}
                     onClick={() => setLyricsFunction(type)}
+                    key={`${index}-${type}`}
                 >
                     <Icon size='18' />
-                </div>
+
+                    {(localStorageVal || normalVal) === type && (
+                        <motion.div
+                            layoutId={`lyrics-option-${index}`}
+                            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+                            className="absolute inset-0 rounded-full bg-primary/10"
+                        />
+                    )}
+                </button>
             )
         }
 
@@ -61,11 +70,11 @@ export const LyricsSection = () => {
             </div>
             <div className="flex justify-between items-center p-4 rounded-xl bg-secondary/20 border border-muted">
                 <Label className="text-base text-muted-foreground">Synced lyrics alignment</Label>
-                <OptionsTemplate setLyricsFunction={setLyricsAlignment} normalVal={lyricsAlignment} localStorageVal={lyricsAlignmentLocalStorage} />
+                <OptionsTemplate setLyricsFunction={setLyricsAlignment} normalVal={lyricsAlignment} localStorageVal={lyricsAlignmentLocalStorage} index={"lyrics"} />
             </div>
             <div className="flex justify-between items-center p-4 rounded-xl bg-secondary/20 border border-muted">
                 <Label className="text-base text-muted-foreground">Normal lyrics alignment</Label>
-                <OptionsTemplate setLyricsFunction={setNormalLyricsAlignment} normalVal={normalLyricsAlignment} localStorageVal={normalLyricsAlignmentLocalStorage} />
+                <OptionsTemplate setLyricsFunction={setNormalLyricsAlignment} normalVal={normalLyricsAlignment} localStorageVal={normalLyricsAlignmentLocalStorage} index={"normal-lyrics"} />
             </div>
         </div>
     )
