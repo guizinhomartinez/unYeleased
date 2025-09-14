@@ -3,7 +3,7 @@ import { AlignCenter, AlignLeft, AlignRight, LucideIcon } from "lucide-react";
 import { useLocalStorage } from "react-use";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 export const LyricsSection = () => {
     const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
@@ -42,13 +42,17 @@ export const LyricsSection = () => {
                 >
                     <Icon size='18' />
 
-                    {(localStorageVal || normalVal) === type && (
-                        <motion.div
-                            layoutId={`lyrics-option-${index}`}
-                            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
-                            className="absolute inset-0 rounded-full bg-primary/10"
-                        />
-                    )}
+                    <AnimatePresence>
+                        {(localStorageVal || normalVal) === type && (
+                            <motion.div
+                                key={`${index}-${type}-animated-bg`}
+                                layoutId={`lyrics-option-${index}`}
+                                layout={false}
+                                transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+                                className="absolute inset-0 rounded-full bg-primary/10"
+                            />
+                        )}
+                    </AnimatePresence>
                 </button>
             )
         }
