@@ -3,7 +3,7 @@ import { AlignCenter, AlignLeft, AlignRight, LucideIcon } from "lucide-react";
 import { useLocalStorage } from "react-use";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const LyricsSection = () => {
     const [lyricsAlignment, setLyricsAlignment] = useLocalStorage("lyrics-alignment", "center", { raw: true });
@@ -31,29 +31,25 @@ export const LyricsSection = () => {
     const OptionsTemplate = ({ normalVal, localStorageVal, setLyricsFunction, index }: { normalVal: string | undefined, localStorageVal: string | undefined, setLyricsFunction: Dispatch<SetStateAction<string | undefined>>, index: string }) => {
         const ActualOptions = ({ type, Icon }: { type: string, Icon: LucideIcon }) => {
             return (
-                <button
+                <div
+                    tabIndex={0}
                     className={cn(
-                        "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50 relative"
+                        "rounded-full p-2 duration-300 cursor-pointer hover:bg-secondary/50 relative overflow-hidden"
                     )}
-                    suppressHydrationWarning
                     aria-label={type}
                     onClick={() => setLyricsFunction(type)}
                     key={`${index}-${type}`}
                 >
                     <Icon size='18' />
 
-                    <AnimatePresence>
-                        {(localStorageVal || normalVal) === type && (
-                            <motion.div
-                                key={`${index}-${type}-animated-bg`}
-                                layoutId={`lyrics-option-${index}`}
-                                layout={false}
-                                transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
-                                className="absolute inset-0 rounded-full bg-primary/10"
-                            />
-                        )}
-                    </AnimatePresence>
-                </button>
+                    <span
+                        className="absolute size-full inset-0 z-10 rounded-full pointer-events-none"
+                        style={{
+                            backgroundColor: (normalVal || localStorageVal) === type ? "hsl(var(--primary) / 0.1)" : "",
+                            opacity: (normalVal || localStorageVal) === type ? 1 : 0
+                        }}
+                    />
+                </div>
             )
         }
 
