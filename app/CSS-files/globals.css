@@ -18,10 +18,6 @@ body {
   font-weight: 800;
 }
 
-nextjs-portal {
-  display: none;
-}
-
 .song-explanation {
   /* animation: appear .3s cubic-bezier(0.165, 0.84, 0.44, 1); */
 }

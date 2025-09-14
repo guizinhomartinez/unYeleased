@@ -126,7 +126,7 @@ function LoadingComponent() {
                         <div><Skeleton className={cn('rounded-xl h-5 translate-y-0.5', `w-${randomNumber2}`)} /></div>
                     </div>
                     <div className="flex justify-center items-center">
-                        <Skeleton className="w-10 h-7" />
+                        <Skeleton className="size-9 rounded-full mr-2" />
                     </div>
                 </div>
 
@@ -135,8 +135,7 @@ function LoadingComponent() {
     }
 
     return (
-        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted -mb-4')}>
-
+        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted mb-20 md:mb-16')}>
             <TrackItem index={0} />
             <TrackItem index={1} />
             <TrackItem index={2} />

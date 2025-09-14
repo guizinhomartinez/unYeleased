@@ -109,7 +109,7 @@ export default function Page() {
                     </div>
                     <Particles className="absolute inset-0 z-0" quantity={25} ease={80} color={color} refresh />
                     <BlurFade className="flex gap-2 mt-8" delay={0.6} direction="up">
-                        <Button onClick={() => scrollTo({ behavior: "smooth", top: (albumRef.current?.getBoundingClientRect().top ?? 0) + pageYOffset - 20 })} className="py-6 rounded-2xl group">
+                        <Button onClick={() => scrollTo({ behavior: "smooth", top: (document.getElementById("album-ref")?.getBoundingClientRect().top ?? 0) + pageYOffset - 20 })} className="py-6 rounded-2xl group">
                             <div className="flex gap-2 items-center justify-center">
                                 <ArrowDown className="transition-transform animate-bounce" /> See more
                             </div>
@@ -128,7 +128,7 @@ export default function Page() {
                 {/* <Separator orientation="horizontal" className="w-full translate-y-6" /> */}
 
                 <div className="mt-8 h-full">
-                    <div className="flex justify-between gap-2 items-center" ref={albumRef}>
+                    <div className="flex justify-between gap-2 items-center" id ="album-ref">
                         <div className="flex gap-4 items-center">
                             <div className="flex gap-1.5 items-center">
                                 <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">
@@ -204,7 +204,7 @@ export default function Page() {
                                 Number(a.tags[0]) - Number(b.tags[0])
                             )
                             .map((entry, index) => (
-                                <AnimatePresence>
+                                <AnimatePresence key={index} mode="wait">
                                     <Albums entry={entry} isGrid={isGrid} setSearchQuery={setSearchQuery} index={index} />
                                 </AnimatePresence>
                             ))}

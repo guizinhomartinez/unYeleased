@@ -12,7 +12,7 @@ export default function AlbumCover({ id, newAlbumPage, albumCover, imageSize }: 
         : (!newAlbumPage ? (isMobile ? 280 : 260) : (isMobile ? 320 : 260));
 
     return (
-        <div className={cn("relative inline-block before:content-[''] before:absolute before:inset-0", loaded ? "before:opacity-0 before:hidden" : "before:animate-pulse before:bg-secondary")}>
+        <div className={cn("relative inline-block", loaded ? "" : "")}>
             <Image
                 src={albumCover ?? ""}
                 alt={id}

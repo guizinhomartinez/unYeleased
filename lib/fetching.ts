@@ -4,18 +4,6 @@ export async function fetchHomeSongs() {
     return response.json();
 }
 
-// album fetching
-export async function fetchAlbumSongs(id: string) {
-    let response;
-    try {
-        const res = await fetch(`../song-files/albumTracklists/${id.toLowerCase()}.json`);
-        res.ok ? response = await res.json() : response = "NOT FOUND";
-    } catch (e) {
-        response = "Network Error";
-    }
-    return response;
-}
-
 export async function fetchAlbumInfo(id: string) {
     const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/explanation/albumExplanation.mdx`);
     return response.text();
@@ -63,10 +51,4 @@ export async function fetchAlbumLyrics(id: any, songName: any) {
         response = "Error: Network or server issue";
     }
     return response;
-}
-
-// fetches the credits for the albums
-export async function fetchAlbumCredits(id: string) {
-    const response = await fetch(`../song-files/albumInfo/${id.toLowerCase()}/credits/credits.json`);
-    return response.json();
 }

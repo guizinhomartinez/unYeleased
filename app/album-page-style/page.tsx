@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { fetchAlbumSongs } from '@/lib/fetching';
 import { cn } from '@/lib/utils';
 import { BookOpenText, ChevronLeft, Dot, PaintbrushVertical, Pause, Play, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -93,15 +92,6 @@ function NormalStyle() {
     const appearBar = true;
     const searchQuery = "";
 
-    useEffect(() => {
-        async function loadSongs() {
-            const data = await fetchAlbumSongs(id);
-            setSongs(data.tracks);
-        }
-
-        loadSongs();
-    }, [id]);
-
     return (
         <motion.div initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }} className='mb-16 md:mb-0'>
             <div className='md:-translate-x-[16px]'>
@@ -185,15 +175,6 @@ function SecondStyle() {
     const year = "2019";
     const appearBar = true;
     const searchQuery = "";
-
-    useEffect(() => {
-        async function loadSongs() {
-            const data = await fetchAlbumSongs(id);
-            setSongs(data.tracks);
-        }
-
-        loadSongs();
-    }, [id]);
 
     return (
         <motion.div initial={{ opacity: 0, y: 40, filter: "blur(20px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -40, filter: "blur(20px)" }} transition={{ duration: 0.6, ease: "easeInOut" }} className='h-screen p-3'>

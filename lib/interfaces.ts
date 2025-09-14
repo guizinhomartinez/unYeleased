@@ -15,9 +15,16 @@ export interface AudioSettingsInterface {
 
 // Credits JSON file stuff
 export interface Credits {
+    credits: CreditParts[];
     name: string[];
     type: string;
-    originalLink: string[];
+    originalLink: any;
+}
+
+export interface CreditParts {
+    name: string[];
+    type: string;
+    originalLink: any;
 }
 
 // Related to the mini player and the song controls (basically the same stuff just different interface for more flexibility)
@@ -141,7 +148,7 @@ export interface AlbumPageInterface {
     handleSkipSong: any;
     repeatAlbum: number;
     setRepeatAlbum: any;
-    credits: Credits[];
+    credits: CreditParts[];
     isLoading: boolean | null;
     isFullscreenMode?: boolean;
     setIsFullscreenMode?: any;
@@ -203,4 +210,24 @@ export interface SongPlayerButtonsInterface {
     biggerPadding: boolean;
     buttonVariant: any;
     extraButtons: boolean;
+}
+
+// album page interfaces
+export interface AlbumPageRoot {
+  config: AlbumPageRootConfig[];
+  tracks: AlbumPageRootTracks[];
+}
+
+export interface AlbumPageRootConfig {
+  albumCover: string[];
+  albumCoverDescription: string[];
+  albumCreator: string;
+  albumName: string;
+  credits: string;
+  year: number;
+}
+
+export interface AlbumPageRootTracks {
+  artist: string;
+  title: string;
 }

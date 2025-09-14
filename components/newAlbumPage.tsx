@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "./ui/button";
 import Image from 'next/image';
 import { useIsMobile } from "@/hooks/use-mobile";
