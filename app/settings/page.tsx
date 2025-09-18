@@ -7,5 +7,5 @@ export default function SettingsPage() {
         <Suspense fallback={<LoadingComponent />}>
             <SettingsComponent />
         </Suspense>
-    )
+    );
 }

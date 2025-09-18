@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 // Songs stuff (their title and artist)
 export interface SongInterface {
@@ -9,7 +9,7 @@ export interface SongInterface {
 // Volume value and repeat value
 export interface AudioSettingsInterface {
     repeat?: number;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     volumeVal: number;
 }
 
@@ -29,7 +29,7 @@ export interface CreditParts {
 
 // Related to the mini player and the song controls (basically the same stuff just different interface for more flexibility)
 export interface songControlsInterface {
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     songVal: string;
     isPlaying: boolean;
     setIsPlaying: Dispatch<SetStateAction<boolean>>;
@@ -62,18 +62,18 @@ export interface isFullscreenModeInterface {
     songCreator: string;
     isFullscreenMode: boolean;
     isPlaying: boolean;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     showLyricsFullscreen?: boolean;
-    setShowLyricsFullscreen?: any;
+    setShowLyricsFullscreen?: Dispatch<SetStateAction<boolean>>;
     isLoading: boolean | null;
 }
 
 export interface MiniPlayerInterface {
     albumCover: string;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     songVal: string;
     isPlaying: boolean;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     volumeVal: number;
     setVolumeVal: any;
     songCreator: string;
@@ -95,10 +95,10 @@ export interface FullscreenButtonInterface {
     currentTimeVal: number;
     id: string;
     songVal: string;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     songCreator: string;
     isPlaying: boolean;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     handleSkipSong: any;
     isLoading: boolean | null;
 }
@@ -139,11 +139,11 @@ export interface AlbumPageInterface {
     currentSongIndex: number;
     handleClickEvent: any;
     year: number;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     playingSong: any;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     volumeVal: number;
-    setVolumeVal: any;
+    setVolumeVal: Dispatch<SetStateAction<number>>;
     songCreator: string;
     handleSkipSong: any;
     repeatAlbum: number;
@@ -153,7 +153,7 @@ export interface AlbumPageInterface {
     isFullscreenMode?: boolean;
     setIsFullscreenMode?: any;
     showLyricsFullscreen?: boolean;
-    setShowLyricsFullscreen?: any;
+    setShowLyricsFullscreen?: Dispatch<SetStateAction<boolean>>;
     shuffle: boolean;
     setShuffle: any;
     albumCover: string;
@@ -203,8 +203,8 @@ export interface SongPlayerButtonsInterface {
     songVal: string;
     isLoading: boolean | null;
     isPlaying: boolean;
-    setIsPlaying: any;
-    songRef: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
+    songRef: RefObject<HTMLAudioElement | null>;
     repeat?: number | 0;
     setRepeat?: any | undefined;
     biggerPadding: boolean;

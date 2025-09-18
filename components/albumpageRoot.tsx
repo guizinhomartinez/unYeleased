@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { AlbumPageRoot } from "@/lib/interfaces";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -8,7 +8,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useEffectOnce, useLocalStorage } from "react-use";
 import NewAlbumPage from "./newAlbumPage";
 
-export default function AlbumPageRootComponent({ data, albumCreditData, id }: { data: AlbumPageRoot, albumCreditData: Credits[], id: string }) {
+export default function AlbumPageRootComponent({
+    data,
+    albumCreditData,
+    id,
+}: {
+    data: AlbumPageRoot;
+    albumCreditData: Credits[];
+    id: string;
+}) {
     const [showExplanation, setShowExplanation] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const songRef = useRef<HTMLAudioElement | null>(null);
@@ -17,7 +25,9 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
     const [songCreator, setSongCreator] = useState("");
     const [clickedAmmount, setClickedAmmount] = useState(0);
     const [currentSongIndex, setCurrentSongIndex] = useState(-1);
-    const [playingSong, setPlayingSong] = useQueryState("playingSong", { defaultValue: "" });
+    const [playingSong, setPlayingSong] = useQueryState("playingSong", {
+        defaultValue: "",
+    });
     const [repeatAlbum, setRepeatAlbum] = useState(0); // 0 is off, 1 is repeat the album and 2 is repeat the current song
     const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -27,16 +37,23 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
     const [isFullscreenMode, setIsFullscreenMode] = useState<boolean>(false);
     const [showLyricsFullscreen, setShowLyricsFullscreen] = useState(true);
     const [shuffle, setShuffle] = useState(false);
-    const [albumCover, setAlbumCover] = useState(`/song-files/covers/${id}.jpg`);
-    const [albumCoverType, setAlbumCoverType] = useLocalStorage(`${id}-album-cover-type`, 0);
+    const [albumCover, setAlbumCover] = useState(
+        `/song-files/covers/${id}.jpg`
+    );
+    const [albumCoverType, setAlbumCoverType] = useLocalStorage(
+        `${id}-album-cover-type`,
+        0
+    );
     const [albumCoverInfo, setAlbumCoverInfo] = useState<string[]>([""]);
-    const [albumCoverDescription, setAlbumCoverDescription] = useState<string[]>([""]);
+    const [albumCoverDescription, setAlbumCoverDescription] = useState<
+        string[]
+    >([""]);
 
     // gets the locally stored value of volume and applies it to the volumeval variable if it exists
     useEffect(() => {
         const storedVolume = localStorage.getItem("volume") || 100;
         try {
-            setVolumeVal(Number(storedVolume));
+            setVolumeVal(Math.min(100, Math.max(0, Number(storedVolume))));
         } catch (e: any) {
             throw new Error(e.message);
         }
@@ -45,7 +62,14 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
     // sets the album cover based on what the user sets
     useEffect(() => {
         const covers = data.config[0].albumCover;
-        const chosenCover = covers[albumCoverType && albumCoverType >= 0 && albumCoverType < covers.length ? albumCoverType : 0];
+        const chosenCover =
+            covers[
+                albumCoverType &&
+                albumCoverType >= 0 &&
+                albumCoverType < covers.length
+                    ? albumCoverType
+                    : 0
+            ];
 
         setAlbumCover(`/song-files/covers/${chosenCover ?? id}.jpg`);
         setAlbumCoverInfo(covers);
@@ -54,8 +78,11 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
 
     // changes the website's title depending on the song being played
     useEffect(() => {
-        document.title = (((playingSong === null || playingSong === "") && !isPlaying) ? `${data.config[0].albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased` : `${playingSong} by ${songCreator} | UnYeleased`);
-    }, [playingSong, songCreator, id, data.config[0].albumName])
+        document.title =
+            (playingSong === null || playingSong === "") && !isPlaying
+                ? `${data.config[0].albumName || id.toLowerCase().replace(" ", "-")} | UnYeleased`
+                : `${playingSong} by ${songCreator} | UnYeleased`;
+    }, [playingSong, songCreator, id, data.config[0].albumName]);
 
     // sets up the songRef variable to be used in other areas
     // songRef is used to play the song the user wants to play. it sets up all the basic audio stuff aswell
@@ -64,10 +91,16 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
         if (playingSong) {
             try {
                 setIsLoading(true);
-                songRef.current = new Audio(`/song-files/songs/${id}/` + playingSong + '.m4a');
-                songRef.current.loop = (repeatAlbum === 2 && true);
-                songRef.current.addEventListener("canplaythrough", () => setIsLoading(false));
-                songRef.current.addEventListener("error", () => setIsLoading(null));
+                songRef.current = new Audio(
+                    `/song-files/songs/${id}/` + playingSong + ".m4a"
+                );
+                songRef.current.loop = repeatAlbum === 2 && true;
+                songRef.current.addEventListener("canplaythrough", () =>
+                    setIsLoading(false)
+                );
+                songRef.current.addEventListener("error", () =>
+                    setIsLoading(null)
+                );
             } catch (e) {
                 console.log(e);
                 setIsLoading(null);
@@ -96,7 +129,9 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
 
     useEffect(() => {
         if (playingSong && playingSong !== "" && data.tracks.length > 0) {
-            const songIndex = data.tracks.findIndex((song) => song.title === playingSong)
+            const songIndex = data.tracks.findIndex(
+                (song) => song.title === playingSong
+            );
 
             if (songIndex !== -1) {
                 setSongCreator(data.tracks[songIndex].artist);
@@ -123,7 +158,11 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
     function endedSongFunction(newIndex: number) {
         const setupNextSong = (songIndex: number, play: boolean = true) => {
             if (songRef.current) {
-                if (skipDirection && (Math.round(songRef.current.currentTime) >= 5 || currentSongIndex === 0)) {
+                if (
+                    skipDirection &&
+                    (Math.round(songRef.current.currentTime) >= 5 ||
+                        currentSongIndex === 0)
+                ) {
                     songRef.current.currentTime = 0;
                     return;
                 }
@@ -133,7 +172,7 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
             setPlayingSong(data.tracks[songIndex].title);
             setSongCreator(data.tracks[songIndex].artist);
             setIsPlaying(play);
-        }
+        };
 
         const repeatSong = () => {
             if (songRef.current) {
@@ -141,26 +180,36 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
                 songRef.current.play();
             }
             setIsPlaying(true);
-        }
+        };
 
-        if (repeatAlbum === 2)
-            return repeatSong();
+        if (repeatAlbum === 2) return repeatSong();
 
-        if (newIndex !== data.tracks.length)
-            return setupNextSong(newIndex);
+        if (newIndex !== data.tracks.length) return setupNextSong(newIndex);
 
-        if (!shuffle)
-            setupNextSong(0, repeatAlbum !== 0);
+        if (!shuffle) setupNextSong(0, repeatAlbum !== 0);
     }
 
     const handleSkipSong = (back: boolean) => setSkipDirection(back);
 
     useEffect(() => {
         if (skipDirection !== null) {
-            endedSongFunction(skipDirection ? currentSongIndex - 1 : (shuffle ? Math.floor(Math.random() * data.tracks.length) : currentSongIndex + 1));
+            endedSongFunction(
+                skipDirection
+                    ? currentSongIndex - 1
+                    : shuffle
+                      ? Math.floor(Math.random() * data.tracks.length)
+                      : currentSongIndex + 1
+            );
             setSkipDirection(null);
         }
-    }, [skipDirection, currentSongIndex, data.tracks, playingSong, repeatAlbum, endedSongFunction]);
+    }, [
+        skipDirection,
+        currentSongIndex,
+        data.tracks,
+        playingSong,
+        repeatAlbum,
+        endedSongFunction,
+    ]);
 
     useEffect(() => {
         const song = songRef.current;
@@ -172,17 +221,29 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
         return () => {
             song.removeEventListener("ended", handleSongEnd);
         };
-    }, [currentSongIndex, data.tracks, playingSong, repeatAlbum, endedSongFunction]);
+    }, [
+        currentSongIndex,
+        data.tracks,
+        playingSong,
+        repeatAlbum,
+        endedSongFunction,
+    ]);
 
     useEffect(() => {
         const song = songRef.current;
         if (!song) return;
 
-        localStorage.setItem("volume", volumeVal.toString());
+        localStorage.setItem("volume", Math.min(100, Math.max(0, volumeVal)).toString());
 
         const localVolume = localStorage.getItem("volume");
 
-        if (localVolume === null || localVolume === "NaN" || isNaN(Number(localVolume)) || (Number(localVolume) < 0 || Number(localVolume) > 100)) {
+        if (
+            localVolume === null ||
+            localVolume === "NaN" ||
+            isNaN(Number(localVolume)) ||
+            Number(localVolume) < 0 ||
+            Number(localVolume) > 100
+        ) {
             song.volume = 0.5;
         } else {
             song.volume = Number(localVolume) / 100;
@@ -195,7 +256,7 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
         if (isMobile) {
             setAppearBar(playingSong !== "" ? true : false);
         }
-    })
+    });
 
     if (newPageLayout === 1) {
         return (
@@ -240,6 +301,6 @@ export default function AlbumPageRootComponent({ data, albumCreditData, id }: { 
                 albumCoverInfo={albumCoverInfo}
                 albumCoverDescription={albumCoverDescription}
             />
-        )
+        );
     }
 }

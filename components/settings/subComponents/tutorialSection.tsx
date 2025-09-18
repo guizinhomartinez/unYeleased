@@ -3,7 +3,7 @@ import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
 import { OctagonAlert, RotateCcw, TriangleAlert } from "lucide-react";
 import { useLocalStorage } from "react-use";
-import { WrapperComponent } from "../settingsComponent";
+import { WrapperComponent } from "../wrapperContent";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export const TutorialSection = () => {

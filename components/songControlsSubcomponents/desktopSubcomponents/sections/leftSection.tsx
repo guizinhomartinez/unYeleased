@@ -7,6 +7,7 @@ import { ArrowBigUp, Command, EllipsisVertical, KeyboardIcon, MoveDown, MoveLeft
 import { DownloadMenu } from "../../moreOptionsMenu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { RefObject } from "react";
 
 type KeyboardThing = {
     letter: any;
@@ -86,7 +87,7 @@ const keyboardThing: KeyboardThing = [
 
 export default function LeftSectionSongControls({ image, songCreator, songRef, songVal, id }: songControlsInterface) {
     return (
-        <div className="flex items-center gap-3 select-none overflow-hidden md:!max-w-[25%] lg:!max-w-[73%] w-full">
+        <div className="flex items-center gap-4 select-none overflow-hidden md:!max-w-[25%] lg:!max-w-[73%] w-full">
             <Image src={image} alt={image} width={80} height={80} className="rounded-lg" />
             <div className="flex gap-5 items-center md:!max-w-[40%] lg:!max-w-[73%] overflow-hidden">
                 <div className="md:!max-w-[40%] lg:!max-w-[73%] w-full">
@@ -120,7 +121,7 @@ export default function LeftSectionSongControls({ image, songCreator, songRef, s
     )
 }
 
-const ShortcutsMenu = (props: { keyboardThing: KeyboardThing, songRef: any }) => {
+const ShortcutsMenu = (props: { keyboardThing: KeyboardThing, songRef: RefObject<HTMLAudioElement | null> }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>

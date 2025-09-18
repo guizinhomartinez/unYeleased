@@ -19,7 +19,7 @@ export const formattedSongTime = (songTime: number, songTimeType: number, curren
         : formatTime(songTime);
 };
 
-export const handleSliderChange = (value: number[], setSliderValue: any, songRef: RefObject<HTMLAudioElement>, setCurrentTimeVal: any) => {
+export const handleSliderChange = (value: number[], setSliderValue: any, songRef: RefObject<HTMLAudioElement | null>, setCurrentTimeVal: any) => {
     const newValue = value[0];
     setSliderValue(newValue)
     if (songRef.current) {
@@ -29,7 +29,7 @@ export const handleSliderChange = (value: number[], setSliderValue: any, songRef
     }
 }
 
-export const muteSong = (songRef: any) => {
+export const muteSong = (songRef: RefObject<HTMLAudioElement | null>) => {
     if (!songRef.current) return;
     songRef.current && (songRef.current.muted = !songRef.current.muted);
 }
@@ -58,7 +58,7 @@ export const RepeatIcon = ({ repeat, size }: { repeat: number, size?: string | a
     return repeat === 2 ? <Repeat1 size={size} /> : <Repeat size={size} />;
 };
 
-export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: any, size?: number }) => {
+export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: RefObject<HTMLAudioElement | null>, size?: number }) => {
     if (isLoading)
         return <LoaderCircleIcon className="animate-spin" size={size} />
 

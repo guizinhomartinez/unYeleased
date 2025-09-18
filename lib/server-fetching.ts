@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import path from "path";
 import fs from "fs";
@@ -35,7 +35,7 @@ export async function fetchAlbumCredits(id: string): Promise<CreditsResponse> {
             "albumInfo",
             id.toLowerCase(),
             "credits",
-            "credits.json",
+            "credits.json"
         );
 
         const fileContents = fs.readFileSync(filePath, "utf-8");
@@ -57,6 +57,70 @@ export async function fetchHomeInfo() {
 
         const fileContents = fs.readFileSync(filePath, "utf-8");
         return JSON.parse(fileContents);
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            return "NOT FOUND"; // file doesn't exist
+        }
+        return "File System Error"; // other errors
+    }
+}
+
+// singles fetching
+export async function fetchSinglesInfo(id: string) {
+    try {
+        const filePath = path.join(
+            process.cwd(),
+            "public",
+            "song-files",
+            "singlesInfo",
+            `${id.toLowerCase()}`,
+            `${id.toLowerCase()}.json`
+        );
+
+        const fileContents = fs.readFileSync(filePath, "utf-8");
+        return JSON.parse(fileContents);
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            return "NOT FOUND"; // file doesn't exist
+        }
+        return "File System Error"; // other errors
+    }
+}
+
+export async function fetchSinglesLyrics(id: string) {
+    try {
+        const filePath = path.join(
+            process.cwd(),
+            "public",
+            "song-files",
+            "singlesInfo",
+            `${id.toLowerCase()}`,
+            "lyrics.txt"
+        );
+
+        const fileContents = fs.readFileSync(filePath, "utf-8");
+        return fileContents;
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            return "NOT FOUND"; // file doesn't exist
+        }
+        return "File System Error"; // other errors
+    }
+}
+
+export async function fetchSinglesExplanation(id: string) {
+    try {
+        const filePath = path.join(
+            process.cwd(),
+            "public",
+            "song-files",
+            "singlesInfo",
+            `${id.toLowerCase()}`,
+            "explanation.txt"
+        );
+
+        const fileContents = fs.readFileSync(filePath, "utf-8");
+        return fileContents;
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return "NOT FOUND"; // file doesn't exist

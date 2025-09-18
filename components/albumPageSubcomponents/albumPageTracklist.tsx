@@ -1,127 +1,175 @@
-import { cn, formatDuration } from "@/lib/utils"
-import { Skeleton } from "../ui/skeleton"
-import { AlbumPageTracklistInterface } from "@/lib/interfaces"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee"
-import { Button } from "../ui/button"
-import { EllipsisVertical } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu"
-import { Suspense, useEffect, useMemo, useRef, useState } from "react"
-import { useLocalStorage } from "react-use"
+import { cn, formatDuration } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
+import { AlbumPageTracklistInterface } from "@/lib/interfaces";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AutoMarquee } from "../songControlsSubcomponents/autoMarquee";
+import { Button } from "../ui/button";
+import { EllipsisVertical } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useLocalStorage } from "react-use";
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return (
         <Suspense fallback={<LoadingComponent />}>
-            {(!props.songs.length || !props.songs || props.songs.length === 0) ? <LoadingComponent /> : <AlbumPageTracklistReal {...props} />}
+            {!props.songs.length || !props.songs || props.songs.length === 0 ? (
+                <LoadingComponent />
+            ) : (
+                <AlbumPageTracklistReal {...props} />
+            )}
         </Suspense>
-    )
+    );
 }
 
 function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const isMobile = useIsMobile();
     const [durations, setDurations] = useState<(string | null)[]>([]);
-    const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
-    const cacheRef = useRef<Record<string, string | null>>({});
+    // const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
+    // const cacheRef = useRef<Record<string, string | null>>({});
 
-    useEffect(() => {
-        if (!showSongDurationOnTracklist) {
-            setDurations([]);
-            return;
-        }
+    // useEffect(() => {
+    //     if (!showSongDurationOnTracklist) {
+    //         setDurations([]);
+    //         return;
+    //     }
 
-        let isCancelled = false;
+    //     let isCancelled = false;
 
-        async function loadDurations() {
-            const newDurations = await Promise.all(
-                props.songs.map(
-                    (song) =>
-                        new Promise<string | null>((resolve) => {
-                            const audioPrefix = `/song-files/songs/${props.id}/`;
-                            const audioFileType = ".m4a";
-                            const cacheKey = `${props.id}:${song.title}`;
-                            const audio = new Audio(audioPrefix + song.title + audioFileType);
+    //     async function loadDurations() {
+    //         const newDurations = await Promise.all(
+    //             props.songs.map(
+    //                 (song) =>
+    //                     new Promise<string | null>((resolve) => {
+    //                         const audioPrefix = `/song-files/songs/${props.id}/`;
+    //                         const audioFileType = ".m4a";
+    //                         const cacheKey = `${props.id}:${song.title}`;
+    //                         const audio = new Audio(audioPrefix + song.title + audioFileType);
 
-                            if (cacheRef.current[cacheKey] !== undefined) {
-                                // Already cached
-                                return resolve(cacheRef.current[cacheKey]);
-                            }
+    //                         if (cacheRef.current[cacheKey] !== undefined) {
+    //                             // Already cached
+    //                             return resolve(cacheRef.current[cacheKey]);
+    //                         }
 
-                            const onLoaded = () => {
-                                const formatted = formatDuration(audio.duration - 1);
-                                cacheRef.current[cacheKey] = formatted;
-                                if (!isCancelled) resolve(formatted);
-                            };
+    //                         const onLoaded = () => {
+    //                             const formatted = formatDuration(audio.duration - 1);
+    //                             cacheRef.current[cacheKey] = formatted;
+    //                             if (!isCancelled) resolve(formatted);
+    //                         };
 
-                            const onError = () => {
-                                cacheRef.current[cacheKey] = null;
-                                if (!isCancelled) resolve(null);
-                            };
+    //                         const onError = () => {
+    //                             cacheRef.current[cacheKey] = null;
+    //                             if (!isCancelled) resolve(null);
+    //                         };
 
-                            audio.addEventListener("loadedmetadata", onLoaded);
-                            audio.addEventListener("error", onError);
-                        })
-                )
-            );
+    //                         audio.addEventListener("loadedmetadata", onLoaded);
+    //                         audio.addEventListener("error", onError);
+    //                     })
+    //             )
+    //         );
 
-            if (!isCancelled) setDurations(newDurations);
-        }
+    //         if (!isCancelled) setDurations(newDurations);
+    //     }
 
-        loadDurations();
+    //     loadDurations();
 
-        return () => {
-            isCancelled = true;
-        };
-    }, [props.songs, props.id, showSongDurationOnTracklist]);
+    //     return () => {
+    //         isCancelled = true;
+    //     };
+    // }, [props.songs, props.id, showSongDurationOnTracklist]);
 
     const SongDurations = (props: { index: any }) => {
-        if (!showSongDurationOnTracklist) return;
+        // if (!showSongDurationOnTracklist) return;
+        return;
 
         return (
             <div>
-                {durations[props.index] ?
+                {durations[props.index] ? (
                     <span className="text-sm text-muted-foreground min-w-[40px] text-right font-mono">
                         {durations[props.index]}
                     </span>
-                    :
+                ) : (
                     <Skeleton className="w-10 h-7" />
-                }
+                )}
             </div>
-        )
-    }
+        );
+    };
 
     return (
-        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted', !props.newStyle && 'border-2', props.appearBar ? (props.newStyle ? (isMobile ? 'mb-20' : 'mb-16') : 'mb-24') : (props.newStyle ? (isMobile ? '-mb-0' : '-mb-8') : '-mb-4'))}>
+        <div
+            className={cn(
+                "transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted",
+                !props.newStyle && "border-2",
+                props.appearBar
+                    ? props.newStyle
+                        ? isMobile
+                            ? "mb-20"
+                            : "mb-16"
+                        : "mb-24"
+                    : props.newStyle
+                      ? isMobile
+                          ? "-mb-0"
+                          : "-mb-8"
+                      : "-mb-4"
+            )}
+        >
             {props.songs.map((element, index) => (
                 <div
                     key={index}
-                    className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full",
-                        props.playingSong === element.title ? 'bg-primary/10 border-b-transparent' : 'cursor-pointer hover:bg-primary/5')}
+                    className={cn(
+                        "flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full",
+                        props.playingSong === element.title
+                            ? "bg-primary/10 border-b-transparent"
+                            : "cursor-pointer hover:bg-primary/5"
+                    )}
                     onClick={() => props.handleClickEvent(element, index)}
                     tabIndex={0}
                 >
                     <div className="flex w-full items-center justify-between gap-2">
                         <div className="flex h-full max-w-[65%] md:max-w-[80%] lg:max-w-full items-center gap-2 overflow-hidden">
-                            <div className='flex items-center gap-3 relative justify-center'>
-                                <div className='w-10 md:w-12 flex items-start justify-center font-mono'>
+                            <div className="flex items-center gap-3 relative justify-center">
+                                <div className="w-10 md:w-12 flex items-start justify-center font-mono">
                                     <p>{index + 1}</p>
                                 </div>
                             </div>
-                            <div className='flex flex-col max-w-[59vw] h-full'>
-                                <AutoMarquee text={element.title ? element.title : ""} className="text-sm font-semibold" number={index} />
-                                <AutoMarquee text={element.artist ? element.artist : ""} className="text-sm text-muted-foreground" number={index + 2} />
+                            <div className="flex flex-col max-w-[59vw] h-full">
+                                <AutoMarquee
+                                    text={element.title ? element.title : ""}
+                                    className="text-sm font-semibold"
+                                    number={index}
+                                />
+                                <AutoMarquee
+                                    text={element.artist ? element.artist : ""}
+                                    className="text-sm text-muted-foreground"
+                                    number={index + 2}
+                                />
                             </div>
                         </div>
-                        <div className="flex min-w-fit items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                        <div
+                            className="flex min-w-fit items-center gap-3"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <SongDurations index={index} />
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button onClick={(e) => e.stopPropagation()} className="rounded-full bg-transparent" variant="ghost" size="icon">
+                                    <Button
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="rounded-full bg-transparent"
+                                        variant="ghost"
+                                        size="icon"
+                                    >
                                         <EllipsisVertical />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent align="end" className="flex flex-col gap-2 rounded-2xl p-2 max-w-72 items-center">
-                                    <DownloadMenu id={props.id} songVal={element.title} className="rounded-xl w-full" />
+                                <PopoverContent
+                                    align="end"
+                                    className="flex flex-col gap-2 rounded-2xl p-2 max-w-72 items-center"
+                                >
+                                    <DownloadMenu
+                                        id={props.id}
+                                        songVal={element.title}
+                                        className="rounded-xl w-full"
+                                    />
                                 </PopoverContent>
                             </Popover>
                         </div>
@@ -129,35 +177,42 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
                 </div>
             ))}
         </div>
-    )
+    );
 }
 
 function LoadingComponent() {
     function TrackItem({ index }: { index: number }) {
         return (
-            <div className={cn("flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full cursor-not-allowed")}>
-                <div className='flex items-center gap-3 relative justify-center'>
-                    <div className='w-12 flex items-right justify-center'>
-                        <div className='w-2 text-right'>{index + 1}</div>
+            <div
+                className={cn(
+                    "flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full cursor-not-allowed"
+                )}
+            >
+                <div className="flex items-center gap-3 relative justify-center">
+                    <div className="w-12 flex items-right justify-center">
+                        <div className="w-2 text-right">{index + 1}</div>
                     </div>
                 </div>
                 <div className="flex gap-2 w-full justify-between">
-                    <div className='select-none whitespace-pre overflow-hidden shadowed-song-name flex flex-col gap-2'>
-                        <Skeleton className='rounded-xl h-5 w-32' />
-                        <Skeleton className='rounded-xl h-5 translate-y-0.5 w-48' />
+                    <div className="select-none whitespace-pre overflow-hidden shadowed-song-name flex flex-col gap-2">
+                        <Skeleton className="rounded-xl h-5 w-32" />
+                        <Skeleton className="rounded-xl h-5 translate-y-0.5 w-48" />
                     </div>
                     <div className="flex justify-center items-center gap-3">
                         <Skeleton className="size-9 rounded-full mr-2" />
                         <Skeleton className="size-9 rounded-full mr-2" />
                     </div>
                 </div>
-
             </div>
-        )
+        );
     }
 
     return (
-        <div className={cn('transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted mb-20 md:mb-16')}>
+        <div
+            className={cn(
+                "transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted mb-20 md:mb-16"
+            )}
+        >
             <TrackItem index={0} />
             <TrackItem index={1} />
             <TrackItem index={2} />
@@ -171,5 +226,5 @@ function LoadingComponent() {
             <TrackItem index={10} />
             <TrackItem index={11} />
         </div>
-    )
+    );
 }

@@ -43,7 +43,7 @@ export const Password = () => {
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         if (String(JSON.stringify(data, null, 2)).includes("2424")) {
-            router.push("/single/2424");
+            router.push("/single/2424?redirected-from-settings=true");
         }
 
         setLoadingNextPage(true);

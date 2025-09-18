@@ -137,3 +137,16 @@ body {
     mask-image: linear-gradient(to top, transparent 0%, #000 0%, #000 95%, transparent 100%);
   }
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
