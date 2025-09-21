@@ -18,7 +18,6 @@ import AlbumPlayButton from "./albumPageSubcomponents/ui/albumPlayButton";
 import { ArrowRightIcon, ArrowLeft, EllipsisVertical, X } from "lucide-react";
 import DownloadAlbumButton from "./albumPageSubcomponents/ui/downloadAlbumButton";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
-import { useMedia } from "react-use";
 import { AlbumCoverDialog } from "./albumPageSubcomponents/albumCoverMenu";
 import AlbumCover from "./albumPageSubcomponents/albumCover";
 
@@ -156,7 +155,7 @@ export default function NewAlbumPage({
 
     return (
         <>
-            <div className="px-4 pt-4 -mb-12 lg:-mb-4">
+            <div className="px-4 pt-4 -mb-4 lg:-mb-4 z-40">
                 <Link href="/">
                     <Button
                         className="rounded-full"

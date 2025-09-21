@@ -3,11 +3,12 @@ import Image from 'next/image';
 import { AutoMarquee } from "../../autoMarquee";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { ArrowBigUp, Command, EllipsisVertical, KeyboardIcon, MoveDown, MoveLeft, MoveRight, MoveUp, Share } from "lucide-react";
+import { ArrowBigUp, ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Command, EllipsisVertical, KeyboardIcon, MoveDown, MoveLeft, MoveRight, MoveUp, Share } from "lucide-react";
 import { DownloadMenu } from "../../moreOptionsMenu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { RefObject } from "react";
+import { Kbd } from "@/components/ui/kbd";
 
 type KeyboardThing = {
     letter: any;
@@ -48,39 +49,39 @@ const keyboardThing: KeyboardThing = [
         description: "for seeing the song's lyrics"
     },
     {
-        letter: <MoveLeft size='16' />,
+        letter: <ArrowLeft size='16' />,
         description: "for going back 5 seconds"
     },
     {
-        letter: <MoveRight size='16' />,
+        letter: <ArrowRight size='16' />,
         description: "for skipping 5 seconds"
     },
     {
-        letter: <MoveUp size='16' />,
+        letter: <ArrowUp size='16' />,
         description: "for making the volume 10% louder"
     },
     {
-        letter: <MoveDown size='16' />,
+        letter: <ArrowDown size='16' />,
         description: "for making the volume 10% quieter"
     },
     {
         letter: <Command size='16' />,
-        letter2: <MoveLeft size='16' />,
+        letter2: <ArrowLeft size='16' />,
         description: "for going back a song"
     },
     {
         letter: <Command size='16' />,
-        letter2: <MoveRight size='16' />,
+        letter2: <ArrowRight size='16' />,
         description: "for skipping a song"
     },
     {
         letter: <ArrowBigUp size='20' />,
-        letter2: <MoveUp size='16' />,
+        letter2: <ArrowUp size='16' />,
         description: "for making the volume 5% louder"
     },
     {
         letter: <ArrowBigUp size='20' />,
-        letter2: <MoveDown size='16' />,
+        letter2: <ArrowDown size='16' />,
         description: "for making the volume 5% quieter"
     },
 ]
@@ -142,14 +143,14 @@ const ShortcutsMenu = (props: { keyboardThing: KeyboardThing, songRef: RefObject
                         >
                             <div className="flex items-center gap-1">
                                 {thing.letter && (
-                                    <kbd className="font-mono text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-md border border-muted min-w-[2rem] text-center">
+                                    <Kbd>
                                         {thing.letter}
-                                    </kbd>
+                                    </Kbd>
                                 )}
                                 {thing.letter2 && (
-                                    <kbd className="font-mono text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-md border border-muted min-w-[2rem] text-center">
+                                    <Kbd>
                                         {thing.letter2}
-                                    </kbd>
+                                    </Kbd>
                                 )}
                             </div>
                             <span className="text-sm">{thing.description}</span>

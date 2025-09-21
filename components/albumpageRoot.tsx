@@ -27,6 +27,7 @@ export default function AlbumPageRootComponent({
     const [currentSongIndex, setCurrentSongIndex] = useState(-1);
     const [playingSong, setPlayingSong] = useQueryState("playingSong", {
         defaultValue: "",
+        shallow: false,
     });
     const [repeatAlbum, setRepeatAlbum] = useState(0); // 0 is off, 1 is repeat the album and 2 is repeat the current song
     const [skipDirection, setSkipDirection] = useState<boolean | null>(null);
@@ -74,7 +75,7 @@ export default function AlbumPageRootComponent({
         setAlbumCover(`/song-files/covers/${chosenCover ?? id}.jpg`);
         setAlbumCoverInfo(covers);
         setAlbumCoverDescription(data.config[0].albumCoverDescription ?? [""]);
-    }, [data.config[0], albumCover, albumCoverInfo, albumCoverType]);
+    }, [data.config, albumCoverType, id]);
 
     // changes the website's title depending on the song being played
     useEffect(() => {
@@ -88,25 +89,14 @@ export default function AlbumPageRootComponent({
     // songRef is used to play the song the user wants to play. it sets up all the basic audio stuff aswell
     // and loads the correct song
     useEffect(() => {
-        if (playingSong) {
-            try {
-                setIsLoading(true);
-                songRef.current = new Audio(
-                    `/song-files/songs/${id}/` + playingSong + ".m4a"
-                );
-                songRef.current.loop = repeatAlbum === 2 && true;
-                songRef.current.addEventListener("canplaythrough", () =>
-                    setIsLoading(false)
-                );
-                songRef.current.addEventListener("error", () =>
-                    setIsLoading(null)
-                );
-            } catch (e) {
-                console.log(e);
-                setIsLoading(null);
-            }
-        }
-    }, [playingSong, id]);
+        if (!playingSong) return;
+        const audio = new Audio(`/song-files/songs/${id}/${playingSong}.m4a`);
+        audio.loop = repeatAlbum === 2;
+        audio.addEventListener("canplaythrough", () => setIsLoading(false));
+        audio.addEventListener("error", () => setIsLoading(null));
+        songRef.current = audio;
+        return () => audio.pause(); // cleanup
+    }, [playingSong, id, repeatAlbum]);
 
     // plays/pauses the song when needed
     useEffect(() => {
@@ -120,7 +110,9 @@ export default function AlbumPageRootComponent({
     }, [isPlaying, playingSong]);
 
     const handleClickEvent = (element: SongInterface, index: number) => {
-        setPlayingSong(element.title);
+        setPlayingSong((prev) =>
+            prev === element.title ? prev : element.title
+        );
         setIsPlaying(true);
         setSongCreator(element.artist);
         setCurrentSongIndex(index);
@@ -144,7 +136,9 @@ export default function AlbumPageRootComponent({
     const playAlbum = useCallback(() => {
         if (data.tracks.length > 0) {
             if (clickedAmmount < 1) {
-                setPlayingSong(data.tracks[0].title);
+                setPlayingSong((prev) =>
+                    prev === data.tracks[0].title ? prev : data.tracks[0].title
+                );
                 setIsPlaying(true);
                 setCurrentSongIndex(0);
             }
@@ -169,8 +163,16 @@ export default function AlbumPageRootComponent({
             }
 
             setCurrentSongIndex(songIndex);
-            setPlayingSong(data.tracks[songIndex].title);
-            setSongCreator(data.tracks[songIndex].artist);
+            setPlayingSong((prev) =>
+                prev === data.tracks[songIndex].title
+                    ? prev
+                    : data.tracks[songIndex].title
+            );
+            setSongCreator((prev) =>
+                prev === data.tracks[songIndex].artist
+                    ? prev
+                    : data.tracks[songIndex].artist
+            );
             setIsPlaying(play);
         };
 
@@ -230,25 +232,14 @@ export default function AlbumPageRootComponent({
     ]);
 
     useEffect(() => {
-        const song = songRef.current;
-        if (!song) return;
-
-        localStorage.setItem("volume", Math.min(100, Math.max(0, volumeVal)).toString());
-
-        const localVolume = localStorage.getItem("volume");
-
-        if (
-            localVolume === null ||
-            localVolume === "NaN" ||
-            isNaN(Number(localVolume)) ||
-            Number(localVolume) < 0 ||
-            Number(localVolume) > 100
-        ) {
-            song.volume = 0.5;
-        } else {
-            song.volume = Number(localVolume) / 100;
+        localStorage.setItem(
+            "volume",
+            Math.min(100, Math.max(0, volumeVal)).toString()
+        );
+        if (songRef.current) {
+            songRef.current.volume = volumeVal / 100;
         }
-    }, [volumeVal, handleSkipSong, isPlaying]);
+    }, [volumeVal, handleSkipSong]);
 
     const isMobile = useIsMobile();
 

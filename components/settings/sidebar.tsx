@@ -47,7 +47,7 @@ export const SidebarComponent = ({
                 "w-full transition-[max-width] duration-500",
                 "fixed top-0 left-0 bg-background/50 max-w-full z-50 backdrop-blur-md lg:h-full lg:bg-background lg:relative",
                 "lg:!top-0 lg:!rounded-none lg:!left-0 lg:!border-b-0",
-                hideSidebar ? "lg:!max-w-16" : "lg:!max-w-56"
+                hideSidebar ? "lg:!max-w-[68px]" : "lg:!max-w-64"
             )}
         >
             <div className="sticky top-0 left-0 w-full flex gap-2 items-center overflow-hidden justify-between px-4 py-3 lg:py-2 lg:justify-start">
@@ -123,7 +123,7 @@ export const SidebarComponent = ({
                     </Sheet>
                 )}
             </div>
-            <div className="flex flex-col *:mb-2 items-start justify-center p-4 sm:hidden lg:flex">
+            <div className="flex-col *:mb-1 items-start justify-center p-4 hidden lg:flex">
                 <Options
                     {...{
                         appearenceTab,
@@ -134,7 +134,7 @@ export const SidebarComponent = ({
                     setCurrentTab={setCurrentTabAction}
                 />
             </div>
-            <div className="fixed bottom-0 left-0 p-4 sm:hidden lg:block">
+            <div className="fixed bottom-0 left-0 p-4 hidden lg:block">
                 <TooltipProvider>
                     <Tooltip open={showTooltip}>
                         <TooltipTrigger asChild>
