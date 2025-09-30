@@ -30,6 +30,7 @@ export type Menu = {
     songRef?: any;
     source: string;
     text: string;
+    searchBarRef?: React.RefObject<HTMLInputElement | null>;
 };
 
 type MenuItems = {
@@ -73,6 +74,8 @@ export function Player({
     const [repeat, setRepeat] = useState(false);
     const searchParams = useSearchParams();
     const redirectedFromSettings = searchParams.get("redirected-from-settings");
+    const searchBarRef = useRef<HTMLInputElement | null>(null);
+    const [searchBarFocused, setSearchBarFocused] = useState(false);
 
     useEffect(() => {
         document.title = `${text || capitalizeFirstLetter(id)} | UnYeleased`;
@@ -144,34 +147,44 @@ export function Player({
 
     const handleClick = () => setShowExplanation(!showExplanation);
 
-    useKeyPressEvent("s", () => handleClick());
+    useEffect(() => {
+        if (document.activeElement === searchBarRef.current) {
+            setSearchBarFocused(true);
+        }
 
-    useKeyPressEvent("r", () => setRepeat(!repeat));
+        return () => setSearchBarFocused(false);
+    }, [searchBarRef.current]);
 
-    useKeyPressEvent(" ", (e) => {
-        e.preventDefault();
-        setIsPlaying(!isPlaying);
-    });
+    if (searchBarFocused) {
+        useKeyPressEvent("s", () => handleClick());
 
-    useKeyPressEvent("ArrowLeft", (e) => {
-        e.preventDefault();
-        skipTimeFunc(true, songRef);
-    });
+        useKeyPressEvent("r", () => setRepeat(!repeat));
 
-    useKeyPressEvent("ArrowRight", (e) => {
-        e.preventDefault();
-        skipTimeFunc(false, songRef);
-    });
+        useKeyPressEvent(" ", (e) => {
+            e.preventDefault();
+            setIsPlaying(!isPlaying);
+        });
 
-    useKeyPressEvent("ArrowUp", (e) => {
-        e.preventDefault();
-        setVolumeVal((volumeVal || 100) + 10);
-    });
+        useKeyPressEvent("ArrowLeft", (e) => {
+            e.preventDefault();
+            skipTimeFunc(true, songRef);
+        });
 
-    useKeyPressEvent("ArrowDown", (e) => {
-        e.preventDefault();
-        setVolumeVal((volumeVal || 100) - 10);
-    });
+        useKeyPressEvent("ArrowRight", (e) => {
+            e.preventDefault();
+            skipTimeFunc(false, songRef);
+        });
+
+        useKeyPressEvent("ArrowUp", (e) => {
+            e.preventDefault();
+            setVolumeVal((volumeVal || 100) + 10);
+        });
+
+        useKeyPressEvent("ArrowDown", (e) => {
+            e.preventDefault();
+            setVolumeVal((volumeVal || 100) - 10);
+        });
+    }
 
     useEffect(() => {
         if (songVal) {
@@ -260,6 +273,7 @@ export function Player({
                     subtext={subtext}
                     text={text}
                     volumeVal={volumeVal}
+                    searchBarRef={searchBarRef}
                 />
             </div>
         </>

@@ -1,4 +1,4 @@
-import { songControlsInterface } from "@/lib/interfaces";
+import { DesktopSongControlsInterface, songControlsInterface } from "@/lib/interfaces";
 import Image from "next/image";
 import { AutoMarquee } from "../../autoMarquee";
 import {
@@ -41,7 +41,7 @@ type KeyboardThing = {
 
 const keyboardThing: KeyboardThing = [
     {
-        letter: <SpaceIcon/>,
+        letter: <SpaceIcon />,
         description: "play/pause song",
     },
     {
@@ -118,7 +118,8 @@ export default function LeftSectionSongControls({
     songRef,
     songVal,
     id,
-}: songControlsInterface) {
+    searchBarRef
+}: songControlsInterface & DesktopSongControlsInterface) {
     return (
         <div className="flex items-center gap-4 select-none overflow-hidden md:!max-w-[25%] lg:!max-w-[73%] w-full">
             <Image
@@ -187,6 +188,7 @@ export default function LeftSectionSongControls({
 const ShortcutsMenu = (props: {
     keyboardThing: KeyboardThing;
     songRef: RefObject<HTMLAudioElement | null>;
+    searchBarRef: React.RefObject<HTMLInputElement | null>;
 }) => {
     const [searchValue, setSearchValue] = useState("");
 
@@ -219,10 +221,13 @@ const ShortcutsMenu = (props: {
                     </h1>
                     <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
                         <Input
+                            type="search"
                             className="w-full p-4 rounded-xl"
                             placeholder="Search shortcuts..."
+                            id="shortcuts-search"
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
+                            ref={props.searchBarRef}
                         />
                     </div>
                     <div className="flex flex-col gap-1.5">

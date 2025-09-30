@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,11 +10,7 @@ import FullscreenSongControls from "./desktopSubcomponents/fullscreenSongControl
 import LeftSectionSongControls from "./desktopSubcomponents/sections/leftSection";
 import MiddleSectionSongControls from "./desktopSubcomponents/sections/middleSection";
 import RightSectionSongControls from "./desktopSubcomponents/sections/rightSection";
-import {
-    LyricsOpened,
-    SliderValue,
-    WheelEventHandler,
-} from "../contexts";
+import { LyricsOpened, SliderValue, WheelEventHandler } from "../contexts";
 import { useKeyPressEvent } from "react-use";
 
 // got this function from the beautiful lyrics spicetify extension
@@ -51,12 +47,14 @@ export const DesktopSongControls = ({
     shuffle,
     setShuffle,
     showLyricsFullscreen,
-    setShowLyricsFullscreen
+    setShowLyricsFullscreen,
 }: songControlsInterface) => {
     const [sliderValue, setSliderValue] = useState<number>(0);
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [songTimeType, setSongTimeType] = useState(0);
     const [lyricsOpened, setLyricsOpened] = useState(false);
+    const searchBarRef = useRef<HTMLInputElement | null>(null);
+    const [searchBarFocused, setSearchBarFocused] = useState(false);
 
     const necessaryProps = {
         shuffle,
@@ -79,46 +77,56 @@ export const DesktopSongControls = ({
         isFullscreenMode,
         setIsFullscreenMode,
         showLyricsFullscreen,
-        setShowLyricsFullscreen
+        setShowLyricsFullscreen,
     };
 
-    useKeyPressEvent(" ", (e) => {
-        e.preventDefault();
-        setIsPlaying(!isPlaying);
-    });
+    useEffect(() => {
+        if (document.activeElement === searchBarRef.current) {
+            setSearchBarFocused(true);
+        }
 
-    useKeyPressEvent("arrowLeft", (e) => {
-        e.preventDefault();
-        if (songRef.current) songRef.current.currentTime -= 5;
-    });
+        return () => setSearchBarFocused(false);
+    }, [searchBarRef.current]);
 
-    useKeyPressEvent("ArrowRight", (e) => {
-        e.preventDefault();
-        if (songRef.current) songRef.current.currentTime += 5;
-    });
+    if (searchBarFocused) {
+        useKeyPressEvent(" ", (e) => {
+            e.preventDefault();
+            setIsPlaying(!isPlaying);
+        });
 
-    useKeyPressEvent("r", () => setRepeat(repeat >= 2 ? 0 : repeat + 1));
+        useKeyPressEvent("arrowLeft", (e) => {
+            e.preventDefault();
+            if (songRef.current) songRef.current.currentTime -= 5;
+        });
 
-    useKeyPressEvent("c", () => {
-        navigator.clipboard.writeText(location.href);
-        toast.success("Copied song link to clipboard");
-    });
+        useKeyPressEvent("ArrowRight", (e) => {
+            e.preventDefault();
+            if (songRef.current) songRef.current.currentTime += 5;
+        });
 
-    useKeyPressEvent("l", () => setLyricsOpened(!lyricsOpened));
+        useKeyPressEvent("r", () => setRepeat(repeat >= 2 ? 0 : repeat + 1));
 
-    useKeyPressEvent("h", () => setAppearBar(!appearBar));
+        useKeyPressEvent("c", () => {
+            navigator.clipboard.writeText(location.href);
+            toast.success("Copied song link to clipboard");
+        });
 
-    useKeyPressEvent("f", () => {
-        setIsFullscreenMode(!isFullscreenMode);
-        setFullscreen(!isFullscreenMode || false);
-    });
+        useKeyPressEvent("l", () => setLyricsOpened(!lyricsOpened));
 
-    useKeyPressEvent("Escape", () => {
-        setIsFullscreenMode(false);
-        setFullscreen(false);
-    });
+        useKeyPressEvent("h", () => setAppearBar(!appearBar));
 
-    useKeyPressEvent("s", () => setShuffle(!shuffle));
+        useKeyPressEvent("f", () => {
+            setIsFullscreenMode(!isFullscreenMode);
+            setFullscreen(!isFullscreenMode || false);
+        });
+
+        useKeyPressEvent("Escape", () => {
+            setIsFullscreenMode(false);
+            setFullscreen(false);
+        });
+
+        useKeyPressEvent("s", () => setShuffle(!shuffle));
+    }
 
     const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -158,9 +166,9 @@ export const DesktopSongControls = ({
                     currentTimeVal: [currentTimeVal, setCurrentTimeVal],
                 }}
             >
-                    <WheelEventHandler value={() => handleWheel}>
-                        <FullscreenSongControls {...necessaryProps} />
-                    </WheelEventHandler>
+                <WheelEventHandler value={() => handleWheel}>
+                    <FullscreenSongControls {...necessaryProps} />
+                </WheelEventHandler>
             </SliderValue>
         );
     } else {
@@ -172,9 +180,7 @@ export const DesktopSongControls = ({
                         background: `linear-gradient(90deg, rgb(${averageColors[0]}, ${averageColors[1]}, ${averageColors[2]}), transparent 75%)`,
                     }}
                 />
-                <div
-                    className="flex w-full justify-between items-center z-20 px-1 md:gap-2 lg:gap-0"
-                >
+                <div className="flex w-full justify-between items-center z-20 px-1 md:gap-2 lg:gap-0">
                     {/* Little arrow to hide the bar */}
                     {!isFullscreenMode && (
                         <Button
@@ -190,7 +196,7 @@ export const DesktopSongControls = ({
                         </Button>
                     )}
                     {/* Left section */}
-                    <LeftSectionSongControls {...necessaryProps} />
+                    <LeftSectionSongControls {...necessaryProps} searchBarRef={searchBarRef} />
                     {/* Middle section */}
                     <SliderValue
                         value={{

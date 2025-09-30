@@ -15,7 +15,13 @@ import {
 } from "@/lib/songControlsFunctions";
 import { Button } from "@/components/ui/button";
 import VolumeSlider from "@/components/songControlsSubcomponents/volumeSlider";
-import { Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
+import {
+    Dispatch,
+    RefObject,
+    SetStateAction,
+    useEffect,
+    useState,
+} from "react";
 import PlayerControls from "./player-controls";
 import PlayerSongProgress from "./player-song-progress";
 
@@ -29,6 +35,7 @@ type PlayerCardInterface = {
     setRepeat: Dispatch<SetStateAction<boolean>>;
     volumeVal: number | any;
     setVolumeVal: Dispatch<SetStateAction<number | any>>;
+    searchBarRef: RefObject<HTMLInputElement | null>;
 };
 
 const PlayerCard = ({
@@ -48,6 +55,7 @@ const PlayerCard = ({
     setRepeat,
     volumeVal,
     setVolumeVal,
+    searchBarRef,
 }: PlayerRewriteInterface & PlayerCardInterface) => {
     const isMobile = useIsMobile();
 
@@ -97,6 +105,7 @@ const PlayerCard = ({
                             lyrics={lyrics}
                             source={songVal}
                             text={text}
+                            searchBarRef={searchBarRef}
                         />
                     ) : (
                         <DrawerMenu

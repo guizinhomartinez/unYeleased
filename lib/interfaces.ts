@@ -54,6 +54,10 @@ export interface songControlsInterface {
     setShuffle: any;
 }
 
+export interface DesktopSongControlsInterface {
+    searchBarRef: RefObject<HTMLInputElement | null>;
+}
+
 export interface isFullscreenModeInterface {
     image: string;
     currentTimeVal: number;

@@ -72,6 +72,7 @@ const PopoverMenu = ({
     lyrics,
     source,
     text,
+    searchBarRef
 }: Menu) => {
     const [searchValue, setSearchValue] = useState("");
 
@@ -140,9 +141,11 @@ const PopoverMenu = ({
                                     className="w-full p-4 rounded-xl"
                                     placeholder="Search shortcuts..."
                                     value={searchValue}
+                                    id="shortcuts-search"
                                     onChange={(e) =>
                                         setSearchValue(e.target.value)
                                     }
+                                    ref={searchBarRef}
                                 />
                             </div>
                             <div className="flex flex-col gap-1.5">
