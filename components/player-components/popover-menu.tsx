@@ -20,8 +20,11 @@ import {
 import { Drawer as DrawerPrimitive } from "vaul";
 import { Dialog as DialogPrimitive, VisuallyHidden } from "radix-ui";
 import InfoCard from "./info-card";
-import { cn } from "@/lib/utils";
+import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import DownloadSingle from "./download-single";
+import { Input } from "../ui/input";
+import { useMemo, useState } from "react";
+import { Kbd } from "../ui/kbd";
 
 type KeyboardThing = {
     letter: any;
@@ -30,6 +33,39 @@ type KeyboardThing = {
     description: string;
 }[];
 
+const keyboardThing: KeyboardThing = [
+    {
+        letter: "S",
+        type: "text",
+        description: "hide/show explanation menu",
+    },
+    {
+        letter: "R",
+        type: "text",
+        description: "repeat song",
+    },
+    {
+        letter: <MoveLeft size="16" />,
+        description: "rewind 5 seconds",
+    },
+    {
+        letter: <MoveRight size="16" />,
+        description: "skip 5 seonds forward",
+    },
+    {
+        letter: <MoveUp size="16" />,
+        description: "increase volume by 10%",
+    },
+    {
+        letter: <MoveDown size="16" />,
+        description: "decrease volume by 10%",
+    },
+    {
+        letter: <SpaceIcon />,
+        description: "play/pause song",
+    },
+];
+
 const PopoverMenu = ({
     backgroundLore,
     linkToGenius,
@@ -37,38 +73,13 @@ const PopoverMenu = ({
     source,
     text,
 }: Menu) => {
-    const keyboardThing: KeyboardThing = [
-        {
-            letter: "S",
-            type: "text",
-            description: "for hiding/showing the explanation menu",
-        },
-        {
-            letter: "R",
-            type: "text",
-            description: "for repeating the song",
-        },
-        {
-            letter: <MoveLeft size="16" />,
-            description: "for going back 5 seconds",
-        },
-        {
-            letter: <MoveRight size="16" />,
-            description: "for skipping 5 seconds",
-        },
-        {
-            letter: <MoveUp size="16" />,
-            description: "for making the volume 10% louder",
-        },
-        {
-            letter: <MoveDown size="16" />,
-            description: "for making the volume 10% quieter",
-        },
-        {
-            letter: <SpaceIcon />,
-            description: "for pausing the song",
-        },
-    ];
+    const [searchValue, setSearchValue] = useState("");
+
+    const filteredKeyboardThing = useMemo(() => {
+        return keyboardThing.filter((e) =>
+            e.description.includes(searchValue)
+        );
+    }, [keyboardThing, searchValue]);
 
     return (
         <Popover>
@@ -115,29 +126,49 @@ const PopoverMenu = ({
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-md rounded-xl">
-                        <DialogHeader>
-                            <DialogTitle>Keyboard shortcuts</DialogTitle>
-                        </DialogHeader>
-                        <div className="flex flex-col gap-2">
-                            {keyboardThing.map((thing, index) => (
-                                <div
-                                    className="flex gap-2 items-center"
-                                    key={index}
-                                >
-                                    <kbd className="text-muted-foreground text-xs font-medium bg-secondary px-2 py-1 rounded-md border border-muted flex gap-2 items-center justify-center text-center">
-                                        <p
-                                            className={cn(
-                                                thing.type === "text" &&
-                                                    "text-base flex justify-center items-center text-center ml-2"
+                        <DialogPrimitive.Title asChild>
+                            <VisuallyHidden.Root>
+                                Album explanation
+                            </VisuallyHidden.Root>
+                        </DialogPrimitive.Title>
+                        <div className="flex flex-col gap-3 relative">
+                            <h1 className="text-xl font-semibold leading-none tracking-tight text-center">
+                                Keyboard Shortcuts
+                            </h1>
+                            <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
+                                <Input
+                                    className="w-full p-4 rounded-xl"
+                                    placeholder="Search shortcuts..."
+                                    value={searchValue}
+                                    onChange={(e) =>
+                                        setSearchValue(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                {filteredKeyboardThing.map((thing, index) => (
+                                    <div
+                                        className="flex items-center justify-between gap-2 bg-secondary/50 px-3 py-2.5 rounded-xl"
+                                        key={thing.description + index}
+                                    >
+                                        <span className="text-sm">
+                                            {capitalizeFirstLetter(
+                                                thing.description
                                             )}
-                                        >
-                                            {thing.letter}
-                                        </p>
-                                        <p>{thing.letter2}</p>
-                                    </kbd>
-                                    {thing.description}
-                                </div>
-                            ))}
+                                        </span>
+                                        <div className="flex items-center gap-1">
+                                            {thing.letter && (
+                                                <Kbd>{thing.letter}</Kbd>
+                                            )}
+                                            {thing.letter2 && (
+                                                <Kbd className="shadow-xl">
+                                                    {thing.letter2}
+                                                </Kbd>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </DialogContent>
                 </Dialog>
