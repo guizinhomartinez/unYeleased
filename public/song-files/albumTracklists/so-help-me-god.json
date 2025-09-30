@@ -23,11 +23,31 @@
     ],
     "tracks": [
         {
+            "title": "Nina Chop",
+            "artist": "Kanye West & Young Thug"
+        },
+        {
             "title": "All Day",
             "artist": "Kanye West & Kendrick Lamar"
         },
         {
+            "title": "Only One",
+            "artist": "Kanye West & Paul McCartney"
+        },
+        {
             "title": "When I See It",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Mitus Touch",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "I Feel Like That",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "3",
             "artist": "Kanye West"
         }
     ]
