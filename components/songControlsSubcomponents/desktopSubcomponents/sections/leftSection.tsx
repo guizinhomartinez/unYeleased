@@ -1,4 +1,7 @@
-import { DesktopSongControlsInterface, songControlsInterface } from "@/lib/interfaces";
+import {
+    DesktopSongControlsInterface,
+    songControlsInterface,
+} from "@/lib/interfaces";
 import Image from "next/image";
 import { AutoMarquee } from "../../autoMarquee";
 import {
@@ -16,6 +19,7 @@ import {
     Command,
     EllipsisVertical,
     KeyboardIcon,
+    SearchIcon,
     Share,
     SpaceIcon,
 } from "lucide-react";
@@ -118,7 +122,7 @@ export default function LeftSectionSongControls({
     songRef,
     songVal,
     id,
-    searchBarRef
+    searchBarRef,
 }: songControlsInterface & DesktopSongControlsInterface) {
     return (
         <div className="flex items-center gap-4 select-none overflow-hidden md:!max-w-[25%] lg:!max-w-[73%] w-full">
@@ -220,15 +224,20 @@ const ShortcutsMenu = (props: {
                         Keyboard Shortcuts
                     </h1>
                     <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
-                        <Input
-                            type="search"
-                            className="w-full p-4 rounded-xl"
-                            placeholder="Search shortcuts..."
-                            id="shortcuts-search"
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            ref={props.searchBarRef}
-                        />
+                        <div className="relative">
+                            <Input
+                                type="search"
+                                className="w-full p-4 rounded-xl peer ps-9 pe-9"
+                                placeholder="Search shortcuts..."
+                                id="shortcuts-search"
+                                value={searchValue}
+                                onChange={(e) => setSearchValue(e.target.value)}
+                                ref={props.searchBarRef}
+                            />
+                            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+                                <SearchIcon size={16} />
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-col gap-1.5">
                         {filteredKeyboardThing.map((thing, index) => (
