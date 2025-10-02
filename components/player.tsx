@@ -1,7 +1,7 @@
 "use client";
 
 import { BookOpenText, ArrowLeft, KeyboardIcon, Share } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -30,7 +30,7 @@ export type Menu = {
     songRef?: any;
     source: string;
     text: string;
-    searchBarRef?: React.RefObject<HTMLInputElement | null>;
+    searchBarRef?: RefObject<HTMLInputElement | null> | any;
 };
 
 type MenuItems = {

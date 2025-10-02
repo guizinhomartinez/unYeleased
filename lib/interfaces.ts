@@ -238,3 +238,12 @@ export interface AlbumPageRootTracks {
 
 export type AlbumPageResponse = AlbumPageRoot | "NOT FOUND";
 export type CreditsResponse = Credits[] | 0;
+
+// shortcuts menu
+
+export type KeyboardThing = {
+    letter: any;
+    type?: string;
+    letter2?: any;
+    description: string;
+}[];

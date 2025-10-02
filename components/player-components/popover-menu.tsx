@@ -25,6 +25,7 @@ import DownloadSingle from "./download-single";
 import { Input } from "../ui/input";
 import { useMemo, useState } from "react";
 import { Kbd } from "../ui/kbd";
+import ShortcutsMenu from "../ui-sections/shortcuts-menu";
 
 type KeyboardThing = {
     letter: any;
@@ -72,16 +73,9 @@ const PopoverMenu = ({
     lyrics,
     source,
     text,
-    searchBarRef
+    searchBarRef,
+    songRef,
 }: Menu) => {
-    const [searchValue, setSearchValue] = useState("");
-
-    const filteredKeyboardThing = useMemo(() => {
-        return keyboardThing.filter((e) =>
-            e.description.includes(searchValue)
-        );
-    }, [keyboardThing, searchValue]);
-
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -116,65 +110,11 @@ const PopoverMenu = ({
                     source={source}
                     songVal={text}
                 />
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button
-                            className="w-full rounded-xl"
-                            variant="secondary"
-                        >
-                            {PopoverMenuItems[1].icon}
-                            {PopoverMenuItems[1].text}
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md rounded-xl">
-                        <DialogPrimitive.Title asChild>
-                            <VisuallyHidden.Root>
-                                Album explanation
-                            </VisuallyHidden.Root>
-                        </DialogPrimitive.Title>
-                        <div className="flex flex-col gap-3 relative">
-                            <h1 className="text-xl font-semibold leading-none tracking-tight text-center">
-                                Keyboard Shortcuts
-                            </h1>
-                            <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
-                                <Input
-                                    className="w-full p-4 rounded-xl"
-                                    placeholder="Search shortcuts..."
-                                    value={searchValue}
-                                    id="shortcuts-search"
-                                    onChange={(e) =>
-                                        setSearchValue(e.target.value)
-                                    }
-                                    ref={searchBarRef}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-1.5">
-                                {filteredKeyboardThing.map((thing, index) => (
-                                    <div
-                                        className="flex items-center justify-between gap-2 bg-secondary/50 px-3 py-2.5 rounded-xl"
-                                        key={thing.description + index}
-                                    >
-                                        <span className="text-sm">
-                                            {capitalizeFirstLetter(
-                                                thing.description
-                                            )}
-                                        </span>
-                                        <div className="flex items-center gap-1">
-                                            {thing.letter && (
-                                                <Kbd>{thing.letter}</Kbd>
-                                            )}
-                                            {thing.letter2 && (
-                                                <Kbd className="shadow-xl">
-                                                    {thing.letter2}
-                                                </Kbd>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                <ShortcutsMenu
+                    keyboardThing={keyboardThing}
+                    searchBarRef={searchBarRef}
+                    songRef={songRef}
+                />
                 <DrawerPrimitive.Root direction="right">
                     <DrawerPrimitive.Trigger asChild>
                         <Button

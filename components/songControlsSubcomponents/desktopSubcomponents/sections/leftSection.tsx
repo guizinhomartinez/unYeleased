@@ -1,5 +1,6 @@
 import {
     DesktopSongControlsInterface,
+    KeyboardThing,
     songControlsInterface,
 } from "@/lib/interfaces";
 import Image from "next/image";
@@ -18,30 +19,12 @@ import {
     ArrowUp,
     Command,
     EllipsisVertical,
-    KeyboardIcon,
-    SearchIcon,
     Share,
     SpaceIcon,
 } from "lucide-react";
 import { DownloadMenu } from "../../moreOptionsMenu";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { RefObject, useMemo, useState } from "react";
-import { Kbd } from "@/components/ui/kbd";
-import { VisuallyHidden } from "radix-ui";
-import { Dialog as DialogPrimitive } from "radix-ui";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { capitalizeFirstLetter } from "@/lib/utils";
-import { useDebounce } from "react-use";
-
-type KeyboardThing = {
-    letter: any;
-    type?: string;
-    letter2?: any;
-    description: string;
-}[];
+import ShortcutsMenu from "@/components/ui-sections/shortcuts-menu";
 
 const keyboardThing: KeyboardThing = [
     {
@@ -181,6 +164,7 @@ export default function LeftSectionSongControls({
                         <ShortcutsMenu
                             keyboardThing={keyboardThing}
                             songRef={songRef}
+                            searchBarRef={searchBarRef}
                         />
                     </PopoverContent>
                 </Popover>
@@ -188,79 +172,3 @@ export default function LeftSectionSongControls({
         </div>
     );
 }
-
-const ShortcutsMenu = (props: {
-    keyboardThing: KeyboardThing;
-    songRef: RefObject<HTMLAudioElement | null>;
-    searchBarRef: React.RefObject<HTMLInputElement | null>;
-}) => {
-    const [searchValue, setSearchValue] = useState("");
-
-    const filteredKeyboardThing = useMemo(() => {
-        return props.keyboardThing.filter((e) =>
-            e.description.includes(searchValue)
-        );
-    }, [props.keyboardThing, searchValue]);
-
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button
-                    className="w-full rounded-xl"
-                    variant="secondary"
-                    disabled={!props.songRef.current}
-                    id="share-button"
-                >
-                    <KeyboardIcon />
-                    Shortcuts
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="max-h-[90%] overflow-auto p-6">
-                <DialogPrimitive.Title asChild>
-                    <VisuallyHidden.Root>Album explanation</VisuallyHidden.Root>
-                </DialogPrimitive.Title>
-                <div className="flex flex-col gap-3 relative">
-                    <h1 className="text-xl font-semibold leading-none tracking-tight text-center">
-                        Keyboard Shortcuts
-                    </h1>
-                    <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
-                        <div className="relative">
-                            <Input
-                                type="search"
-                                className="w-full p-4 rounded-xl peer ps-9 pe-9"
-                                placeholder="Search shortcuts..."
-                                id="shortcuts-search"
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                                ref={props.searchBarRef}
-                            />
-                            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-                                <SearchIcon size={16} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        {filteredKeyboardThing.map((thing, index) => (
-                            <div
-                                className="flex items-center justify-between gap-2 bg-secondary/50 px-3 py-2.5 rounded-xl"
-                                key={thing.description + index}
-                            >
-                                <span className="text-sm">
-                                    {capitalizeFirstLetter(thing.description)}
-                                </span>
-                                <div className="flex items-center gap-1">
-                                    {thing.letter && <Kbd>{thing.letter}</Kbd>}
-                                    {thing.letter2 && (
-                                        <Kbd className="shadow-xl">
-                                            {thing.letter2}
-                                        </Kbd>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};

@@ -106,6 +106,7 @@ const PlayerCard = ({
                             source={songVal}
                             text={text}
                             searchBarRef={searchBarRef}
+                            songRef={songRef}
                         />
                     ) : (
                         <DrawerMenu
