@@ -43,7 +43,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${JetBrainsMono.variable} antialiased overflow-x-hidden`}
       >
-        <Toaster position="top-center" className='toaster group' toastOptions={{ className: "group-[.toaster]:rounded-xl group-[.toaster]:bg-primary-foreground" }} />
+        <Toaster richColors position="top-center" className='toaster group' toastOptions={{ className: "group-[.toaster]:rounded-xl group-[.toaster]:bg-primary-foreground" }} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
