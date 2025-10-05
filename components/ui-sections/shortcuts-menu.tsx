@@ -1,4 +1,4 @@
-import { RefObject, useMemo, useState } from "react";
+import { RefObject, useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { KeyboardIcon, SearchIcon } from "lucide-react";
@@ -21,6 +21,12 @@ const ShortcutsMenu = (props: {
         );
     }, [props.keyboardThing, searchValue]);
 
+    useEffect(() => {
+        return () => {
+            props.searchBarRef.current = null;
+        };
+    }, []);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -42,10 +48,9 @@ const ShortcutsMenu = (props: {
                     <h1 className="text-xl font-semibold leading-none tracking-tight text-center">
                         Keyboard Shortcuts
                     </h1>
-                    <div className="-mx-4 p-4 pb-2 rounded-b-xl shadow-xl bg-background">
+                    <div className="-mx-4 p-4 pb-2 rounded-b-xl dark:shadow-xl bg-background">
                         <div className="relative">
                             <Input
-                                type="search"
                                 className="w-full p-4 rounded-xl peer ps-9 pe-9"
                                 placeholder="Search shortcuts..."
                                 id="shortcuts-search"

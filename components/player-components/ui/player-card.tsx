@@ -65,7 +65,7 @@ const PlayerCard = ({
                 "p-6 rounded-3xl",
                 isMobile
                     ? "rounded-none h-[107vh] pt-12"
-                    : "bg-secondary/30 border w-96 max-h-[95vh] absolute-div-center shadow-xl overflow-y-auto"
+                    : "bg-secondary/30 border w-96 max-h-screen absolute-div-center shadow-xl overflow-y-auto"
             )}
         >
             <div className="flex flex-col gap-2 justify-center items-start max-w-[100%]">

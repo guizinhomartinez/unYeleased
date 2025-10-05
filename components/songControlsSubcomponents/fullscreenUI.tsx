@@ -38,7 +38,7 @@ export const FullscreenUI = ({
 
     return (
         <motion.div
-            className="size-full fixed inset-0 bg-background top-0"
+            className="size-full fixed inset-0 bg-[hsl(0,0%,3.9%)] top-0"
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 0 }}
@@ -101,7 +101,7 @@ export const FullscreenUI = ({
                                             )}
                                         >
                                             {isLoading && (
-                                                <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />
+                                                <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[hsl(0,0%,100%)]" />
                                             )}
                                             {isLoading === null && (
                                                 <div className="flex flex-col gap-1 items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-2">
@@ -109,11 +109,11 @@ export const FullscreenUI = ({
                                                         className="text-red-500"
                                                         size="28"
                                                     />
-                                                    <p className="text-center text-white/60">
+                                                    <p className="text-center text-[hsl(0,0%,100%)]/60">
                                                         An error ocurred while
                                                         loading the song
                                                     </p>
-                                                    <p className="text-center text-white/60">
+                                                    <p className="text-center text-[hsl(0,0%,100%)]/60">
                                                         Please try again later
                                                     </p>
                                                 </div>
@@ -136,12 +136,12 @@ export const FullscreenUI = ({
                         <div className="flex flex-col justify-center items-center gap-1 max-w-[400px]">
                             <AutoMarquee
                                 text={songVal}
-                                className="text-3xl text-center tracking-tight font-bold"
+                                className="text-3xl text-center tracking-tight font-bold text-[hsl(0,0%,100%)]"
                                 number={0}
                             />
                             <AutoMarquee
                                 text={songCreator}
-                                className="text-xl text-center font-medium text-primary/30"
+                                className="text-xl text-center font-medium text-[hsl(0,0%,100%)]/30"
                                 marqueeClassName="gap-10"
                                 number={2}
                             />

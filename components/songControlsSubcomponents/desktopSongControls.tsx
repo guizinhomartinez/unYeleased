@@ -80,53 +80,61 @@ export const DesktopSongControls = ({
         setShowLyricsFullscreen,
     };
 
-    useEffect(() => {
-        if (document.activeElement === searchBarRef.current) {
-            setSearchBarFocused(true);
-        }
+    useKeyPressEvent(" ", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        setIsPlaying(!isPlaying);
+    });
 
-        return () => setSearchBarFocused(false);
-    }, [searchBarRef.current]);
+    useKeyPressEvent("arrowLeft", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        if (songRef.current) songRef.current.currentTime -= 5;
+    });
 
-    if (searchBarFocused) {
-        useKeyPressEvent(" ", (e) => {
-            e.preventDefault();
-            setIsPlaying(!isPlaying);
-        });
+    useKeyPressEvent("ArrowRight", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        if (songRef.current) songRef.current.currentTime += 5;
+    });
 
-        useKeyPressEvent("arrowLeft", (e) => {
-            e.preventDefault();
-            if (songRef.current) songRef.current.currentTime -= 5;
-        });
+    useKeyPressEvent("r", () => {
+        if (searchBarRef.current !== null) return;
+        setRepeat(repeat >= 2 ? 0 : repeat + 1);
+    });
 
-        useKeyPressEvent("ArrowRight", (e) => {
-            e.preventDefault();
-            if (songRef.current) songRef.current.currentTime += 5;
-        });
+    useKeyPressEvent("c", () => {
+        if (searchBarRef.current !== null) return;
+        navigator.clipboard.writeText(location.href);
+        toast.success("Copied song link to clipboard");
+    });
 
-        useKeyPressEvent("r", () => setRepeat(repeat >= 2 ? 0 : repeat + 1));
+    useKeyPressEvent("l", () => {
+        if (searchBarRef.current !== null) return;
+        setLyricsOpened(!lyricsOpened);
+    });
 
-        useKeyPressEvent("c", () => {
-            navigator.clipboard.writeText(location.href);
-            toast.success("Copied song link to clipboard");
-        });
+    useKeyPressEvent("h", () => {
+        if (searchBarRef.current !== null) return;
+        setAppearBar(!appearBar);
+    });
 
-        useKeyPressEvent("l", () => setLyricsOpened(!lyricsOpened));
+    useKeyPressEvent("f", () => {
+        if (searchBarRef.current !== null) return;
+        setIsFullscreenMode(!isFullscreenMode);
+        setFullscreen(!isFullscreenMode || false);
+    });
 
-        useKeyPressEvent("h", () => setAppearBar(!appearBar));
+    useKeyPressEvent("Escape", () => {
+        if (searchBarRef.current !== null) return;
+        setIsFullscreenMode(false);
+        setFullscreen(false);
+    });
 
-        useKeyPressEvent("f", () => {
-            setIsFullscreenMode(!isFullscreenMode);
-            setFullscreen(!isFullscreenMode || false);
-        });
-
-        useKeyPressEvent("Escape", () => {
-            setIsFullscreenMode(false);
-            setFullscreen(false);
-        });
-
-        useKeyPressEvent("s", () => setShuffle(!shuffle));
-    }
+    useKeyPressEvent("s", () => {
+        if (searchBarRef.current !== null) return;
+        setShuffle(!shuffle);
+    });
 
     const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -196,7 +204,10 @@ export const DesktopSongControls = ({
                         </Button>
                     )}
                     {/* Left section */}
-                    <LeftSectionSongControls {...necessaryProps} searchBarRef={searchBarRef} />
+                    <LeftSectionSongControls
+                        {...necessaryProps}
+                        searchBarRef={searchBarRef}
+                    />
                     {/* Middle section */}
                     <SliderValue
                         value={{

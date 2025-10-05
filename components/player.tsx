@@ -147,44 +147,45 @@ export function Player({
 
     const handleClick = () => setShowExplanation(!showExplanation);
 
-    useEffect(() => {
-        if (document.activeElement === searchBarRef.current) {
-            setSearchBarFocused(true);
-        }
+    useKeyPressEvent("s", () => {
+        if (searchBarRef.current !== null) return;
+        handleClick();
+    });
 
-        return () => setSearchBarFocused(false);
-    }, [searchBarRef.current]);
+    useKeyPressEvent("r", () => {
+        if (searchBarRef.current !== null) return;
+        setRepeat(!repeat);
+    });
 
-    if (searchBarFocused) {
-        useKeyPressEvent("s", () => handleClick());
+    useKeyPressEvent(" ", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        setIsPlaying(!isPlaying);
+    });
 
-        useKeyPressEvent("r", () => setRepeat(!repeat));
+    useKeyPressEvent("ArrowLeft", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        skipTimeFunc(true, songRef);
+    });
 
-        useKeyPressEvent(" ", (e) => {
-            e.preventDefault();
-            setIsPlaying(!isPlaying);
-        });
+    useKeyPressEvent("ArrowRight", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        skipTimeFunc(false, songRef);
+    });
 
-        useKeyPressEvent("ArrowLeft", (e) => {
-            e.preventDefault();
-            skipTimeFunc(true, songRef);
-        });
+    useKeyPressEvent("ArrowUp", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        setVolumeVal((volumeVal || 100) + 10);
+    });
 
-        useKeyPressEvent("ArrowRight", (e) => {
-            e.preventDefault();
-            skipTimeFunc(false, songRef);
-        });
-
-        useKeyPressEvent("ArrowUp", (e) => {
-            e.preventDefault();
-            setVolumeVal((volumeVal || 100) + 10);
-        });
-
-        useKeyPressEvent("ArrowDown", (e) => {
-            e.preventDefault();
-            setVolumeVal((volumeVal || 100) - 10);
-        });
-    }
+    useKeyPressEvent("ArrowDown", (e) => {
+        if (searchBarRef.current !== null) return;
+        e.preventDefault();
+        setVolumeVal((volumeVal || 100) - 10);
+    });
 
     useEffect(() => {
         if (songVal) {
