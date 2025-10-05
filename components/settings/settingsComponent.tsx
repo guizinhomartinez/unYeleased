@@ -46,8 +46,10 @@ export default function SettingsComponent() {
     ];
 
     useEffect(() => {
-        !isWideEnough && setHideSidebar(false);
-    }, [hideSidebar, isWideEnough]);
+        if (window.innerWidth < 1024 && hideSidebar) {
+            setHideSidebar(false);
+        }
+    }, [hideSidebar]);
 
     return (
         <div className={cn("flex w-dvw h-dvh flex-col lg:flex-row")}>
