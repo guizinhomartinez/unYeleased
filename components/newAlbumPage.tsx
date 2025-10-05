@@ -200,7 +200,7 @@ export default function NewAlbumPage({
                                         }
                                     />
                                 )}
-                                <div className="flex flex-col mt-2 justify-center items-center">
+                                <div className="flex flex-col -mt-2 justify-center items-center">
                                     <p className="text-3xl font-semibold text-center">
                                         {albumName}
                                     </p>
@@ -276,6 +276,7 @@ export default function NewAlbumPage({
                                 <AlbumPlayButton
                                     isPlaying={isPlaying}
                                     playAlbum={playAlbum}
+                                    songRef={songRef}
                                 />
                                 {!isMobile ? (
                                     <>
