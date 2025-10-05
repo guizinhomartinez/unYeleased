@@ -9,6 +9,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { DownloadMenu } from "../songControlsSubcomponents/moreOptionsMenu";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "react-use";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuTrigger,
+} from "../ui/context-menu";
 
 export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
     return (
@@ -25,6 +31,7 @@ export default function AlbumPageTracklist(props: AlbumPageTracklistInterface) {
 function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     const isMobile = useIsMobile();
     const [durations, setDurations] = useState<(string | null)[]>([]);
+    const [hoveredElement, setHoveredElement] = useState("");
     // const [showSongDurationOnTracklist] = useLocalStorage("show-song-duration-tracklist", true);
     // const cacheRef = useRef<Record<string, string | null>>({});
 
@@ -96,87 +103,120 @@ function AlbumPageTracklistReal(props: AlbumPageTracklistInterface) {
     };
 
     return (
-        <div
-            className={cn(
-                "transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted",
-                !props.newStyle && "border-2",
-                props.appearBar
-                    ? props.newStyle
-                        ? isMobile
-                            ? "mb-20"
-                            : "mb-16"
-                        : "mb-24"
-                    : props.newStyle
-                      ? isMobile
-                          ? "-mb-0"
-                          : "-mb-8"
-                      : "-mb-4"
-            )}
-        >
-            {props.songs.map((element, index) => (
+        <ContextMenu>
+            <ContextMenuTrigger asChild>
                 <div
-                    key={index}
                     className={cn(
-                        "flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full",
-                        props.playingSong === element.title
-                            ? "bg-primary/10 border-b-transparent"
-                            : "cursor-pointer hover:bg-primary/5"
+                        "transition-all duration-500 bg-primary-foreground/50 rounded-xl overflow-hidden w-full border border-muted",
+                        !props.newStyle && "border-2",
+                        props.appearBar
+                            ? props.newStyle
+                                ? isMobile
+                                    ? "mb-20"
+                                    : "mb-16"
+                                : "mb-24"
+                            : props.newStyle
+                              ? isMobile
+                                  ? "-mb-0"
+                                  : "-mb-8"
+                              : "-mb-4"
                     )}
-                    onClick={() => props.handleClickEvent(element, index)}
-                    tabIndex={0}
                 >
-                    <div className="flex w-full items-center justify-between gap-2">
-                        <div className="flex h-full max-w-[65%] md:max-w-[80%] lg:max-w-full items-center gap-2 overflow-hidden">
-                            <div className="flex items-center gap-3 relative justify-center">
-                                <div className="w-10 md:w-12 flex items-start justify-center font-mono">
-                                    <p>{index + 1}</p>
+                    {props.songs.map((element, index) => (
+                        <div
+                            key={index}
+                            className={cn(
+                                "flex p-2 items-center [&:not(:last-of-type)]:border-b border-b-secondary [&:not(:last-of-type)]:pb-3 justify-start gap-2 transition-colors h-full",
+                                props.playingSong === element.title
+                                    ? "bg-primary/10 border-b-transparent"
+                                    : "cursor-pointer hover:bg-primary/5"
+                            )}
+                            onClick={() =>
+                                props.handleClickEvent(element, index)
+                            }
+                            tabIndex={0}
+                        >
+                            <div
+                                className="flex w-full items-center justify-between gap-2"
+                                onMouseOver={() =>
+                                    setHoveredElement(element.title)
+                                }
+                                onMouseOut={() =>
+                                    setTimeout(() => setHoveredElement(""), 3000)
+                                }
+                            >
+                                <div className="flex h-full max-w-[65%] md:max-w-[80%] lg:max-w-full items-center gap-2 overflow-hidden">
+                                    <div className="flex items-center gap-3 relative justify-center">
+                                        <div className="w-10 md:w-12 flex items-start justify-center font-mono">
+                                            <p>{index + 1}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col max-w-[59vw] h-full">
+                                        <AutoMarquee
+                                            text={
+                                                element.title
+                                                    ? element.title
+                                                    : ""
+                                            }
+                                            className="text-sm font-semibold"
+                                            number={index}
+                                        />
+                                        <AutoMarquee
+                                            text={
+                                                element.artist
+                                                    ? element.artist
+                                                    : ""
+                                            }
+                                            className="text-sm text-muted-foreground"
+                                            number={index + 2}
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    className="flex min-w-fit items-center gap-3"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <SongDurations index={index} />
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="rounded-full bg-transparent"
+                                                variant="ghost"
+                                                size="icon"
+                                            >
+                                                <EllipsisVertical />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            align="end"
+                                            className="flex flex-col gap-2 rounded-2xl p-2 max-w-56 items-center"
+                                        >
+                                            <DownloadMenu
+                                                id={props.id}
+                                                songVal={element.title}
+                                                className="rounded-xl w-full"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
                             </div>
-                            <div className="flex flex-col max-w-[59vw] h-full">
-                                <AutoMarquee
-                                    text={element.title ? element.title : ""}
-                                    className="text-sm font-semibold"
-                                    number={index}
-                                />
-                                <AutoMarquee
-                                    text={element.artist ? element.artist : ""}
-                                    className="text-sm text-muted-foreground"
-                                    number={index + 2}
-                                />
-                            </div>
                         </div>
-                        <div
-                            className="flex min-w-fit items-center gap-3"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <SongDurations index={index} />
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="rounded-full bg-transparent"
-                                        variant="ghost"
-                                        size="icon"
-                                    >
-                                        <EllipsisVertical />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                    align="end"
-                                    className="flex flex-col gap-2 rounded-2xl p-2 max-w-72 items-center"
-                                >
-                                    <DownloadMenu
-                                        id={props.id}
-                                        songVal={element.title}
-                                        className="rounded-xl w-full"
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent className="rounded-xl p-2 w-48">
+                <ContextMenuItem asChild>
+                    <DownloadMenu
+                        id={props.id}
+                        songVal={hoveredElement}
+                        className="rounded-xl w-full !cursor-pointer"
+                    />
+                </ContextMenuItem>
+            </ContextMenuContent>
+        </ContextMenu>
     );
 }
 
