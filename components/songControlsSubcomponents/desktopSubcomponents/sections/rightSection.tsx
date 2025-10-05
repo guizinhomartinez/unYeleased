@@ -234,7 +234,7 @@ function LyricsPopover({
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                className="w-[450px] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group"
+                className="w-[450px] bg-[hsl(0,0%,3.9%)] max-h-[80vh] overflow-hidden mr-20 h-full rounded-2xl p-2 flex justify-center group"
                 side="top"
             >
                 <div className="relative rounded-lg w-full max-h-full overflow-hidden">
@@ -256,7 +256,7 @@ function LyricsPopover({
                             haveVerticalSpace={true}
                         />
                     </div>
-                    <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-30 group-hover:blur-sm hover:!opacity-90 hover:!blur-0 opacity-0 transition-all duration-500 bg-primary-foreground py-1 w-[50%] px-2">
+                    <div className="absolute flex justify-center items-center bottom-4 left-1/2 -translate-x-1/2 rounded-full group-hover:opacity-30 group-hover:blur-sm hover:!opacity-90 hover:!blur-0 opacity-0 transition-all duration-500 bg-[hsl(0,0%,9%)] text-[hsl(0,0%,98%)] py-1 w-[50%] px-2">
                         <div className="rounded-full flex justify-center items-center w-full relative">
                             <div
                                 onClick={() => setIsSynced(true)}

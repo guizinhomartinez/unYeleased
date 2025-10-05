@@ -105,7 +105,7 @@ export const SongControls = ({
                     </AnimatePresence>
                     <div
                         className={cn(`z-20 fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
-                            isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-primary-foreground to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
+                            isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-[hsl(0,0%,9%)] to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
                             isFullscreenMode && (isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"),
                             !isFullscreenMode && (appearBar ? 'translate-y-0' : 'translate-y-32'))}
                         id="default-song-controls"

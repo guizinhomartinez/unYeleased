@@ -53,7 +53,7 @@ export default function FullscreenSongControls({
     const handleWheel = useContext(WheelEventHandler);
 
     return (
-        <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full relative before:absolute before:-top-5 before:-left-10 before:size-[150%] before:blur-md before:bg-[rgba(30,30,30,0.3)] before:-z-10">
+        <div className="flex flex-col w-full justify-between items-center gap-4 pb-4 h-full relative">
             <div className="flex items-center justify-center w-full px-6">
                 <div className="text-sm text-muted-foreground/80 w-12">
                     {formatTime(
@@ -64,7 +64,7 @@ export default function FullscreenSongControls({
                     value={[sliderValue]}
                     max={100}
                     step={1}
-                    className="w-full [&>:last-child>span]:bg-primary [&>div]:transition-all [&>div]:duration-500"
+                    className="w-full [&>:first-child>span]:bg-[hsl(0,0%,100%)] [&>:last-child>span]:border-transparent [&>:last-child>span]:bg-[hsl(0,0%,100%)] [&>div]:transition-all [&>div]:duration-500 bg-[hsl(0,0%,100%)]/20"
                     onValueChange={(value) =>
                         handleSliderChange(
                             value,
@@ -87,7 +87,7 @@ export default function FullscreenSongControls({
             </div>
             <div className="flex w-full justify-between items-center px-4">
                 <div className="w-[34%]" />
-                <div className="flex justify-center gap-3 ml-2 items-center">
+                <div className="flex justify-center gap-3 ml-2 items-center *:text-[hsl(0,0%,100%)]">
                     <PlayerButtons
                         shuffle={shuffle}
                         setShuffle={setShuffle}
@@ -102,10 +102,11 @@ export default function FullscreenSongControls({
                         biggerPadding={true}
                         buttonVariant={"link"}
                         extraButtons={true}
+                        playerButtonClassname="!bg-[hsl(0,0%,100%)] !text-[hsl(240,10%,3.9%)]"
                     />
                 </div>
                 <div />
-                <div className="flex justify-center gap-3 w-[25%] items-center">
+                <div className="flex justify-center gap-3 w-[25%] items-center *:text-[hsl(0,0%,100%)]">
                     <Button
                         className={cn("rounded-full p-6")}
                         variant="link"
@@ -130,7 +131,7 @@ export default function FullscreenSongControls({
                         />
                     </Button>
                     <VolumeSlider
-                        className="[&>:last-child>span]:bg-primary [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70"
+                        className="[&>:last-child>span]:bg-[hsl(0,0%,100%)] [&>:last-child>span]:border-transparent [&>:first-child>span]:opacity-70 [&>:first-child>span]:bg-[hsl(0,0%,100%)] bg-[hsl(0,0%,100%)]/20"
                         value={[volumeVal]}
                         onValueChange={setVolumeVal}
                         onWheel={handleWheel}

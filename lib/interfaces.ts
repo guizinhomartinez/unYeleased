@@ -214,6 +214,7 @@ export interface SongPlayerButtonsInterface {
     biggerPadding: boolean;
     buttonVariant: any;
     extraButtons: boolean;
+    playerButtonClassname?: string;
 }
 
 // album page interfaces
