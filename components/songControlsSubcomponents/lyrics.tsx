@@ -73,7 +73,7 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
         <div className={cn('rounded-lg p-2 relative', !useIsMobile() ? 'min-h-[300px] max-h-[500px]' : 'h-full', isFullscreenMode && "w-full h-full")}>
             {!isSynced ?
                 (LyricFile?.includes("LYRICS NOT FOUND") ?
-                    <div className={cn('absolute w-full', !isFullscreenMode ? "top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2" : "top-[40vh] -left-4")}>
+                    <div className={cn('absolute w-full', !isFullscreenMode ? "absolute-div-center" : "top-[40vh] -left-4")}>
                         <p className='text-center text-lg text-white/50 w-full'>Unable to fetch the lyrics :C</p>
                     </div>
                     :

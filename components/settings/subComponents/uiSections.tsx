@@ -27,15 +27,15 @@ type optionsMapInterface = {
 export const UISection = () => {
     const [scrollOnOverflow, setScrollOnOverflow] = useLocalStorage(
         "text-scroll-overflow",
-        true
+        true,
     );
     const [fullscreenLyricsRight, setFullscreenLyricsRight] = useLocalStorage(
         "fullscreen-lyrics-right",
-        false
+        false,
     );
     const [dancingEmoji, setDancingEmoji] = useLocalStorage<boolean>(
         "dancing-emoji",
-        false
+        false,
     );
     const [showSongDurationOnTracklist, setShowSongDurationOnTracklist] =
         useLocalStorage("show-song-duration-tracklist", true);
@@ -50,17 +50,17 @@ export const UISection = () => {
         return (
             <>
                 <div className="flex flex-col gap-1.5">
-                    <Skeleton className="h-56 w-full rounded-xl bg-primary-foreground/80 border border-muted" />
+                    <Skeleton className="h-56 w-full rounded-xl border border-muted bg-primary-foreground/80" />
                     {[1, 2, 3, 4].map((_, i) => (
                         <div
                             key={i}
-                            className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted"
+                            className="flex items-center justify-between gap-4 rounded-xl border border-muted bg-primary-foreground/80 p-4"
                         >
                             <Skeleton className="h-6 w-[200px]" />
                             <Skeleton className="h-9 w-9 rounded-full" />
                         </div>
                     ))}
-                    <Skeleton className="h-56 w-full rounded-xl bg-primary-foreground/80 border border-muted" />
+                    <Skeleton className="h-56 w-full rounded-xl border border-muted bg-primary-foreground/80" />
                 </div>
             </>
         );
@@ -74,7 +74,7 @@ export const UISection = () => {
         return (
             <>
                 <div
-                    className="cursor-pointer hover:bg-secondary/50 border border-secondary transition-all duration-500 w-full px-2 py-4 flex flex-col gap-2 justify-center items-center rounded-xl"
+                    className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-secondary px-2 py-4 transition-all duration-500 hover:bg-secondary/50"
                     style={{
                         backgroundColor:
                             props.option === theme
@@ -84,12 +84,12 @@ export const UISection = () => {
                     onClick={() => setTheme(props.option)}
                     tabIndex={0}
                 >
-                    <div className="size-12 mx-auto relative shadow-lg rounded-full">
+                    <div className="relative mx-auto size-12 rounded-full shadow-lg">
                         <div
                             className={cn(
                                 "size-12 rounded-full",
                                 systemTheme &&
-                                    "outline-[2px] outline-primary/30"
+                                    "outline-[2px] outline-primary/30",
                             )}
                             style={{
                                 background: !systemTheme
@@ -97,7 +97,7 @@ export const UISection = () => {
                                     : "#161616",
                             }}
                         />
-                        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+                        <div className="absolute-div-center">
                             {!systemTheme ? (
                                 props.option !== "dark" ? (
                                     <Sun className="text-black" />
@@ -140,12 +140,12 @@ export const UISection = () => {
                     onChange={() =>
                         props.setCheckElement(!props.checkedElement)
                     }
-                    className="sr-only peer" // hides it visually but keeps it accessible
+                    className="peer sr-only" // hides it visually but keeps it accessible
                     key={props.id}
                 />
                 <div
                     className={cn(
-                        "group h-6 w-11 cursor-pointer rounded-full border-2 border-transparent transition-all duration-300 bg-muted peer-checked:bg-primary",
+                        "group h-6 w-11 cursor-pointer rounded-full border-2 border-transparent bg-muted transition-all duration-300 peer-checked:bg-primary",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>:first-child]:peer-checked:translate-x-5",
                     )}
                     onClick={() => props.setCheckElement(!props.checkedElement)}
@@ -180,8 +180,8 @@ export const UISection = () => {
 
     return (
         <>
-            <div className="flex flex-col gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
-                <div className="flex flex-col mb-2">
+            <div className="flex flex-col gap-4 rounded-xl border border-muted bg-primary-foreground/80 p-4">
+                <div className="mb-2 flex flex-col">
                     <Label className="text-2xl font-semibold text-primary/90">
                         Theme
                     </Label>
@@ -224,12 +224,12 @@ export const UISection = () => {
                 </WrapperComponent>
             ))}
 
-            <div className="flex justify-between items-center gap-4 p-4 rounded-xl bg-primary-foreground/80 border border-muted">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-muted bg-primary-foreground/80 p-4">
                 <Dialog>
                     <DialogTrigger asChild>
-                        <div className="flex gap-1 items-center">
+                        <div className="flex items-center gap-1">
                             <p
-                                className="text-base text-muted-foreground select-none flex gap-1 items-center"
+                                className="flex select-none items-center gap-1 text-base text-muted-foreground"
                                 onClick={(e) => e.preventDefault()}
                             >
                                 Dancing emoji on song interlude
@@ -242,12 +242,12 @@ export const UISection = () => {
                             </Button>
                         </div>
                     </DialogTrigger>
-                    <DialogContent className="!rounded-xl w-[95vw] md:max-w-lg">
+                    <DialogContent className="w-[95vw] !rounded-xl md:max-w-lg">
                         <DialogHeader>
                             <DialogTitle className="text-center">
                                 Dancing emoji
                             </DialogTitle>
-                            <div className="flex justify-center items-center">
+                            <div className="flex items-center justify-center">
                                 <Img
                                     unoptimized
                                     width={156}

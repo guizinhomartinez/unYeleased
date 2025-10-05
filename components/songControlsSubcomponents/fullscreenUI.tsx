@@ -101,10 +101,10 @@ export const FullscreenUI = ({
                                             )}
                                         >
                                             {isLoading && (
-                                                <LoaderCircleIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[hsl(0,0%,100%)]" />
+                                                <LoaderCircleIcon className="absolute-div-center text-[hsl(0,0%,100%)]" />
                                             )}
                                             {isLoading === null && (
-                                                <div className="flex flex-col gap-1 items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-2">
+                                                <div className="flex flex-col gap-1 items-center justify-center absolute-div-center w-full px-2">
                                                     <Info
                                                         className="text-red-500"
                                                         size="28"
