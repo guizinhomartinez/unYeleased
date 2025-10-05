@@ -89,9 +89,9 @@ export default function Lyrics({ currentTimeVal, id, songVal, isSynced, isFullsc
                 )
 
                 :
-                <ScrollArea className='pb-16 px-6' style={lrcContainerStyle}>
+                <ScrollArea className='px-6 h-full' style={lrcContainerStyle}>
                     {LyricFile.map((line, index) => (
-                        <div key={index} className={cn("whitespace-pre-wrap text-white text-lg [&:not(:last-child)]:mb-3", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("LYRICS NOT FOUND") && "text-left text-md")}>
+                        <div key={index} className={cn("whitespace-pre-wrap text-white text-lg [&:not(:last-child)]:mb-3 last-of-type:pb-16", `text-${normalLyricsAlignment}`, isMobile && "text-center mb-2 text-lg", LyricFile?.includes("LYRICS NOT FOUND") && "text-left text-md")}>
                             {line.replace(/\[.*?\] /g, "").replace(/\[.*?\]/g, "")}
                         </div>
                     ))}
