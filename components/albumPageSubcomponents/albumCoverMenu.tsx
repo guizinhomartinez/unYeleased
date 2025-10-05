@@ -64,7 +64,7 @@ export const AlbumCoverDialog = (props: {
                         });
                     }}
                 >
-                    <div className="relative flex overflow-hidden rounded-2xl shadow-xl bg-background">
+                    <div className="relative flex overflow-hidden rounded-2xl dark:shadow-xl bg-background">
                         <CarouselContent className="rounded-2xl">
                             {props.albumCoverInfo.map((_, index) => (
                                 <CarouselItem key={index}>
@@ -88,7 +88,7 @@ export const AlbumCoverDialog = (props: {
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-16 flex items-end justify-center rounded-b-2xl p-2 -order-last md:order-last bg-gradient-to-t from-black/60 to-transparent">
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-16 flex items-end justify-center rounded-b-2xl p-2 -order-last md:order-last bg-gradient-to-t from-black/60 to-transparent to-80%">
                             <div className="flex justify-center gap-1 opacity-80">
                                 {props.albumCoverInfo.map((_, index) => (
                                     <button
@@ -100,7 +100,7 @@ export const AlbumCoverDialog = (props: {
                                         className={cn(
                                             "size-4 rounded-full transition-color duration-500 backdrop-blur-md border",
                                             current === index
-                                                ? "bg-primary border-transparent"
+                                                ? "bg-indigo-300 dark:bg-primary border-transparent"
                                                 : "border-muted/50"
                                         )}
                                     />
@@ -195,7 +195,7 @@ export const AlbumCoverDialog = (props: {
             <div className="group relative size-fit overflow-hidden">
                 <div
                     className={cn(
-                        "absolute inset-0 z-10 opacity-0 bg-black/60 transition-opacity backdrop-blur-sm duration-500 rounded-xl",
+                        "absolute inset-0 z-10 opacity-0 bg-black/60 transition-opacity backdrop-blur-sm duration-500 rounded-xl size-full h-[98%]",
                         displayAlbumCover ? "opacity-100" : "opacity-0"
                     )}
                     ref={overlayRef}
@@ -220,7 +220,7 @@ export const AlbumCoverDialog = (props: {
                                 e.stopPropagation(); // prevent the parent div’s click
                                 displayAlbumCover && setDialogOpened(true);
                             }}
-                            className="flex items-center gap-2 cursor-pointer"
+                            className="flex items-center gap-2 cursor-pointer !text-[hsl(0,0%,100%)]"
                         >
                             <Disc />
                             Show all covers
