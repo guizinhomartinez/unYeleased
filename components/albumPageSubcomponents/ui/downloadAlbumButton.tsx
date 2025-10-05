@@ -87,7 +87,7 @@ export default function DownloadAlbumButton(props: { songs: any, id: string, var
                         className="w-full rounded-full p-5"
                         variant='secondary'
                         onClick={() => {
-                            toast.success("Cancelled album download");
+                            toast.info("Cancelled album download");
                             setDialogOpened(false);
                             cancel.current = true;
                         }}
