@@ -140,29 +140,19 @@ export const UISection = () => {
                     onChange={() =>
                         props.setCheckElement(!props.checkedElement)
                     }
-                    className="sr-only" // hides it visually but keeps it accessible
+                    className="sr-only peer" // hides it visually but keeps it accessible
                     key={props.id}
                 />
                 <div
                     className={cn(
-                        "peer h-6 w-11 cursor-pointer rounded-full",
-                        "border-2 border-transparent",
-                        "transition-colors duration-300 ease-in-out", // Smoother background transition
-                        props.checkedElement ? "bg-primary" : "bg-muted",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        "group h-6 w-11 cursor-pointer rounded-full border-2 border-transparent transition-all duration-300 bg-muted peer-checked:bg-primary",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>:first-child]:peer-checked:translate-x-5",
                     )}
                     onClick={() => props.setCheckElement(!props.checkedElement)}
                 >
                     <div
                         className={cn(
-                            "size-5 rounded-full bg-background",
-                            "transform transition-transform duration-300 ease-in-out", // Smoother movement
-                            "pointer-events-none",
-                            props.checkedElement
-                                ? "translate-x-5"
-                                : "translate-x-0",
-                            "shadow-sm ring-0",
-                            "block"
+                            "size-5 rounded-full bg-background shadow-sm",
                         )}
                     />
                 </div>
@@ -245,7 +235,10 @@ export const UISection = () => {
                                 Dancing emoji on song interlude
                             </p>
                             <Button variant="ghost" className="size-7">
-                                <Info size="2" className="text-muted-foreground" />
+                                <Info
+                                    size="2"
+                                    className="text-muted-foreground"
+                                />
                             </Button>
                         </div>
                     </DialogTrigger>
