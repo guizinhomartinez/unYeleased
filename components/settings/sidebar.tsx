@@ -42,7 +42,7 @@ export const SidebarComponent = ({
     });
 
     return (
-        <motion.div
+        <div
             className={cn(
                 "w-full transition-[max-width] duration-500",
                 "fixed top-0 left-0 bg-background/50 max-w-full z-50 backdrop-blur-md lg:h-full lg:bg-background lg:relative",
@@ -173,7 +173,7 @@ export const SidebarComponent = ({
                     </Tooltip>
                 </TooltipProvider>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
