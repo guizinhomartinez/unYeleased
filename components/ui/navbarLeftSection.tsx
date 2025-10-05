@@ -32,15 +32,16 @@ const navigationStuff = [
 
 export default function NavbarLeftSection() {
     const pathName = usePathname();
-    const isMobile = useIsMobile();
 
     return (
         <div className="items-center flex gap-2">
             {navigationStuff.map((item, index) => (
                 <Link href={item.link} key={index}>
-                    <Button variant='ghost' size={`${!isMobile ? 'default' : 'icon'}`} className={cn('items-center rounded-full transition-all', pathName === item.link ? 'bg-secondary hover:bg-secondary' : "hover:bg-primary-foreground")}>
+                    <Button variant='ghost' className={cn('items-center rounded-full transition-all w-9 md:w-[initial]', pathName === item.link ? 'bg-secondary hover:bg-secondary' : "hover:bg-primary-foreground")}>
                         {item.component}
-                        {!isMobile ? String(item.name) : String('')}
+                        <p className="hidden md:block text-sm font-medium">
+                            {item.name}
+                        </p>
                     </Button>
                 </Link>
             ))}
