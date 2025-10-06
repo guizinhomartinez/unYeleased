@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 // Songs stuff (their title and artist)
 export interface SongInterface {
@@ -9,20 +9,27 @@ export interface SongInterface {
 // Volume value and repeat value
 export interface AudioSettingsInterface {
     repeat?: number;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     volumeVal: number;
 }
 
 // Credits JSON file stuff
 export interface Credits {
+    credits: CreditParts[];
     name: string[];
     type: string;
-    originalLink: string[];
+    originalLink: any;
+}
+
+export interface CreditParts {
+    name: string[];
+    type: string;
+    originalLink: any;
 }
 
 // Related to the mini player and the song controls (basically the same stuff just different interface for more flexibility)
 export interface songControlsInterface {
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     songVal: string;
     isPlaying: boolean;
     setIsPlaying: Dispatch<SetStateAction<boolean>>;
@@ -47,6 +54,10 @@ export interface songControlsInterface {
     setShuffle: any;
 }
 
+export interface DesktopSongControlsInterface {
+    searchBarRef: RefObject<HTMLInputElement | null>;
+}
+
 export interface isFullscreenModeInterface {
     image: string;
     currentTimeVal: number;
@@ -55,18 +66,18 @@ export interface isFullscreenModeInterface {
     songCreator: string;
     isFullscreenMode: boolean;
     isPlaying: boolean;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     showLyricsFullscreen?: boolean;
-    setShowLyricsFullscreen?: any;
+    setShowLyricsFullscreen?: Dispatch<SetStateAction<boolean>>;
     isLoading: boolean | null;
 }
 
 export interface MiniPlayerInterface {
     albumCover: string;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     songVal: string;
     isPlaying: boolean;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     volumeVal: number;
     setVolumeVal: any;
     songCreator: string;
@@ -88,7 +99,12 @@ export interface FullscreenButtonInterface {
     currentTimeVal: number;
     id: string;
     songVal: string;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
+    songCreator: string;
+    isPlaying: boolean;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
+    handleSkipSong: any;
+    isLoading: boolean | null;
 }
 
 // Homepage stuff
@@ -127,23 +143,28 @@ export interface AlbumPageInterface {
     currentSongIndex: number;
     handleClickEvent: any;
     year: number;
-    songRef: any;
+    songRef: RefObject<HTMLAudioElement | null>;
     playingSong: any;
-    setIsPlaying: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
     volumeVal: number;
-    setVolumeVal: any;
+    setVolumeVal: Dispatch<SetStateAction<number>>;
     songCreator: string;
     handleSkipSong: any;
     repeatAlbum: number;
     setRepeatAlbum: any;
-    credits: Credits[];
+    credits: CreditParts[];
     isLoading: boolean | null;
     isFullscreenMode?: boolean;
     setIsFullscreenMode?: any;
     showLyricsFullscreen?: boolean;
-    setShowLyricsFullscreen?: any;
+    setShowLyricsFullscreen?: Dispatch<SetStateAction<boolean>>;
     shuffle: boolean;
     setShuffle: any;
+    albumCover: string;
+    albumCoverType: number;
+    setAlbumCoverType: any;
+    albumCoverInfo: string[];
+    albumCoverDescription: string[];
 }
 
 // Stuff related to album explanations
@@ -161,8 +182,10 @@ export interface LyricsInterface {
     songVal: string;
     isSynced?: boolean;
     isFullscreenMode?: boolean;
-    setLyricsStr?: any;
     syncedLyricsClassName?: string;
+    haveVerticalSpace?: boolean;
+    style?: React.CSSProperties;
+    ref?: any;
 }
 
 //Album page tracklist subcompoennt
@@ -184,11 +207,44 @@ export interface SongPlayerButtonsInterface {
     songVal: string;
     isLoading: boolean | null;
     isPlaying: boolean;
-    setIsPlaying: any;
-    songRef: any;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
+    songRef: RefObject<HTMLAudioElement | null>;
     repeat?: number | 0;
     setRepeat?: any | undefined;
     biggerPadding: boolean;
     buttonVariant: any;
     extraButtons: boolean;
+    playerButtonClassname?: string;
 }
+
+// album page interfaces
+export interface AlbumPageRoot {
+    config: AlbumPageRootConfig[];
+    tracks: AlbumPageRootTracks[];
+}
+
+export interface AlbumPageRootConfig {
+    albumCover: string[];
+    albumCoverDescription: string[];
+    albumCreator: string;
+    albumName: string;
+    credits: string;
+    year: number;
+}
+
+export interface AlbumPageRootTracks {
+    artist: string;
+    title: string;
+}
+
+export type AlbumPageResponse = AlbumPageRoot | "NOT FOUND";
+export type CreditsResponse = Credits[] | 0;
+
+// shortcuts menu
+
+export type KeyboardThing = {
+    letter: any;
+    type?: string;
+    letter2?: any;
+    description: string;
+}[];

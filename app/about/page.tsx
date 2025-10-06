@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Welcome from '@public/markdown/about.mdx'
-import "@public/CSS/about-page.css";
+import "@/app/CSS-files/about-page.css";
 import { overrideComponents } from '@/components/overrideComponents';
 import { ScrollProgress } from '@/components/magicui/scroll-progress';
 

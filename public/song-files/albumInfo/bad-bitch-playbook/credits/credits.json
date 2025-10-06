@@ -1,12 +1,18 @@
 {
     "credits": [
         {
-            "name": ["[yeunrlsd]"],
+            "name": [
+                "[yeunrlsd]"
+            ],
             "type": "songs",
-            "originalLink": ["https://youtube.com/playlist?list=PL822dnkZuMw_remh4hZishJmcB8TqebLG"]
+            "originalLink": [
+                "https://youtube.com/playlist?list=PL822dnkZuMw_remh4hZishJmcB8TqebLG"
+            ]
         },
         {
-            "name": ["Kanye West Wiki"],
+            "name": [
+                "Kanye West Wiki"
+            ],
             "type": "tracklist",
             "originalLink": "https://kanyewest.fandom.com/wiki/Bad_Bitch_Play_Book"
         }

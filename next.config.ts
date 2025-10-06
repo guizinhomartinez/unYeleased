@@ -3,7 +3,7 @@ import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["next-mdx-remote"],
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"]
 };
 
 const withMDX = createMDX({
@@ -16,13 +16,6 @@ const withMDX = createMDX({
           theme: "github-dark",
         },
       ],
-      // //@ts-ignore
-      // ["rehype-slug"],
-      // //@ts-ignore
-      // [
-      //   //@ts-ignore
-      //   "@jsdevtools/rehype-toc",
-      // ],
     ],
   },
 });

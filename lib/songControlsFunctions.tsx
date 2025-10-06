@@ -19,7 +19,7 @@ export const formattedSongTime = (songTime: number, songTimeType: number, curren
         : formatTime(songTime);
 };
 
-export const handleSliderChange = (value: number[], setSliderValue: any, songRef: RefObject<HTMLAudioElement>, setCurrentTimeVal: any) => {
+export const handleSliderChange = (value: number[], setSliderValue: any, songRef: RefObject<HTMLAudioElement | null>, setCurrentTimeVal: any) => {
     const newValue = value[0];
     setSliderValue(newValue)
     if (songRef.current) {
@@ -29,28 +29,28 @@ export const handleSliderChange = (value: number[], setSliderValue: any, songRef
     }
 }
 
-export const muteSong = (songRef: any) => {
+export const muteSong = (songRef: RefObject<HTMLAudioElement | null>) => {
     if (!songRef.current) return;
     songRef.current && (songRef.current.muted = !songRef.current.muted);
 }
 
 export const VolumeIcon = ({ songRef, volumeVal, ...props }: AudioSettingsInterface & LucideProps) => {
-    if (volumeVal !== undefined && songRef.current) {
-        if (songRef.current.muted) {
-            return <VolumeOff {...props} />;
-        }
+    if (volumeVal === undefined) return;
 
-        if (volumeVal > 60) {
-            return <Volume2 {...props} />;
-        } else if (volumeVal > 30) {
-            return <Volume1 {...props} />;
-        } else if (volumeVal === 0) {
-            return <VolumeX {...props} />;
-        } else {
-            return <Volume {...props} />;
-        }
+    if (!songRef.current) return <Volume1 />;
+
+    if (songRef.current.muted) {
+        return <VolumeOff {...props} />;
+    }
+
+    if (volumeVal > 60) {
+        return <Volume2 {...props} />;
+    } else if (volumeVal > 30) {
+        return <Volume1 {...props} />;
+    } else if (volumeVal === 0) {
+        return <VolumeX {...props} />;
     } else {
-        <LoaderCircleIcon className="animate-spin" />
+        return <Volume {...props} />;
     }
 };
 
@@ -58,9 +58,9 @@ export const RepeatIcon = ({ repeat, size }: { repeat: number, size?: string | a
     return repeat === 2 ? <Repeat1 size={size} /> : <Repeat size={size} />;
 };
 
-export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: any, size?: number }) => {
+export const PlayIcon = ({ isLoading, isPlaying, songRef, size }: { isLoading: boolean | null, isPlaying: boolean, songRef: RefObject<HTMLAudioElement | null>, size?: number }) => {
     if (isLoading)
-        return <LoaderCircleIcon className="animate-spin" size={36} />
+        return <LoaderCircleIcon className="animate-spin" size={size} />
 
     if (!songRef.current) {
         return <Play size={size?.toString()} />

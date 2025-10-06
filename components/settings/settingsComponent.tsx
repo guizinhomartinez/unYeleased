@@ -1,58 +1,79 @@
-"use client"
+"use client";
 
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { ChevronLeft } from "lucide-react"
-import { Button } from "../ui/button";
-import Link from "next/link";
 import { TutorialSection } from "./subComponents/tutorialSection";
 import { UISection } from "./subComponents/uiSections";
 import { Password } from "./subComponents/passwordSection";
+import { useLockBodyScroll, useMedia } from "react-use";
+import React, { useEffect, useState } from "react";
+import { useQueryState } from "nuqs";
+import { cn } from "@/lib/utils";
+import SidebarComponent from "./sidebar";
+import SettingsContent from "./settingsContent";
+
+export type HeadersInterface = {
+    title: string;
+    subtext: string;
+    id: string;
+}[];
 
 export default function SettingsComponent() {
+    const [currentTab, setCurrentTab] = useQueryState("tab", {
+        defaultValue: "appearence",
+    });
+    const isWideEnough = useMedia("(min-width: 1024px)", true);
+    const [hideSidebar, setHideSidebar] = useState(false);
+
+    const appearenceTab = currentTab === "appearence";
+    const tweaksTab = currentTab === "tweaks";
+    const passwordTab = currentTab === "password";
+
+    const mainTitle: HeadersInterface = [
+        {
+            title: "Appearence",
+            subtext: "Change how some aspects of the UI look.",
+            id: "appearence",
+        },
+        {
+            title: "Tweaks",
+            subtext: "Change more advanced stuff.",
+            id: "tweaks",
+        },
+        {
+            title: "Password",
+            subtext: "Here you can type a secret code to access a hidden song.",
+            id: "password",
+        },
+    ];
+
+    useEffect(() => {
+        if (window.innerWidth < 1024 && hideSidebar) {
+            setHideSidebar(false);
+        }
+    }, [hideSidebar]);
 
     return (
-        <div>
-            <div className="flex items-center justify-between rounded-full mb-4 relative">
-                <Link href="/">
-                    <Button className="rounded-full" size='icon' variant='ghost'>
-                        <ChevronLeft />
-                    </Button>
-                </Link>
-                <p className="text-2xl font-bold absolute top-1 left-1/2 -translate-x-1/2">Settings</p>
-                <div />
-            </div>
-            <Tabs className="w-full gap-4 overflow-hidden">
-                <TabsList className="w-full gap-1 rounded-lg *:rounded-lg *:w-full bg-primary-foreground/50 py-1 overflow-x-auto">
-                    <TabsTrigger
-                        value="appearence"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Appearence
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="tweaks"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Tweaks
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="password"
-                        className="gap-2 data-[state=active]:bg-secondary hover:bg-secondary/50 data-[state=active]:hover:bg-secondary"
-                    >
-                        Password
-                    </TabsTrigger>
-                </TabsList>
-                <div className="rounded-2xl border bg-primary-foreground/50 p-4">
-                    <TabsContent value="appearence"><UISection /></TabsContent>
-                    <TabsContent value="tweaks"><TutorialSection /></TabsContent>
-                    <TabsContent value="password"><Password /></TabsContent>
-                </div>
-            </Tabs>
+        <div className={cn("flex w-dvw h-dvh flex-col lg:flex-row")}>
+            <SidebarComponent
+                {...{
+                    appearenceTab,
+                    hideSidebar,
+                    isWideEnough,
+                    passwordTab,
+                    tweaksTab,
+                }}
+                setCurrentTabAction={setCurrentTab}
+                setHideSidebarAction={setHideSidebar}
+            />
+            <SettingsContent
+                {...{
+                    appearenceTab,
+                    currentTab,
+                    isWideEnough,
+                    mainTitle,
+                    passwordTab,
+                    tweaksTab,
+                }}
+            />
         </div>
-    )
+    );
 }

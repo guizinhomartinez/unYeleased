@@ -28,7 +28,7 @@ export default function PlayerButtons(props: SongPlayerButtonsInterface) {
                 </>
             }
             <Button
-                className={cn('rounded-full focus:bg-primary', props.biggerPadding ? "p-6" : "p-5", (!props.songVal || props.songVal === "" || props.isLoading || props.isLoading === null) && 'opacity-50 cursor-not-allowed')}
+                className={cn('rounded-full focus:bg-primary', props.biggerPadding ? "p-6" : "p-5", (!props.songVal || props.songVal === "" || props.isLoading || props.isLoading === null) && 'opacity-50 cursor-not-allowed', props.playerButtonClassname)}
                 size="icon"
                 onClick={() => { (!props.isLoading || props.isLoading === null) && props.setIsPlaying(props.songVal !== "" && !props.isPlaying) }}
                 disabled={props.isLoading === null}

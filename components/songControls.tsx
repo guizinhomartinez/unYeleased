@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { MiniPlayer } from "./songControlsSubcomponents/miniPlayer";
 import { MobileSongControls } from "./songControlsSubcomponents/mobileSongControls";
 import { DesktopSongControls } from "./songControlsSubcomponents/desktopSongControls";
@@ -7,8 +7,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn, lyricsDelay } from "@/lib/utils";
 import { songControlsInterface } from "@/lib/interfaces";
 import { AnimatePresence } from "motion/react";
-import { FullscreenUI } from "./songControlsSubcomponents/fullscreenUI";
-import { useLocalStorage } from "react-use";
+import { useLocalStorage, useLockBodyScroll } from "react-use";
+import { X } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const FullscreenUI = dynamic(() =>
+  import("@/components/songControlsSubcomponents/fullscreenUI").then(
+    (mod) => mod.default
+  )
+);
 
 export const SongControls = ({
     songRef,
@@ -36,6 +43,11 @@ export const SongControls = ({
 }: songControlsInterface) => {
     const [currentTimeVal, setCurrentTimeVal] = useState(0);
     const [tutorialNumber, setTutorialNumber] = useLocalStorage("tutorial-number", 0, { raw: true });
+
+    const necessaryDesktopProps = { songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, isFullscreenMode, setShuffle, shuffle, albumName, setIsFullscreenMode, setShowLyricsFullscreen, showLyricsFullscreen };
+    const necessaryMobileProps = { songRef, songVal, isPlaying, setIsPlaying, volumeVal, setVolumeVal, image, songCreator, handleSkipSong, repeat, setRepeat, id, appearBar, setAppearBar, isLoading, tutorialNumber, shuffle, setShuffle };
+
+    useLockBodyScroll(isFullscreenMode);
 
     useEffect(() => {
         const song = songRef.current;
@@ -89,38 +101,16 @@ export const SongControls = ({
             {!useIsMobile() ? (
                 <div className="size-full">
                     <AnimatePresence>
-                        {isFullscreenMode && <FullscreenUI image={image} currentTimeVal={currentTimeVal} id={id} songVal={songVal} songCreator={songCreator} isFullscreenMode={isFullscreenMode} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showLyricsFullscreen={showLyricsFullscreen} setShowLyricsFullscreen={setShowLyricsFullscreen} isLoading={isLoading} />}
+                        {isFullscreenMode && <FullscreenUI {...{ image, currentTimeVal, id, songVal, songCreator, isFullscreenMode, isPlaying, setIsPlaying, showLyricsFullscreen, isLoading }} />}
                     </AnimatePresence>
                     <div
-                        className={cn(`fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
-                            isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-primary-foreground to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
+                        className={cn(`z-20 fixed left-1/2 -translate-x-1/2 py-3 px-3 w-full flex items-center transition-all shadow-lg duration-500`,
+                            isFullscreenMode ? "bottom-0 rounded-none bg-gradient-to-b from-transparent to-[hsl(0,0%,9%)] to-100% max-w-full" : "bottom-2 rounded-xl max-w-[95.2vw] bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondary",
                             isFullscreenMode && (isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"),
                             !isFullscreenMode && (appearBar ? 'translate-y-0' : 'translate-y-32'))}
                         id="default-song-controls"
                     >
-                        <DesktopSongControls
-                            songRef={songRef}
-                            songVal={songVal}
-                            isPlaying={isPlaying}
-                            setIsPlaying={setIsPlaying}
-                            volumeVal={volumeVal}
-                            setVolumeVal={setVolumeVal}
-                            image={image}
-                            songCreator={songCreator}
-                            handleSkipSong={handleSkipSong}
-                            repeat={repeat}
-                            setRepeat={setRepeat}
-                            id={id}
-                            appearBar={appearBar}
-                            setAppearBar={setAppearBar}
-                            isLoading={isLoading}
-                            isFullscreenMode={isFullscreenMode}
-                            setIsFullscreenMode={setIsFullscreenMode}
-                            showLyricsFullscreen={showLyricsFullscreen}
-                            setShowLyricsFullscreen={setShowLyricsFullscreen}
-                            shuffle={shuffle}
-                            setShuffle={setShuffle}
-                        />
+                        <DesktopSongControls {...necessaryDesktopProps} />
                     </div>
                 </div>
             ) : (
@@ -129,29 +119,10 @@ export const SongControls = ({
                         <DrawerTrigger asChild>
                             <div
                                 onClick={() => setTutorialNumber((tutorialNumber === 0 || tutorialNumber === 1) ? 1 : 2)}
-                                className={cn(`fixed bottom-0.5 rounded-2xl w-full max-w-[92vw]
+                                className={cn(`z-20 fixed bottom-0.5 rounded-2xl w-full max-w-[92vw]
                                     left-1/2 -translate-x-1/2 bg-primary-foreground/80 backdrop-blur-lg border-2 border-secondsary
                                     flex items-center transition-all duration-500 overflow-hidden shadow-xl`, appearBar ? 'translate-y-0' : 'translate-y-32')}>
-                                <MobileSongControls
-                                    songRef={songRef}
-                                    songVal={songVal}
-                                    isPlaying={isPlaying}
-                                    setIsPlaying={setIsPlaying}
-                                    volumeVal={volumeVal}
-                                    setVolumeVal={setVolumeVal}
-                                    image={image}
-                                    songCreator={songCreator}
-                                    handleSkipSong={handleSkipSong}
-                                    repeat={repeat}
-                                    setRepeat={setRepeat}
-                                    id={id}
-                                    appearBar={appearBar}
-                                    setAppearBar={setAppearBar}
-                                    isLoading={isLoading}
-                                    tutorialNumber={tutorialNumber}
-                                    shuffle={shuffle}
-                                    setShuffle={setShuffle}
-                                />
+                                <MobileSongControls {...necessaryMobileProps} />
                             </div>
                         </DrawerTrigger>
                         <DrawerContent className="max-h-full h-full rounded-t-none">
@@ -172,6 +143,11 @@ export const SongControls = ({
                                 shuffle={shuffle}
                                 setShuffle={setShuffle}
                             />
+                            <DrawerClose asChild>
+                                <button className="absolute right-3 top-2 rounded-full p-2 bg-secondary/50">
+                                    <X className="h-4 w-4 text-muted-foreground" strokeWidth={3.5} />
+                                </button>
+                            </DrawerClose>
                         </DrawerContent>
                     </Drawer>
                 </div>

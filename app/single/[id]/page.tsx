@@ -1,50 +1,32 @@
-"use client"
-
-import { fetchSinglesExplanation, fetchSinglesInfo, fetchSinglesLyrics } from "@/lib/fetching";
+import {
+    fetchSinglesExplanation,
+    fetchSinglesInfo,
+    fetchSinglesLyrics,
+} from "@/lib/server-fetching";
 import { Player } from "@/components/player";
-import { use, useEffect, useState } from "react";
-import { capitalizeFirstLetter } from "@/lib/utils";
 
-export default function SinglesPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
-    const [image, setImage] = useState("");
-    const [text, setText] = useState("");
-    const [subtext, setSubtext] = useState("");
-    const [songVal, setSongVal] = useState("");
-    const [link, setLink] = useState("");
-    const [lyrics, setLyrics] = useState("");
-    const [explanation, setExplanation] = useState("");
+export default async function SinglesPage({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = await params;
+    const data = await fetchSinglesInfo(id);
+    const songValStr: string = data.songVal.split(".m4a").pop();
 
-    useEffect(() => {
-        async function loadSongs() {
-            const data = await fetchSinglesInfo(id);
-            setImage(`/song-files/covers/${data.image}`);
-            setText(data.text);
-            setSubtext(data.subtext);
-            setSongVal(`/song-files/songs/singles/${data.songVal}`);
-            setLink(data.link);
-        }
-
-        async function loadLyrics() {
-            const data = await fetchSinglesLyrics(id);
-            setLyrics(data);
-        }
-
-        async function loadExplanation() {
-            const data = await fetchSinglesExplanation(id);
-            setExplanation(data);
-        }
-
-        loadSongs();
-        loadLyrics();
-        loadExplanation();
-    }, [id]);
-
-    useEffect(() => {
-        document.title = `${text || capitalizeFirstLetter(id)} | UnYeleased`;
-    }, [text]);
+    const lyrics = await fetchSinglesLyrics(id);
+    const explanation = await fetchSinglesExplanation(id);
 
     return (
-        <Player image={image} text={text} subtext={subtext} songVal={songVal} backgroundLore={explanation} linkToGenius={link} lyrics={lyrics} id={id} />
-    )
+        <Player
+            image={`/song-files/covers/${data.image}`}
+            text={data.text}
+            subtext={data.subtext}
+            songVal={`/song-files/songs/singles/${songValStr}.m4a`}
+            backgroundLore={explanation}
+            linkToGenius={data.link}
+            lyrics={lyrics}
+            id={id}
+        />
+    );
 }

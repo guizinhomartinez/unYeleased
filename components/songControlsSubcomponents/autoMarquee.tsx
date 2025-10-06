@@ -3,8 +3,8 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import Marquee from "react-fast-marquee";
-import { useEffectOnce, useLocalStorage } from "react-use";
-import "@public/CSS/song-controls.css";
+import { useLocalStorage } from "react-use";
+import "@/app/CSS-files/song-controls.css";
 
 export const AutoMarquee = (props: { text: string, className: string, marqueeClassName?: string, number: number }) => {
     const [isOverflowing, setIsOverflowing] = useState(false);
@@ -34,13 +34,13 @@ export const AutoMarquee = (props: { text: string, className: string, marqueeCla
         <div
             ref={containerRef}
             className={cn(
-                "max-w-full w-full overflow-hidden h-full",
+                "w-full overflow-hidden h-full",
                 props.className
             )}
         >
             {isOverflowing && scrollOnOverflow ? (
                 <Marquee
-                    className={cn("select-none w-36 z-0 gap-2", props.marqueeClassName, `shadowed-song-name-${shouldPlay ? "2" : "1"}`)}
+                    className={cn("select-none w-36 z-0", props.marqueeClassName, `shadowed-song-name-${shouldPlay ? "2" : "1"}`)}
                     play={shouldPlay}
                     speed={30}
                     onCycleComplete={() => {
@@ -48,10 +48,10 @@ export const AutoMarquee = (props: { text: string, className: string, marqueeCla
                         setTimeout(() => setShouldPlay(true), 5000);
                     }}
                 >
-                    {props.text}
+                    {props.text} {'\u00A0'.repeat(25)}
                 </Marquee>
             ) : (
-                <span className="select-none w-36 whitespace-nowrap">
+                <span className="select-none w-36 whitespace-nowrap max-w-32">
                     {props.text}
                 </span>
             )}
