@@ -1,0 +1,51 @@
+{
+    "config": [
+        {
+            "albumCover": [
+                "war"
+            ],
+            "albumName": "WAR",
+            "albumCreator": "Kanye West",
+            "year": "2022",
+            "credits": "Credit placeholder"
+        }
+    ],
+    "tracks": [
+        {
+            "title": "For Once in My Life",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "What I Would Have Said at Virgil's Funeral",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Talking",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Hold Up, Get Up",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Quiet",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Bobby Digital",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "All in Love",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "Through the High Wire",
+            "artist": "Kanye West"
+        },
+        {
+            "title": "And They Came Back/This One Here",
+            "artist": "Kanye West"
+        }
+    ]
+}
